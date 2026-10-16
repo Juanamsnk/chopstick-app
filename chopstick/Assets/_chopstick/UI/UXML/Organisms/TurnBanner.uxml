@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:VisualElement name="turn-banner" class="turn-banner">
+    <ui:Label name="title" text="Turno de Jugador" class="turn-banner__title" />
+    <ui:Label name="hint" text="1) Elige una de tus manos" class="turn-banner__hint" />
+  </ui:VisualElement>
+</ui:UXML>

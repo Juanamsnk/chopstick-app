@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Button name="hand" class="hand">
+    <ui:VisualElement name="fingers" class="hand__fingers" picking-mode="Ignore">
+      <ui:VisualElement name="finger-0" class="finger" picking-mode="Ignore" />
+      <ui:VisualElement name="finger-1" class="finger" picking-mode="Ignore" />
+      <ui:VisualElement name="finger-2" class="finger finger--down" picking-mode="Ignore" />
+      <ui:VisualElement name="finger-3" class="finger finger--down" picking-mode="Ignore" />
+    </ui:VisualElement>
+    <ui:VisualElement name="palm" class="palm" picking-mode="Ignore" />
+    <ui:Label name="count" text="1" class="hand__count" picking-mode="Ignore" />
+    <ui:Label name="tag" class="tag" picking-mode="Ignore" />
+  </ui:Button>
+</ui:UXML>

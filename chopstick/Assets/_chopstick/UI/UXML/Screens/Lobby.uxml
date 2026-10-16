@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Template name="PlayerRow" src="/Assets/_chopstick/UI/UXML/Molecules/PlayerRow.uxml" />
+  <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
+  <ui:VisualElement name="screen-lobby" class="screen">
+  <ui:Label text="Chopsticks" class="title" />
+  <ui:Label text="El juego de dedos: elimina todas las manos rivales" class="subtitle" />
+    <ui:VisualElement class="card">
+    <ui:Label text="Código de la partida" class="subtitle" />
+    <ui:Label name="code" text="----" class="code" />
+    <ui:Label text="Tu amigo debe abrir el juego y pulsar Unirme con este código." class="lobby__info" />
+    <ui:VisualElement name="player-list">
+      <ui:Instance template="PlayerRow" name="row-0">
+        <ui:AttributeOverrides element-name="name" text="Jugador 1 (tú, anfitrión)" />
+      </ui:Instance>
+      <ui:Instance template="PlayerRow" name="row-1">
+        <ui:AttributeOverrides element-name="name" text="Jugador 2" />
+      </ui:Instance>
+    </ui:VisualElement>
+    <ui:Instance template="ActionRow" name="action-row">
+      <ui:AttributeOverrides element-name="btn-primary" text="Empezar (2/4)" />
+      <ui:AttributeOverrides element-name="btn-secondary" text="Salir" />
+    </ui:Instance>
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

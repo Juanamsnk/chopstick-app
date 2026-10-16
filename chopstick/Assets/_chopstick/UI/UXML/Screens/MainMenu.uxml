@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Template name="MenuButton" src="/Assets/_chopstick/UI/UXML/Molecules/MenuButton.uxml" />
+  <ui:Template name="RulesCard" src="/Assets/_chopstick/UI/UXML/Organisms/RulesCard.uxml" />
+  <ui:VisualElement name="screen-main" class="screen">
+  <ui:Label text="Chopsticks" class="title" />
+  <ui:Label text="El juego de dedos: elimina todas las manos rivales" class="subtitle" />
+    <ui:VisualElement class="card">
+    <ui:Instance template="MenuButton" name="btn-offline">
+      <ui:AttributeOverrides element-name="title" text="Modo offline" />
+      <ui:AttributeOverrides element-name="subtitle" text="Varios jugadores en el mismo dispositivo" />
+    </ui:Instance>
+    <ui:Instance template="MenuButton" name="btn-ai">
+      <ui:AttributeOverrides element-name="title" text="Contra la máquina" />
+      <ui:AttributeOverrides element-name="subtitle" text="Tres niveles de dificultad" />
+    </ui:Instance>
+    <ui:Instance template="MenuButton" name="btn-online">
+      <ui:AttributeOverrides element-name="title" text="Modo online" />
+      <ui:AttributeOverrides element-name="subtitle" text="Cada jugador en su dispositivo" />
+    </ui:Instance>
+    </ui:VisualElement>
+    <ui:Instance template="RulesCard" name="rules-card" />
+    <ui:VisualElement class="spacer" />
+    <ui:Button name="btn-theme" text="Cambiar tema" class="btn btn--ghost" />
+  </ui:VisualElement>
+</ui:UXML>

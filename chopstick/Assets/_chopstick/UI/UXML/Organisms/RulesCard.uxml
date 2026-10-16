@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:VisualElement name="rules-card" class="card">
+    <ui:Label text="Reglas" class="label-bold" />
+    <ui:Label text="Todos empiezan con 1 dedo en cada mano. Toca una mano rival para sumar tus dedos. Con 5 justos la mano se elimina; si te pasas, te quedas con el resto. Gana quien conserve alguna mano." class="text" />
+  </ui:VisualElement>
+</ui:UXML>

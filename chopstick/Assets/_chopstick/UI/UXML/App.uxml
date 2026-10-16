@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Template name="MainMenu" src="/Assets/_chopstick/UI/UXML/Screens/MainMenu.uxml" />
+  <ui:Template name="OfflineSetup" src="/Assets/_chopstick/UI/UXML/Screens/OfflineSetup.uxml" />
+  <ui:Template name="AiSetup" src="/Assets/_chopstick/UI/UXML/Screens/AiSetup.uxml" />
+  <ui:Template name="OnlineMenu" src="/Assets/_chopstick/UI/UXML/Screens/OnlineMenu.uxml" />
+  <ui:Template name="Lobby" src="/Assets/_chopstick/UI/UXML/Screens/Lobby.uxml" />
+  <ui:Template name="Game" src="/Assets/_chopstick/UI/UXML/Screens/Game.uxml" />
+  <ui:VisualElement name="app" class="app theme-dark">
+    <ui:Instance template="MainMenu" name="mainmenu" />
+    <ui:Instance template="OfflineSetup" name="offlinesetup" style="display:none;" />
+    <ui:Instance template="AiSetup" name="aisetup" style="display:none;" />
+    <ui:Instance template="OnlineMenu" name="onlinemenu" style="display:none;" />
+    <ui:Instance template="Lobby" name="lobby" style="display:none;" />
+    <ui:Instance template="Game" name="game" style="display:none;" />
+  </ui:VisualElement>
+</ui:UXML>

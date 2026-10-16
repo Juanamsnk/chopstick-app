@@ -1,0 +1,38 @@
+/* Variables de color. El tema se cambia poniendo theme-dark o theme-light en el elemento raiz. */
+.theme-dark {
+    --bg: #18181b;
+    --card: #25252a;
+    --ink: #f0f0f0;
+    --mute: #9a9a9a;
+    --line: #38383f;
+    --field: #18181b;
+    --accent: #ff922b;
+    --accent-strong: #e8590c;
+    --on-accent: #ffffff;
+    --ok: #51cf66;
+    --danger: #e03131;
+    --out: #44444a;
+}
+.theme-light {
+    --bg: #f6f3ee;
+    --card: #ffffff;
+    --ink: #222222;
+    --mute: #777777;
+    --line: #e3ddd3;
+    --field: #f6f3ee;
+    --accent: #e8590c;
+    --accent-strong: #e8590c;
+    --on-accent: #ffffff;
+    --ok: #2f9e44;
+    --danger: #e03131;
+    --out: #d0d0d0;
+}
+/* Comunes a los dos temas */
+.theme-dark, .theme-light {
+    --player-0: #e8590c;
+    --player-1: #1c7ed6;
+    --player-2: #2f9e44;
+    --player-3: #ae3ec9;
+    --skin: #f4b183;
+    --skin-line: #c9784a;
+}

@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:VisualElement name="field" class="field">
+    <ui:Label name="label" class="field__label" />
+    <ui:TextField name="input" class="field__input" max-length="14" />
+  </ui:VisualElement>
+</ui:UXML>

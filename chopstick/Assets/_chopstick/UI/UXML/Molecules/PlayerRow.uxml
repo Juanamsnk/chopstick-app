@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:VisualElement name="player-row" class="player-row">
+    <ui:VisualElement name="dot" class="dot" />
+    <ui:Label name="name" class="player-row__name" />
+  </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,23 @@
+/* Organismos: bloques completos hechos de moleculas */
+.turn-banner { align-items: center; padding: 14px; margin-bottom: 10px; border-radius: 16px; background-color: var(--accent-strong); }
+.turn-banner__title { font-size: 22px; -unity-font-style: bold; color: #ffffff; }
+.turn-banner__hint { font-size: 14px; color: #ffffff; margin-top: 2px; white-space: normal; }
+.turn-banner--wait { opacity: 0.7; }
+
+.player-card {
+    background-color: var(--card); border-width: 2px; border-color: var(--line);
+    border-radius: 16px; padding: 12px; margin-bottom: 14px;
+}
+.player-card--turn { border-width: 3px; border-color: var(--accent-strong); }
+.player-card--dead { opacity: 0.35; }
+.player-card__header { flex-direction: row; align-items: center; margin-bottom: 14px; }
+.player-card__name { flex-grow: 1; font-size: 15px; -unity-font-style: bold; color: var(--ink); }
+.player-card__hands { flex-direction: row; }
+.player-card__hands > TemplateContainer { flex-grow: 1; flex-basis: 0; }
+/* Rival: las manos se giran para que los dedos queden hacia abajo */
+.player-card--opponent .hand { flex-direction: column-reverse; }
+.player-card--opponent .hand__fingers { align-items: flex-start; }
+.player-card--opponent .finger { border-radius: 2px 2px 6px 6px; }
+.player-card--opponent .palm { border-radius: 12px 12px 0 0; }
+
+.action-row { flex-direction: row; }

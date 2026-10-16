@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Template name="TurnBanner" src="/Assets/_chopstick/UI/UXML/Organisms/TurnBanner.uxml" />
+  <ui:Template name="PlayerCard" src="/Assets/_chopstick/UI/UXML/Organisms/PlayerCard.uxml" />
+  <ui:VisualElement name="screen-game" class="screen">
+    <ui:Instance template="TurnBanner" name="turn-banner" />
+    <ui:Label name="log" text="" class="game__log" />
+    <ui:Instance template="PlayerCard" name="card-opponent" />
+    <ui:Instance template="PlayerCard" name="card-me" />
+    <ui:VisualElement class="spacer" />
+    <ui:VisualElement name="action-row" class="action-row">
+      <ui:Button name="btn-split" text="Repartir dedos" class="btn btn--ghost btn--half btn--gap" />
+      <ui:Button name="btn-exit" text="Salir" class="btn btn--ghost btn--half" />
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

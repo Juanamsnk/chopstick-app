@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:VisualElement name="action-row" class="action-row">
+    <ui:Button name="btn-primary" class="btn btn--half btn--gap" />
+    <ui:Button name="btn-secondary" class="btn btn--ghost btn--half" />
+  </ui:VisualElement>
+</ui:UXML>

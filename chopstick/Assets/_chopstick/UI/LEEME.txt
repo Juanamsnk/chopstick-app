@@ -1,0 +1,13 @@
+Chopsticks - UI Toolkit (Unity 6000.6)
+
+1. Copia la carpeta UI dentro de Assets/_chopstick (queda Assets/_chopstick/UI/...). Las rutas de los archivos asumen esa ubicacion.
+2. Crea un PanelSettings (Assets > Create > UI Toolkit > Panel Settings Asset) y configuralo:
+   Scale Mode = Scale With Screen Size, Reference Resolution = 390 x 844, Screen Match Mode = Match Width Or Height, Match = 0.5.
+   Asigna el tema runtime por defecto si Unity te lo pide.
+3. En la escena crea un GameObject con UIDocument: Panel Settings = el asset anterior, Source Asset = UXML/App.uxml.
+4. Para ver una pantalla suelta en UI Builder, abre App.uxml: el tema (theme-dark / theme-light) esta en el elemento "app".
+
+Estructura: Styles (Theme, Base, Atoms, Molecules, Organisms, Screens; Main.uss los importa todos)
+UXML/Molecules (piezas pequenas) - UXML/Organisms (bloques) - UXML/Screens (pantallas) - App.uxml (une todo).
+Cambio de tema: se cambia la clase del elemento "app" por theme-light o theme-dark (lo hara un script mas adelante).
+Mostrar/ocultar pantallas: un script pondra style.display = None/Flex a cada pantalla.

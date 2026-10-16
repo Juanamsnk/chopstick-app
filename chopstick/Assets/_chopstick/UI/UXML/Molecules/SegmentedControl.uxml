@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:VisualElement name="segmented" class="seg">
+    <ui:Button name="seg-0" class="seg__item seg__item--on" />
+    <ui:Button name="seg-1" class="seg__item" />
+    <ui:Button name="seg-2" class="seg__item" />
+  </ui:VisualElement>
+</ui:UXML>

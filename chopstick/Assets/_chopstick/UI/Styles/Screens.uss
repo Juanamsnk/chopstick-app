@@ -1,0 +1,7 @@
+/* Pantallas: ajustes propios de cada una */
+.game__log { font-size: 15px; color: var(--ink); -unity-text-align: middle-center; white-space: normal; margin-bottom: 14px; }
+.lobby__info { font-size: 14px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin-bottom: 10px; }
+.online__separator { font-size: 15px; -unity-font-style: bold; color: var(--ink); margin: 8px 0 6px 0; }
+.online__code .unity-base-text-field__input,
+.online__code .unity-text-field__input { -unity-text-align: middle-center; letter-spacing: 8px; -unity-font-style: bold; }
+.online__error { font-size: 14px; color: var(--danger); -unity-text-align: middle-center; white-space: normal; margin-bottom: 8px; }

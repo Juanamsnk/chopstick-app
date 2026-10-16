@@ -1,0 +1,30 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Template name="LabeledField" src="/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml" />
+  <ui:Template name="CheckOption" src="/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml" />
+  <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
+  <ui:VisualElement name="screen-online" class="screen">
+  <ui:Label text="Chopsticks" class="title" />
+  <ui:Label text="El juego de dedos: elimina todas las manos rivales" class="subtitle" />
+    <ui:VisualElement class="card">
+    <ui:Instance template="LabeledField" name="my-name">
+      <ui:AttributeOverrides element-name="label" text="Tu nombre" />
+      <ui:AttributeOverrides element-name="input" value="Jugador 1" />
+    </ui:Instance>
+    <ui:Instance template="CheckOption" name="opt-split">
+      <ui:AttributeOverrides element-name="toggle" label="Permitir repartir dedos (al crear)" />
+    </ui:Instance>
+    <ui:Button name="btn-create" text="Crear partida" class="btn" />
+    <ui:Label text="O únete con un código" class="online__separator" />
+    <ui:Instance template="LabeledField" name="join-code">
+      <ui:AttributeOverrides element-name="label" text="Código" />
+      <ui:AttributeOverrides element-name="input" value="" max-length="4" />
+    </ui:Instance>
+    <ui:Label name="error" text="" class="online__error" />
+    <ui:Instance template="ActionRow" name="action-row">
+      <ui:AttributeOverrides element-name="btn-primary" text="Unirme" />
+      <ui:AttributeOverrides element-name="btn-secondary" text="Volver" />
+    </ui:Instance>
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

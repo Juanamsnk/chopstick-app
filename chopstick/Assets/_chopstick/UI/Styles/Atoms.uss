@@ -1,0 +1,37 @@
+/* Atomos: elementos minimos reutilizables */
+.card {
+    background-color: var(--card); border-width: 2px; border-color: var(--line);
+    border-radius: 16px; padding: 16px; margin-bottom: 14px;
+}
+.btn {
+    background-color: var(--accent); color: var(--on-accent);
+    border-width: 0; border-radius: 12px; min-height: 52px; padding: 12px 14px;
+    margin: 0 0 10px 0; font-size: 17px; -unity-font-style: bold; -unity-text-align: middle-center;
+}
+.btn:active { background-color: var(--accent-strong); }
+.btn:disabled { opacity: 0.45; }
+.btn--ghost { background-color: rgba(0,0,0,0); color: var(--ink); border-width: 2px; border-color: var(--line); }
+.btn--ghost:active { background-color: var(--line); }
+.btn--half { flex-grow: 1; flex-basis: 0; }
+.btn--gap { margin-right: 10px; }
+.label-bold { font-size: 15px; -unity-font-style: bold; color: var(--ink); margin-bottom: 6px; }
+.dot { width: 12px; height: 12px; border-radius: 6px; margin-right: 8px; background-color: var(--player-0); }
+.badge {
+    display: none; font-size: 11px; -unity-font-style: bold; color: #ffffff;
+    background-color: var(--accent-strong); padding: 3px 8px; border-radius: 10px;
+}
+.tag {
+    display: none; position: absolute; top: -11px; left: 50%; translate: -50% 0;
+    font-size: 11px; -unity-font-style: bold; color: #ffffff; padding: 2px 8px; border-radius: 10px;
+    background-color: var(--accent-strong);
+}
+.finger {
+    width: 12px; height: 46px; margin: 0 2px; background-color: var(--skin);
+    border-width: 2px; border-color: var(--skin-line); border-radius: 6px 6px 2px 2px;
+}
+.finger--down { height: 14px; opacity: 0.35; }
+.palm {
+    width: 70px; height: 16px; background-color: var(--skin);
+    border-width: 2px; border-color: var(--skin-line); border-radius: 0 0 12px 12px;
+}
+.code { font-size: 48px; -unity-font-style: bold; letter-spacing: 12px; -unity-text-align: middle-center; color: var(--ink); margin: 6px 0; }

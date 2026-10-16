@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Button name="button" class="btn menu-btn">
+    <ui:Label name="title" class="menu-btn__title" picking-mode="Ignore" />
+    <ui:Label name="subtitle" class="menu-btn__subtitle" picking-mode="Ignore" />
+  </ui:Button>
+</ui:UXML>

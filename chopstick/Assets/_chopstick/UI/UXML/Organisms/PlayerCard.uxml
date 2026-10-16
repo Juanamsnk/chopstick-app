@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Template name="HandView" src="/Assets/_chopstick/UI/UXML/Molecules/HandView.uxml" />
+  <ui:VisualElement name="player-card" class="player-card">
+    <ui:VisualElement name="header" class="player-card__header">
+      <ui:VisualElement name="dot" class="dot" />
+      <ui:Label name="player-name" text="Jugador" class="player-card__name" />
+      <ui:Label name="badge" text="TURNO" class="badge" />
+    </ui:VisualElement>
+    <ui:VisualElement name="hands" class="player-card__hands">
+      <ui:Instance template="HandView" name="hand-0" />
+      <ui:Instance template="HandView" name="hand-1" />
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>
