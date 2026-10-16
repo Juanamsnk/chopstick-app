@@ -192,6 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1553844245}
   - component: {fileID: 1553844246}
+  - component: {fileID: 1553844247}
   m_Layer: 0
   m_Name: UIDocument
   m_TagString: Untagged
@@ -237,6 +238,18 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &1553844247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1553844244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff81596c1377d04f931453b1e344009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chopsticks.UI.UIRoot
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
