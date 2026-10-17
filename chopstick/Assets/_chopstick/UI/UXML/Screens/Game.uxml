@@ -3,11 +3,20 @@
   <ui:Template name="TurnBanner" src="/Assets/_chopstick/UI/UXML/Organisms/TurnBanner.uxml" />
   <ui:Template name="PlayerCard" src="/Assets/_chopstick/UI/UXML/Organisms/PlayerCard.uxml" />
   <ui:VisualElement name="screen-game" class="screen">
-    <ui:Instance template="TurnBanner" name="turn-banner" />
-    <ui:Label name="log" text="" class="game__log" />
-    <ui:Instance template="PlayerCard" name="card-opponent" />
-    <ui:Instance template="PlayerCard" name="card-me" />
-    <ui:VisualElement class="spacer" />
+    <ui:Instance template="TurnBanner" name="banner" />
+    <ui:ScrollView name="board" class="board" mode="Vertical">
+      <ui:Label name="log" text="" class="game__log" />
+      <ui:VisualElement name="opponents">
+        <ui:Instance template="PlayerCard" name="card-opp-0" />
+        <ui:Instance template="PlayerCard" name="card-opp-1" />
+        <ui:Instance template="PlayerCard" name="card-opp-2" />
+      </ui:VisualElement>
+      <ui:Instance template="PlayerCard" name="card-me" />
+      <ui:VisualElement name="split-panel" class="card" style="display:none;">
+        <ui:Label text="Elige cómo repartir tus dedos (mano izquierda / mano derecha)" class="text text--center" />
+        <ui:VisualElement name="split-options" class="split-options" />
+      </ui:VisualElement>
+    </ui:ScrollView>
     <ui:VisualElement name="action-row" class="action-row">
       <ui:Button name="btn-split" text="Repartir dedos" class="btn btn--ghost btn--half btn--gap" />
       <ui:Button name="btn-exit" text="Salir" class="btn btn--ghost btn--half" />
