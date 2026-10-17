@@ -25,6 +25,7 @@ namespace Chopsticks.UI
 
         public event Action<int, int> HandClicked;       // (jugador, mano)
         public event Action SplitButtonClicked;
+        public event Action ExitClicked;
         public event Action<int, int> SplitOptionChosen; // (izquierda, derecha)
 
         public bool IsVisible { get { return root.style.display.value != DisplayStyle.None; } }
@@ -55,6 +56,7 @@ namespace Chopsticks.UI
             splitOptions = root.Q("split-options");
             splitButton = root.Q<Button>("btn-split");
             splitButton.clicked += () => { if (SplitButtonClicked != null) SplitButtonClicked(); };
+            root.Q<Button>("btn-exit").clicked += () => { if (ExitClicked != null) ExitClicked(); };
         }
 
         /// <summary>Programa una accion para dentro de unos milisegundos.</summary>
@@ -162,6 +164,7 @@ namespace Chopsticks.UI
             Player current = state.Players[state.CurrentPlayer];
             string hint;
             if (d.Thinking) hint = "La máquina está pensando...";
+            else if (!d.CanAct) hint = "Esperando la jugada de " + current.Name;
             else if (d.Splitting) hint = "Elige cómo repartir tus dedos";
             else if (d.SelectedHand < 0) hint = "1) Elige una de tus manos";
             else hint = "2) Toca una mano rival (borde verde)";
@@ -190,7 +193,7 @@ namespace Chopsticks.UI
             // Con la partida terminada, el boton se convierte en "Jugar otra vez".
             if (d.State.Status == GameStatus.Over)
             {
-                splitButton.style.display = DisplayStyle.Flex;
+                splitButton.style.display = d.CanRestart ? DisplayStyle.Flex : DisplayStyle.None;
                 splitButton.text = "Jugar otra vez";
                 splitButton.SetEnabled(true);
                 return;

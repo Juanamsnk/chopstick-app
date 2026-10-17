@@ -1,28 +1,20 @@
-using Chopsticks.AI;
-using Chopsticks.Core;
 using Chopsticks.UI;
 
 namespace Chopsticks.Game
 {
     /// <summary>
-    /// El director de la partida. Recibe los toques de la pantalla, se los pasa a las reglas
-    /// (GameEngine), decide cuando juega la maquina y le dice a la pantalla que se redibuje.
-    /// No dibuja nada ni conoce las reglas por dentro.
+    /// El director de la pantalla de partida. Recibe los toques, mantiene la mano elegida
+    /// y el panel de repartir, se lo pide todo a la partida (IMatch) y le dice a la pantalla
+    /// que se redibuje. No sabe si la partida es local u online.
     /// </summary>
     public class GameController
     {
-        private const int AiPlayerIndex = 1;     // en el modo contra la maquina, ella es el jugador 2
-        private const int BottomPlayer = 0;      // el jugador 1 siempre abajo
-        private const long AiThinkMs = 900;      // pausa antes de que mueva la maquina
-
         private readonly GameScreenView view;
         private readonly ScreenNavigator navigator;
 
-        private GameEngine engine;
-        private AIPlayer ai;                     // null si no hay maquina
-        private int selectedHand = -1;           // mano propia elegida para atacar (-1 = ninguna)
-        private bool splitting;                  // true si el panel de repartir esta abierto
-        private bool thinking;                   // true mientras la maquina "piensa"
+        private IMatch match;
+        private int selectedHand = -1;   // mano propia elegida para atacar (-1 = ninguna)
+        private bool splitting;          // panel de repartir abierto
 
         public GameController(GameScreenView view, ScreenNavigator navigator)
         {
@@ -32,51 +24,50 @@ namespace Chopsticks.Game
             view.HandClicked += OnHandClicked;
             view.SplitButtonClicked += OnSplitButton;
             view.SplitOptionChosen += OnSplitOption;
+            view.ExitClicked += LeaveMatch;
         }
 
         // ------------------------------------------------------------
-        // Empezar
+        // Empezar y salir
         // ------------------------------------------------------------
+        /// <summary>Empieza una partida local (offline o contra la maquina).</summary>
         public void StartGame(GameSetup setup)
         {
-            engine = new GameEngine(setup.Names, setup.SplitAllowed);
-            ai = setup.VsAI ? new AIPlayer(setup.Difficulty) : null;
-            ResetInteraction();
+            StartMatch(new LocalMatch(setup, view.Schedule));
+        }
+
+        /// <summary>Empieza cualquier partida (la usa tambien el modo online).</summary>
+        public void StartMatch(IMatch newMatch)
+        {
+            LeaveMatch();
+
+            match = newMatch;
+            match.Changed += Refresh;
+            selectedHand = -1;
+            splitting = false;
 
             navigator.Show(ScreenId.Game);
             Refresh();
-            ScheduleAiIfNeeded();
+            match.Begin();
         }
 
-        private void ResetInteraction()
+        private void LeaveMatch()
         {
-            selectedHand = -1;
-            splitting = false;
-            thinking = false;
+            if (match == null) return;
+            match.Changed -= Refresh;
+            match.Close();
+            match = null;
         }
 
         // ------------------------------------------------------------
-        // Estado
-        // ------------------------------------------------------------
-        private bool IsOver { get { return engine.State.Status == GameStatus.Over; } }
-
-        private bool IsAiTurn
-        {
-            get { return ai != null && !IsOver && engine.State.CurrentPlayer == AiPlayerIndex; }
-        }
-
-        /// <summary>El jugador humano puede tocar la pantalla.</summary>
-        private bool CanAct { get { return !IsOver && !IsAiTurn; } }
-
-        // ------------------------------------------------------------
-        // Toques del jugador
+        // Toques
         // ------------------------------------------------------------
         private void OnHandClicked(int player, int hand)
         {
-            if (engine == null || !CanAct) return;
-            GameState state = engine.State;
+            if (match == null || !match.CanLocalAct) return;
+            var state = match.State;
 
-            // Toca una mano propia: la selecciona (o la deselecciona)
+            // Mano propia: la selecciona o la deselecciona
             if (player == state.CurrentPlayer)
             {
                 if (!state.Players[player].HandAlive(hand)) return;
@@ -86,27 +77,27 @@ namespace Chopsticks.Game
                 return;
             }
 
-            // Toca una mano rival: ataca si ya habia elegido una propia
+            // Mano rival: ataca si ya habia elegido una propia
             if (selectedHand < 0) return;
-            MoveResult result;
-            if (engine.TryAttack(selectedHand, player, hand, out result)) AfterMove();
+            if (match.TryAttack(selectedHand, player, hand)) AfterMove();
         }
 
         private void OnSplitButton()
         {
-            if (engine == null) return;
+            if (match == null) return;
 
-            // Con la partida terminada, este boton es "Jugar otra vez"
-            if (IsOver)
+            // Con la partida terminada este boton es "Jugar otra vez"
+            if (match.State.Status == Chopsticks.Core.GameStatus.Over)
             {
-                engine.Restart();
-                ResetInteraction();
+                if (!match.CanRestart) return;
+                selectedHand = -1;
+                splitting = false;
+                match.Restart();
                 Refresh();
-                ScheduleAiIfNeeded();
                 return;
             }
 
-            if (!CanAct || !engine.State.SplitAllowed) return;
+            if (!match.CanLocalAct || !match.State.SplitAllowed) return;
             splitting = !splitting;
             selectedHand = -1;
             Refresh();
@@ -114,39 +105,14 @@ namespace Chopsticks.Game
 
         private void OnSplitOption(int left, int right)
         {
-            if (engine == null || !CanAct) return;
-            MoveResult result;
-            if (engine.TrySplit(left, right, out result)) AfterMove();
+            if (match == null || !match.CanLocalAct) return;
+            if (match.TrySplit(left, right)) AfterMove();
         }
 
         private void AfterMove()
         {
             selectedHand = -1;
             splitting = false;
-            Refresh();
-            ScheduleAiIfNeeded();
-        }
-
-        // ------------------------------------------------------------
-        // Maquina
-        // ------------------------------------------------------------
-        private void ScheduleAiIfNeeded()
-        {
-            if (!IsAiTurn) return;
-            thinking = true;
-            Refresh();
-            view.Schedule(AiThinkMs, PlayAiMove);
-        }
-
-        private void PlayAiMove()
-        {
-            thinking = false;
-            // Si el jugador salio al menu o la partida cambio, no hace nada
-            if (engine == null || !view.IsVisible || !IsAiTurn) return;
-
-            Move move = ai.ChooseMove(engine.State);
-            MoveResult result;
-            engine.TryPlay(move, out result);
             Refresh();
         }
 
@@ -155,15 +121,18 @@ namespace Chopsticks.Game
         // ------------------------------------------------------------
         private void Refresh()
         {
+            if (match == null || match.State == null) return;
+
             var data = new GameViewData
             {
-                State = engine.State,
-                BottomPlayer = BottomPlayer,
+                State = match.State,
+                BottomPlayer = match.BottomPlayer,
                 SelectedHand = selectedHand,
                 Splitting = splitting,
-                CanAct = CanAct,
-                Thinking = thinking,
-                SplitOptions = splitting ? engine.GetSplitOptions() : null
+                CanAct = match.CanLocalAct,
+                Thinking = match.Thinking,
+                CanRestart = match.CanRestart,
+                SplitOptions = splitting ? match.GetSplitOptions() : null
             };
             view.Render(data);
         }

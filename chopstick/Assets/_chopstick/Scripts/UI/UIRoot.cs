@@ -19,6 +19,9 @@ namespace Chopsticks.UI
         private GameController gameController;
         private OfflineSetupView offlineSetup;
         private AiSetupView aiSetup;
+        private OnlineMenuView onlineMenu;
+        private LobbyView lobbyView;
+        private OnlineController onlineController;
 
         private void OnEnable()
         {
@@ -37,17 +40,28 @@ namespace Chopsticks.UI
             navigator.Register(ScreenId.Game, root.Q("game"));
             menuWiring = new MenuWiring(root, navigator, theme);
 
-            // Partida
+            // Partida (sirve para offline, contra la maquina y online)
             gameView = new GameScreenView(root.Q("game"));
             gameController = new GameController(gameView, navigator);
 
-            // Las pantallas de ajustes avisan al controlador cuando pulsas Empezar
+            // Ajustes offline y contra la maquina
             offlineSetup = new OfflineSetupView(root.Q("offlinesetup"));
             offlineSetup.StartClicked += gameController.StartGame;
             aiSetup = new AiSetupView(root.Q("aisetup"));
             aiSetup.StartClicked += gameController.StartGame;
 
+            // Online
+            onlineMenu = new OnlineMenuView(root.Q("onlinemenu"));
+            lobbyView = new LobbyView(root.Q("lobby"));
+            onlineController = new OnlineController(navigator, onlineMenu, lobbyView, gameController);
+
             navigator.Show(ScreenId.MainMenu);
+        }
+
+        private void OnDisable()
+        {
+            // Si se cierra la interfaz, se cierra tambien la sala online
+            if (onlineController != null) onlineController.CleanUp();
         }
     }
 }
