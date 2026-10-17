@@ -1,0 +1,1 @@
+C:\Users\juanm\OneDrive\Documentos\GitHub\chopstick-app\chopstick\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\g4s5l2th\obj\arm64-v8a
