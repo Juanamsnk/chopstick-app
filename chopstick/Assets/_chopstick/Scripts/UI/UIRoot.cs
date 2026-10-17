@@ -13,6 +13,7 @@ namespace Chopsticks.UI
     {
         private ScreenNavigator navigator;
         private ThemeManager theme;
+        private SafeAreaFitter safeArea;
         private MenuWiring menuWiring;
         private GameScreenView gameView;
         private GameController gameController;
@@ -22,9 +23,11 @@ namespace Chopsticks.UI
         private void OnEnable()
         {
             VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+            VisualElement app = root.Q("app");
 
-            // Tema y navegacion
-            theme = new ThemeManager(root.Q("app"));
+            // Tema, zona segura y navegacion
+            theme = new ThemeManager(app);
+            safeArea = new SafeAreaFitter(app);
             navigator = new ScreenNavigator();
             navigator.Register(ScreenId.MainMenu, root.Q("mainmenu"));
             navigator.Register(ScreenId.OfflineSetup, root.Q("offlinesetup"));

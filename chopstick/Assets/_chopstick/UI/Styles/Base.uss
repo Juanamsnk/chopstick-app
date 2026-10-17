@@ -1,9 +1,15 @@
 /* Base: raiz, pantallas, tipografia y utilidades */
+
+/* El fondo lo pinta "app" a pantalla completa; asi queda color tambien bajo la muesca. */
 .app { flex-grow: 1; background-color: var(--bg); }
+
+/* Cada pantalla ocupa todo "app". SafeAreaFitter.cs mueve sus bordes hacia dentro en el movil. */
 .app > TemplateContainer { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+
 .screen {
     flex-grow: 1;
-    padding: 28px 22px; flex-direction: column; background-color: var(--bg);
+    padding: 28px 22px;
+    flex-direction: column;
 }
 .title { font-size: 34px; -unity-font-style: bold; -unity-text-align: middle-center; color: var(--ink); margin-top: 8px; }
 .subtitle { font-size: 14px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin-bottom: 14px; }
