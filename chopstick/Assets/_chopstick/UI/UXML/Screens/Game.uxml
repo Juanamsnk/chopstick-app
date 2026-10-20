@@ -8,8 +8,6 @@
       <ui:Label name="log" text="" class="game__log" />
       <ui:VisualElement name="opponents">
         <ui:Instance template="PlayerCard" name="card-opp-0" />
-        <ui:Instance template="PlayerCard" name="card-opp-1" />
-        <ui:Instance template="PlayerCard" name="card-opp-2" />
       </ui:VisualElement>
       <ui:Instance template="PlayerCard" name="card-me" />
       <ui:VisualElement name="split-panel" class="card" style="display:none;">

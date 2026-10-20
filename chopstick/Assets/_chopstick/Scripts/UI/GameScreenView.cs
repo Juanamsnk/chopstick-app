@@ -11,14 +11,14 @@ namespace Chopsticks.UI
     /// </summary>
     public class GameScreenView
     {
-        // Hay 4 huecos de tarjeta: 0, 1 y 2 para rivales (arriba) y 3 para el jugador de abajo.
-        private const int MySlot = 3;
+        // Hay 2 huecos de tarjeta: 0 para el rival (arriba) y 1 para el jugador de abajo.
+        private const int MySlot = 1;
 
         private readonly VisualElement root;
         private readonly TurnBannerView banner;
         private readonly Label log;
-        private readonly PlayerCardView[] cards = new PlayerCardView[4];
-        private readonly int[] slotPlayer = { -1, -1, -1, -1 };   // que jugador muestra cada hueco
+        private readonly PlayerCardView[] cards = new PlayerCardView[2];
+        private readonly int[] slotPlayer = { -1, -1 };   // que jugador muestra cada hueco
         private readonly VisualElement splitPanel;
         private readonly VisualElement splitOptions;
         private readonly Button splitButton;
@@ -36,7 +36,7 @@ namespace Chopsticks.UI
             banner = new TurnBannerView(root.Q("banner"));
             log = root.Q<Label>("log");
 
-            for (int i = 0; i < 3; i++) cards[i] = new PlayerCardView(root.Q("card-opp-" + i));
+            cards[0] = new PlayerCardView(root.Q("card-opp-0"));
             cards[MySlot] = new PlayerCardView(root.Q("card-me"));
 
             for (int s = 0; s < cards.Length; s++)

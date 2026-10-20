@@ -18,7 +18,7 @@
       </ui:Instance>
     </ui:VisualElement>
     <ui:Instance template="ActionRow" name="action-row">
-      <ui:AttributeOverrides element-name="btn-primary" text="Empezar (2/4)" />
+      <ui:AttributeOverrides element-name="btn-primary" text="Empezar (1/2)" />
       <ui:AttributeOverrides element-name="btn-secondary" text="Salir" />
     </ui:Instance>
     </ui:VisualElement>

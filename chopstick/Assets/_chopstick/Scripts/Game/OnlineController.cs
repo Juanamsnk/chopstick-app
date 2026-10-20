@@ -42,7 +42,7 @@ namespace Chopsticks.Game
             menu.ShowMessage("Creando la partida...");
             try
             {
-                string code = await service.CreateAsync(4);
+                string code = await service.CreateAsync(2);
                 match = new OnlineMatch(new NetMessenger(), true, playerName, splitAllowed);
                 Hook(match);
                 lobby.SetCode(code);

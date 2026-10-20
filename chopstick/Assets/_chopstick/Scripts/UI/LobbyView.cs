@@ -58,11 +58,11 @@ namespace Chopsticks.UI
         public void SetHostControls(bool isHost, int playerCount)
         {
             startButton.style.display = isHost ? DisplayStyle.Flex : DisplayStyle.None;
-            startButton.text = "Empezar (" + playerCount + "/4)";
+            startButton.text = "Empezar (" + playerCount + "/2)";
             startButton.SetEnabled(playerCount >= 2);
 
             infoLabel.text = isHost
-                ? "Comparte este código con tus amigos. Pueden unirse hasta 4 jugadores."
+                ? "Comparte este código con tu rival para que se una a la partida."
                 : "Esperando a que el anfitrión empiece la partida...";
         }
     }

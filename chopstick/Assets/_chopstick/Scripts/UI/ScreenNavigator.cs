@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 
@@ -12,6 +13,9 @@ namespace Chopsticks.UI
         private readonly Dictionary<ScreenId, VisualElement> screens = new Dictionary<ScreenId, VisualElement>();
 
         public ScreenId Current { get; private set; }
+
+        /// <summary>Se avisa cada vez que se muestra una pantalla.</summary>
+        public event Action<ScreenId> Shown;
 
         /// <summary>Guarda una pantalla para poder mostrarla despues.</summary>
         public void Register(ScreenId id, VisualElement screen)
@@ -28,6 +32,7 @@ namespace Chopsticks.UI
                 pair.Value.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
             }
             Current = id;
+            if (Shown != null) Shown(id);
         }
     }
 }

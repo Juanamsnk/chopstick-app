@@ -18,7 +18,7 @@ namespace Chopsticks.Online
         private const string MsgLobby = "lobby";
         private const string MsgState = "state";
         private const string MsgMove = "move";
-        private const int MaxPlayers = 4;
+        private const int MaxPlayers = 2;
 
         private readonly NetMessenger net;
         private readonly bool isHost;

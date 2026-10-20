@@ -1,6 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
   <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
-  <ui:Template name="SegmentedControl" src="/Assets/_chopstick/UI/UXML/Molecules/SegmentedControl.uxml" />
   <ui:Template name="LabeledField" src="/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml" />
   <ui:Template name="CheckOption" src="/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml" />
   <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
@@ -8,12 +7,6 @@
   <ui:Label text="Chopsticks" class="title" />
   <ui:Label text="El juego de dedos: elimina todas las manos rivales" class="subtitle" />
     <ui:VisualElement class="card">
-    <ui:Label text="Número de jugadores" class="label-bold" />
-    <ui:Instance template="SegmentedControl" name="players-count">
-      <ui:AttributeOverrides element-name="seg-0" text="2" />
-      <ui:AttributeOverrides element-name="seg-1" text="3" />
-      <ui:AttributeOverrides element-name="seg-2" text="4" />
-    </ui:Instance>
     <ui:Instance template="LabeledField" name="name-0">
       <ui:AttributeOverrides element-name="label" text="Jugador 1" />
       <ui:AttributeOverrides element-name="input" value="Jugador 1" />
@@ -21,14 +14,6 @@
     <ui:Instance template="LabeledField" name="name-1">
       <ui:AttributeOverrides element-name="label" text="Jugador 2" />
       <ui:AttributeOverrides element-name="input" value="Jugador 2" />
-    </ui:Instance>
-    <ui:Instance template="LabeledField" name="name-2" style="display:none;">
-      <ui:AttributeOverrides element-name="label" text="Jugador 3" />
-      <ui:AttributeOverrides element-name="input" value="Jugador 3" />
-    </ui:Instance>
-    <ui:Instance template="LabeledField" name="name-3" style="display:none;">
-      <ui:AttributeOverrides element-name="label" text="Jugador 4" />
-      <ui:AttributeOverrides element-name="input" value="Jugador 4" />
     </ui:Instance>
     <ui:Instance template="CheckOption" name="opt-split">
       <ui:AttributeOverrides element-name="toggle" label="Permitir repartir dedos" />

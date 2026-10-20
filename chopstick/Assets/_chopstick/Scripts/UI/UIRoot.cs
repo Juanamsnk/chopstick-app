@@ -14,6 +14,7 @@ namespace Chopsticks.UI
         private ScreenNavigator navigator;
         private ThemeManager theme;
         private SafeAreaFitter safeArea;
+        private KeyboardDismisser keyboard;
         private MenuWiring menuWiring;
         private GameScreenView gameView;
         private GameController gameController;
@@ -31,7 +32,9 @@ namespace Chopsticks.UI
             // Tema, zona segura y navegacion
             theme = new ThemeManager(app);
             safeArea = new SafeAreaFitter(app);
+            keyboard = new KeyboardDismisser(root);
             navigator = new ScreenNavigator();
+            navigator.Shown += id => keyboard.Dismiss();   // al cambiar de pantalla se cierra el teclado
             navigator.Register(ScreenId.MainMenu, root.Q("mainmenu"));
             navigator.Register(ScreenId.OfflineSetup, root.Q("offlinesetup"));
             navigator.Register(ScreenId.AiSetup, root.Q("aisetup"));
