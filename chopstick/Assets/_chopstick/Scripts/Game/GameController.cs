@@ -11,15 +11,17 @@ namespace Chopsticks.Game
     {
         private readonly GameScreenView view;
         private readonly ScreenNavigator navigator;
+        private readonly MoveSounds moveSounds;
 
         private IMatch match;
         private int selectedHand = -1;   // mano propia elegida para atacar (-1 = ninguna)
         private bool splitting;          // panel de repartir abierto
 
-        public GameController(GameScreenView view, ScreenNavigator navigator)
+        public GameController(GameScreenView view, ScreenNavigator navigator, MoveSounds moveSounds)
         {
             this.view = view;
             this.navigator = navigator;
+            this.moveSounds = moveSounds;
 
             view.HandClicked += OnHandClicked;
             view.SplitButtonClicked += OnSplitButton;
@@ -43,6 +45,7 @@ namespace Chopsticks.Game
 
             match = newMatch;
             match.Changed += Refresh;
+            moveSounds.Reset();
             selectedHand = -1;
             splitting = false;
 
@@ -71,6 +74,7 @@ namespace Chopsticks.Game
             if (player == state.CurrentPlayer)
             {
                 if (!state.Players[player].HandAlive(hand)) return;
+                moveSounds.PlayClick();   // sonido de boton al elegir (o quitar) tu mano
                 selectedHand = selectedHand == hand ? -1 : hand;
                 splitting = false;
                 Refresh();
@@ -122,6 +126,9 @@ namespace Chopsticks.Game
         private void Refresh()
         {
             if (match == null || match.State == null) return;
+
+            // Suena la jugada nueva (ataque, golpe o reparto), si la hay
+            moveSounds.Observe(match.State, match.BottomPlayer);
 
             var data = new GameViewData
             {

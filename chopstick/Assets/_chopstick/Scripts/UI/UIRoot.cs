@@ -1,3 +1,4 @@
+using Chopsticks.Audio;
 using Chopsticks.Game;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,6 +16,8 @@ namespace Chopsticks.UI
         private ThemeManager theme;
         private SafeAreaFitter safeArea;
         private KeyboardDismisser keyboard;
+        private SoundManager soundManager;
+        private ButtonSounds buttonSounds;
         private MenuWiring menuWiring;
         private GameScreenView gameView;
         private GameController gameController;
@@ -28,6 +31,12 @@ namespace Chopsticks.UI
         {
             VisualElement root = GetComponent<UIDocument>().rootVisualElement;
             VisualElement app = root.Q("app");
+
+            // Sonidos: el SoundManager se anade como componente y los clips se arrastran en el Inspector
+            soundManager = GetComponent<SoundManager>();
+            if (soundManager == null) soundManager = FindAnyObjectByType<SoundManager>();
+            if (soundManager == null) Debug.LogWarning("[UIRoot] No hay ningun SoundManager en la escena: el juego no tendra sonido.");
+            buttonSounds = new ButtonSounds(root, soundManager);
 
             // Tema, zona segura y navegacion
             theme = new ThemeManager(app);
@@ -45,7 +54,7 @@ namespace Chopsticks.UI
 
             // Partida (sirve para offline, contra la maquina y online)
             gameView = new GameScreenView(root.Q("game"));
-            gameController = new GameController(gameView, navigator);
+            gameController = new GameController(gameView, navigator, new MoveSounds(soundManager));
 
             // Ajustes offline y contra la maquina
             offlineSetup = new OfflineSetupView(root.Q("offlinesetup"));
