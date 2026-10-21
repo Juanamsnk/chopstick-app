@@ -40,6 +40,7 @@ namespace Chopsticks.Online
         public int status;         // 0 = jugando, 1 = terminada
         public int winner;
         public bool splitAllowed;
+        public int moveCount;
 
         // Ultima jugada (para las etiquetas)
         public bool hasLast;

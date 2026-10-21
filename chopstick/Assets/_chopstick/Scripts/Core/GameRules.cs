@@ -11,6 +11,17 @@ namespace Chopsticks.Core
         public const int EliminationValue = 5;
         public const int MaxFingersPerHand = 4;
 
+        /// <summary>
+        /// Se puede repartir si la opcion esta activada y cada jugador ya ha hecho su primera jugada.
+        /// Al inicio de la partida (el primer turno de cada jugador) solo se puede atacar.
+        /// </summary>
+        public static bool CanSplit(GameState state)
+        {
+            return state.SplitAllowed
+                && state.Status == GameStatus.Playing
+                && state.MoveCount >= state.Players.Count;
+        }
+
         // ------------------------------------------------------------
         // Crear partida
         // ------------------------------------------------------------
@@ -40,7 +51,7 @@ namespace Chopsticks.Core
             }
 
             // Reparto
-            if (!state.SplitAllowed) return false;
+            if (!CanSplit(state)) return false;
             foreach (var option in GetSplitOptions(me))
             {
                 if (option[0] == move.LeftFingers && option[1] == move.RightFingers) return true;
@@ -67,7 +78,7 @@ namespace Chopsticks.Core
                 }
             }
 
-            if (state.SplitAllowed)
+            if (CanSplit(state))
             {
                 foreach (var option in GetSplitOptions(me)) moves.Add(Move.Split(option[0], option[1]));
             }
@@ -144,6 +155,7 @@ namespace Chopsticks.Core
             }
 
             state.LastMove = result;
+            state.MoveCount++;
             AdvanceTurn(state);
             return result;
         }

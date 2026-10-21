@@ -20,6 +20,7 @@ namespace Chopsticks.Core
         public int Winner = -1;
         public bool SplitAllowed = true;
         public MoveResult LastMove;
+        public int MoveCount;            // jugadas hechas hasta ahora (sirve para bloquear repartir al inicio)
 
         public GameState Clone()
         {
@@ -29,7 +30,8 @@ namespace Chopsticks.Core
                 Status = Status,
                 Winner = Winner,
                 SplitAllowed = SplitAllowed,
-                LastMove = LastMove
+                LastMove = LastMove,
+                MoveCount = MoveCount
             };
             foreach (var p in Players) copy.Players.Add(p.Clone());
             return copy;

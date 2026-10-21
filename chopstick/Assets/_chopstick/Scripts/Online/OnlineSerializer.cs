@@ -39,7 +39,8 @@ namespace Chopsticks.Online
                 current = state.CurrentPlayer,
                 status = (int)state.Status,
                 winner = state.Winner,
-                splitAllowed = state.SplitAllowed
+                splitAllowed = state.SplitAllowed,
+                moveCount = state.MoveCount
             };
 
             for (int i = 0; i < n; i++)
@@ -76,7 +77,8 @@ namespace Chopsticks.Online
                 CurrentPlayer = dto.current,
                 Status = (GameStatus)dto.status,
                 Winner = dto.winner,
-                SplitAllowed = dto.splitAllowed
+                SplitAllowed = dto.splitAllowed,
+                MoveCount = dto.moveCount
             };
 
             for (int i = 0; i < dto.names.Length; i++)

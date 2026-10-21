@@ -201,7 +201,7 @@ namespace Chopsticks.UI
 
             splitButton.style.display = d.State.SplitAllowed ? DisplayStyle.Flex : DisplayStyle.None;
             splitButton.text = d.Splitting ? "Cancelar reparto" : "Repartir dedos";
-            splitButton.SetEnabled(d.CanAct);
+            splitButton.SetEnabled(d.CanAct && d.CanSplit);
         }
 
         private void RenderSplitPanel(GameViewData d)

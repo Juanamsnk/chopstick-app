@@ -42,7 +42,7 @@ namespace Chopsticks.Audio
 
         private void Start()
         {
-            if (FindFirstObjectByType<AudioListener>() == null)
+            if (FindAnyObjectByType<AudioListener>() == null)
             {
                 Debug.LogWarning("[SoundManager] No hay ningun AudioListener en la escena (suele estar en la Main Camera). Sin el, no se oye nada.");
             }

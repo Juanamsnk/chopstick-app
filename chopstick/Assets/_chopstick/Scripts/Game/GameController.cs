@@ -1,3 +1,4 @@
+using Chopsticks.Core;
 using Chopsticks.UI;
 
 namespace Chopsticks.Game
@@ -101,7 +102,7 @@ namespace Chopsticks.Game
                 return;
             }
 
-            if (!match.CanLocalAct || !match.State.SplitAllowed) return;
+            if (!match.CanLocalAct || !GameRules.CanSplit(match.State)) return;
             splitting = !splitting;
             selectedHand = -1;
             Refresh();
@@ -139,6 +140,7 @@ namespace Chopsticks.Game
                 CanAct = match.CanLocalAct,
                 Thinking = match.Thinking,
                 CanRestart = match.CanRestart,
+                CanSplit = GameRules.CanSplit(match.State),
                 SplitOptions = splitting ? match.GetSplitOptions() : null
             };
             view.Render(data);
