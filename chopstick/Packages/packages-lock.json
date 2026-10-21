@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.unity.2d.animation": {
-      "version": "16.0.0",
+      "version": "16.0.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -41,7 +41,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.psdimporter": {
-      "version": "15.0.0",
+      "version": "15.0.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -78,7 +78,7 @@
       }
     },
     "com.unity.2d.tilemap.extras": {
-      "version": "9.0.0",
+      "version": "9.0.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -89,7 +89,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.tooling": {
-      "version": "4.0.0",
+      "version": "4.0.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -147,12 +147,10 @@
       "dependencies": {}
     },
     "com.unity.ide.rider": {
-      "version": "3.0.38",
+      "version": "3.1.0",
       "depth": 0,
       "source": "registry",
-      "dependencies": {
-        "com.unity.ext.nunit": "1.0.6"
-      },
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
@@ -165,7 +163,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.20.0",
+      "version": "1.20.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -263,7 +261,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.authentication": {
-      "version": "3.7.4",
+      "version": "3.8.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -303,24 +301,24 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.multiplayer": {
-      "version": "2.3.3",
+      "version": "2.4.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.transport": "2.7.3",
-        "com.unity.collections": "2.6.7",
-        "com.unity.services.qos": "1.4.1",
+        "com.unity.transport": "2.7.4",
+        "com.unity.collections": "2.6.8",
+        "com.unity.services.qos": "1.5.1",
         "com.unity.services.core": "1.18.0",
         "com.unity.services.wire": "1.5.1",
         "com.unity.services.deployment": "1.7.2",
         "com.unity.nuget.newtonsoft-json": "3.2.2",
         "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.services.authentication": "3.7.0"
+        "com.unity.services.authentication": "3.8.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.services.qos": {
-      "version": "1.4.1",
+      "version": "1.5.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -333,7 +331,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.wire": {
-      "version": "1.5.1",
+      "version": "1.6.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -356,7 +354,7 @@
       "source": "builtin",
       "dependencies": {
         "com.unity.render-pipelines.core": "17.6.0",
-        "com.unity.searcher": "4.9.3",
+        "com.unity.searcher": "4.9.5",
         "com.unity.graph-authoring": "1.0.0"
       }
     },
