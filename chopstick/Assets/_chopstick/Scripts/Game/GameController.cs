@@ -27,7 +27,7 @@ namespace Chopsticks.Game
             view.HandClicked += OnHandClicked;
             view.SplitButtonClicked += OnSplitButton;
             view.SplitOptionChosen += OnSplitOption;
-            view.ExitClicked += LeaveMatch;
+            view.ExitClicked += OnExit;
         }
 
         // ------------------------------------------------------------
@@ -53,6 +53,13 @@ namespace Chopsticks.Game
             navigator.Show(ScreenId.Game);
             Refresh();
             match.Begin();
+        }
+
+        /// <summary>Salir de la partida (boton Salir o el de la caja de fin de partida).</summary>
+        private void OnExit()
+        {
+            LeaveMatch();
+            navigator.Show(ScreenId.MainMenu);
         }
 
         private void LeaveMatch()

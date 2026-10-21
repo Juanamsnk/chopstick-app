@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:VisualElement name="decor-root" class="bg-decor" picking-mode="Ignore">
+    <ui:VisualElement class="bg-circle bg-circle--a" picking-mode="Ignore" />
+    <ui:VisualElement class="bg-circle bg-circle--b" picking-mode="Ignore" />
+  </ui:VisualElement>
+</ui:UXML>

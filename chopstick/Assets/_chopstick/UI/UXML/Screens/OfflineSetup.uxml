@@ -1,27 +1,34 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
   <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
   <ui:Template name="LabeledField" src="/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml" />
   <ui:Template name="CheckOption" src="/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml" />
   <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
   <ui:VisualElement name="screen-offline" class="screen">
-  <ui:Label text="Chopsticks" class="title" />
-  <ui:Label text="El juego de dedos: elimina todas las manos rivales" class="subtitle" />
+    <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore" />
+    <ui:VisualElement class="logo">
+      <ui:Label text="Chop" class="logo__a" />
+      <ui:Label text="sticks" class="logo__b" />
+    </ui:VisualElement>
+    <ui:Label text="El duelo de dedos" class="subtitle" />
     <ui:VisualElement class="card">
-    <ui:Instance template="LabeledField" name="name-0">
-      <ui:AttributeOverrides element-name="label" text="Jugador 1" />
-      <ui:AttributeOverrides element-name="input" value="Jugador 1" />
-    </ui:Instance>
-    <ui:Instance template="LabeledField" name="name-1">
-      <ui:AttributeOverrides element-name="label" text="Jugador 2" />
-      <ui:AttributeOverrides element-name="input" value="Jugador 2" />
-    </ui:Instance>
-    <ui:Instance template="CheckOption" name="opt-split">
-      <ui:AttributeOverrides element-name="toggle" label="Permitir repartir dedos" />
-    </ui:Instance>
+      <ui:Label text="Jugadores" class="label-bold" />
+      <ui:Instance template="LabeledField" name="name-0">
+        <ui:AttributeOverrides element-name="label" text="Jugador 1" />
+        <ui:AttributeOverrides element-name="input" value="Jugador 1" />
+      </ui:Instance>
+      <ui:Instance template="LabeledField" name="name-1">
+        <ui:AttributeOverrides element-name="label" text="Jugador 2" />
+        <ui:AttributeOverrides element-name="input" value="Jugador 2" />
+      </ui:Instance>
+      <ui:Instance template="CheckOption" name="opt-split">
+        <ui:AttributeOverrides element-name="toggle" label="Permitir repartir dedos" />
+      </ui:Instance>
+    </ui:VisualElement>
+    <ui:VisualElement class="spacer" />
     <ui:Instance template="ActionRow" name="action-row">
       <ui:AttributeOverrides element-name="btn-primary" text="Empezar" />
       <ui:AttributeOverrides element-name="btn-secondary" text="Volver" />
     </ui:Instance>
-    </ui:VisualElement>
   </ui:VisualElement>
 </ui:UXML>

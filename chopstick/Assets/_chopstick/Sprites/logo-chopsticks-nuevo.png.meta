@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 029ef284932d4c24aa5c98b7ccbc69ae
+guid: eada03362b2cf7f43aae542adc461940
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3232241670331335074
-    second: logo-manos-negro-icono (1)_0
+      213: -525154910755039394
+    second: logo-chopsticks-nuevo_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -128,7 +128,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: logo-manos-negro-icono (1)_0
+      name: logo-chopsticks-nuevo_0
       rect:
         serializedVersion: 2
         x: 0
@@ -143,8 +143,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e5e7fa37355c423d0800000000000000
-      internalID: -3232241670331335074
+      spriteID: e57d46c146646b8f0800000000000000
+      internalID: -525154910755039394
       vertices: []
       indices: 
       edges: []
@@ -163,7 +163,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      logo-manos-negro-icono (1)_0: -3232241670331335074
+      logo-chopsticks-nuevo_0: -525154910755039394
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

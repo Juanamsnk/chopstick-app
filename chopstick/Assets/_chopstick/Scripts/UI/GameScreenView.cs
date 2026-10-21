@@ -22,6 +22,10 @@ namespace Chopsticks.UI
         private readonly VisualElement splitPanel;
         private readonly VisualElement splitOptions;
         private readonly Button splitButton;
+        private readonly VisualElement gameOverPanel;   // capa de fin de partida (puede no existir en el UXML)
+        private readonly Label gameOverTitle;
+        private readonly Label gameOverText;
+        private readonly Button againButton;
 
         public event Action<int, int> HandClicked;       // (jugador, mano)
         public event Action SplitButtonClicked;
@@ -57,6 +61,19 @@ namespace Chopsticks.UI
             splitButton = root.Q<Button>("btn-split");
             splitButton.clicked += () => { if (SplitButtonClicked != null) SplitButtonClicked(); };
             root.Q<Button>("btn-exit").clicked += () => { if (ExitClicked != null) ExitClicked(); };
+
+            // Boton Cancelar del panel de repartir (el mismo aviso que el boton Repartir: abre o cierra)
+            Button cancelSplit = root.Q<Button>("btn-cancel-split");
+            if (cancelSplit != null) cancelSplit.clicked += () => { if (SplitButtonClicked != null) SplitButtonClicked(); };
+
+            // Capa de fin de partida
+            gameOverPanel = root.Q("gameover");
+            gameOverTitle = root.Q<Label>("gameover-title");
+            gameOverText = root.Q<Label>("gameover-text");
+            againButton = root.Q<Button>("btn-again");
+            if (againButton != null) againButton.clicked += () => { if (SplitButtonClicked != null) SplitButtonClicked(); };
+            Button exitOver = root.Q<Button>("btn-exit-over");
+            if (exitOver != null) exitOver.clicked += () => { if (ExitClicked != null) ExitClicked(); };
         }
 
         /// <summary>Programa una accion para dentro de unos milisegundos.</summary>
@@ -92,6 +109,23 @@ namespace Chopsticks.UI
             log.text = LogText(state);
             RenderButtons(d);
             RenderSplitPanel(d);
+            RenderGameOver(d);
+        }
+
+        /// <summary>Muestra la caja de Victoria o Derrota cuando termina la partida.</summary>
+        private void RenderGameOver(GameViewData d)
+        {
+            if (gameOverPanel == null) return;
+
+            bool over = d.State.Status == GameStatus.Over;
+            gameOverPanel.style.display = over ? DisplayStyle.Flex : DisplayStyle.None;
+            if (!over) return;
+
+            bool won = d.State.Winner == d.BottomPlayer;
+            gameOverTitle.text = won ? "Victoria" : "Derrota";
+            gameOverTitle.EnableInClassList("gameover__title--lose", !won);
+            gameOverText.text = d.State.Players[d.State.Winner].Name + " ha ganado la partida";
+            againButton.style.display = d.CanRestart ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         private void RenderCard(int slot, int player, GameViewData d)

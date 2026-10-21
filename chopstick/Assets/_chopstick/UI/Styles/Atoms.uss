@@ -1,37 +1,43 @@
-/* Atomos: elementos minimos reutilizables */
+/* Atomos: piezas minimas */
 .card {
     background-color: var(--card); border-width: 2px; border-color: var(--line);
-    border-radius: 16px; padding: 16px; margin-bottom: 14px;
+    border-radius: 22px; padding: 16px; margin-bottom: 16px;
 }
+
+/* Boton estilo juego: color vivo con borde inferior grueso que da relieve. Por defecto, amarillo. */
 .btn {
     background-color: var(--accent); color: var(--on-accent);
-    border-width: 0; border-radius: 12px; min-height: 52px; padding: 12px 14px;
-    margin: 0 0 10px 0; font-size: 17px; -unity-font-style: bold; -unity-text-align: middle-center;
+    border-width: 0; border-bottom-width: 6px; border-bottom-color: var(--accent-depth);
+    border-radius: 18px; min-height: 60px; padding: 12px 14px; margin: 0 0 12px 0;
+    font-size: 19px; -unity-font-style: bold; -unity-text-align: middle-center;
 }
-.btn:active { background-color: var(--accent-strong); }
+.btn:active { translate: 0 4px; border-bottom-width: 2px; }
 .btn:disabled { opacity: 0.45; }
-.btn--ghost { background-color: rgba(0,0,0,0); color: var(--ink); border-width: 2px; border-color: var(--line); }
-.btn--ghost:active { background-color: var(--line); }
+.btn--blue { background-color: var(--blue); color: var(--on-color); border-bottom-color: var(--blue-depth); }
+.btn--green { background-color: var(--green); color: var(--on-green); border-bottom-color: var(--green-depth); }
+.btn--ghost { background-color: var(--card-2); color: var(--ink); border-bottom-color: var(--card-2-depth); }
 .btn--half { flex-grow: 1; flex-basis: 0; }
 .btn--gap { margin-right: 10px; }
-.label-bold { font-size: 15px; -unity-font-style: bold; color: var(--ink); margin-bottom: 6px; }
+
+.label-bold { font-size: 15px; -unity-font-style: bold; color: var(--mute); margin-bottom: 8px; }
+
 .dot { width: 12px; height: 12px; border-radius: 6px; margin-right: 8px; background-color: var(--player-0); }
 .badge {
     display: none; font-size: 11px; -unity-font-style: bold; color: #ffffff;
-    background-color: var(--accent-strong); padding: 3px 8px; border-radius: 10px;
+    background-color: var(--player-0); padding: 3px 10px; border-radius: 10px;
 }
 .tag {
-    display: none; position: absolute; top: -11px; left: 50%; translate: -50% 0;
-    font-size: 11px; -unity-font-style: bold; color: #ffffff; padding: 2px 8px; border-radius: 10px;
-    background-color: var(--accent-strong);
+    display: none; position: absolute; top: -12px; left: 50%; translate: -50% 0;
+    font-size: 12px; -unity-font-style: bold; color: #ffffff; padding: 2px 10px; border-radius: 10px;
+    background-color: var(--danger);
 }
 .finger {
-    width: 12px; height: 46px; margin: 0 2px; background-color: var(--skin);
-    border-width: 2px; border-color: var(--skin-line); border-radius: 6px 6px 2px 2px;
+    width: 15px; height: 52px; margin: 0 2px; background-color: var(--skin);
+    border-width: 2px; border-color: var(--skin-line); border-radius: 8px 8px 3px 3px;
 }
-.finger--down { height: 14px; opacity: 0.35; }
+.finger--down { height: 16px; opacity: 0.35; }
 .palm {
-    width: 70px; height: 16px; background-color: var(--skin);
-    border-width: 2px; border-color: var(--skin-line); border-radius: 0 0 12px 12px;
+    width: 84px; height: 18px; background-color: var(--skin);
+    border-width: 2px; border-color: var(--skin-line); border-radius: 0 0 14px 14px;
 }
-.code { font-size: 48px; -unity-font-style: bold; letter-spacing: 12px; -unity-text-align: middle-center; color: var(--ink); margin: 6px 0; }
+.code { font-size: 48px; -unity-font-style: bold; letter-spacing: 14px; -unity-text-align: middle-center; color: var(--ink); margin: 6px 0; }

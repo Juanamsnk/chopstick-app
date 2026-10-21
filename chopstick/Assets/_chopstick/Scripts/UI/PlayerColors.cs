@@ -7,13 +7,13 @@ namespace Chopsticks.UI
     {
         private static readonly Color[] colors =
         {
-            new Color32(0xE8, 0x59, 0x0C, 255),
-            new Color32(0x1C, 0x7E, 0xD6, 255),
-            new Color32(0x2F, 0x9E, 0x44, 255),
-            new Color32(0xAE, 0x3E, 0xC9, 255)
+            new Color32(0xFF, 0x7A, 0x2F, 255),
+            new Color32(0x8E, 0x5C, 0xFF, 255),
+            new Color32(0x34, 0xD9, 0x8A, 255),
+            new Color32(0x3F, 0xA9, 0xFF, 255)
         };
 
-        public static readonly Color Danger = new Color32(0xE0, 0x31, 0x31, 255);
+        public static readonly Color Danger = new Color32(0xFF, 0x54, 0x70, 255);
 
         public static Color Get(int player)
         {

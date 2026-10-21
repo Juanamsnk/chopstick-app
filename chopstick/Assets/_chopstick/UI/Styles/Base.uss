@@ -1,18 +1,23 @@
-/* Base: raiz, pantallas, tipografia y utilidades */
-
-/* El fondo lo pinta "app" a pantalla completa; asi queda color tambien bajo la muesca. */
+/* Base: raiz, pantallas, logo, tipografia y utilidades */
 .app { flex-grow: 1; background-color: var(--bg); }
 
 /* Cada pantalla ocupa todo "app". SafeAreaFitter.cs mueve sus bordes hacia dentro en el movil. */
 .app > TemplateContainer { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
 
-.screen {
-    flex-grow: 1;
-    padding: 28px 22px;
-    flex-direction: column;
-}
-.title { font-size: 34px; -unity-font-style: bold; -unity-text-align: middle-center; color: var(--ink); margin-top: 8px; }
-.subtitle { font-size: 14px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin-bottom: 14px; }
+.screen { flex-grow: 1; padding: 36px 22px 26px 22px; flex-direction: column; }
+
+/* Circulos decorativos del fondo (BgDecor) */
+#decor { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.bg-decor { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.bg-circle { position: absolute; background-color: var(--decor); opacity: 0.55; }
+.bg-circle--a { width: 260px; height: 260px; border-radius: 130px; top: -90px; right: -80px; }
+.bg-circle--b { width: 200px; height: 200px; border-radius: 100px; bottom: -70px; left: -80px; }
+
+.logo { flex-direction: row; justify-content: center; margin-top: 6px; }
+.logo__a { font-size: 46px; -unity-font-style: bold; color: var(--ink); }
+.logo__b { font-size: 46px; -unity-font-style: bold; color: var(--accent); }
+.subtitle { font-size: 15px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin-bottom: 14px; }
+
 .text { font-size: 15px; color: var(--ink); white-space: normal; }
 .text--bold { -unity-font-style: bold; }
 .text--mute { color: var(--mute); }

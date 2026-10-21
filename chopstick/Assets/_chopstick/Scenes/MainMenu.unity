@@ -373,6 +373,7 @@ GameObject:
   - component: {fileID: 1280927524}
   - component: {fileID: 1280927526}
   - component: {fileID: 1280927525}
+  - component: {fileID: 1280927527}
   m_Layer: 0
   m_Name: ---SCRIPTS---
   m_TagString: Untagged
@@ -419,6 +420,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1417f0d784a0597478bb610fcf9e3070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HideNavBar
+--- !u!114 &1280927527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280927523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7da8f91b79270847b69d7e019335e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chopsticks.Audio.SoundManager
+  buttonClip: {fileID: 8300000, guid: 64b1ea2479068914cab42f5eb881a643, type: 3}
+  attackClip: {fileID: 8300000, guid: 45192ca70d62e0b4291d30faddf8794f, type: 3}
+  hitClip: {fileID: 8300000, guid: f8c356e478bee3c4e8b6dfc36281dd27, type: 3}
+  splitClip: {fileID: 8300000, guid: 173e7c2a81935b64dbcf0927e9b1415e, type: 3}
+  winClip: {fileID: 8300000, guid: 14e9ec378b1039e41b1d84c7a394b8f3, type: 3}
+  loseClip: {fileID: 8300000, guid: af49af55a26688841ab48b4e68736c2b, type: 3}
+  volume: 0.2
+  muted: 0
 --- !u!1 &1512464782
 GameObject:
   m_ObjectHideFlags: 0

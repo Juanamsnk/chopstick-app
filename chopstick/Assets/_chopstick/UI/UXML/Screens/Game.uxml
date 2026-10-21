@@ -1,23 +1,39 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
   <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
   <ui:Template name="TurnBanner" src="/Assets/_chopstick/UI/UXML/Organisms/TurnBanner.uxml" />
   <ui:Template name="PlayerCard" src="/Assets/_chopstick/UI/UXML/Organisms/PlayerCard.uxml" />
   <ui:VisualElement name="screen-game" class="screen">
+    <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore" />
     <ui:Instance template="TurnBanner" name="banner" />
     <ui:ScrollView name="board" class="board" mode="Vertical">
-      <ui:Label name="log" text="" class="game__log" />
       <ui:VisualElement name="opponents">
         <ui:Instance template="PlayerCard" name="card-opp-0" />
       </ui:VisualElement>
-      <ui:Instance template="PlayerCard" name="card-me" />
-      <ui:VisualElement name="split-panel" class="card" style="display:none;">
-        <ui:Label text="Elige cómo repartir tus dedos (mano izquierda / mano derecha)" class="text text--center" />
-        <ui:VisualElement name="split-options" class="split-options" />
+      <ui:VisualElement name="vs" class="vs-badge">
+        <ui:Label text="VS" class="vs-badge__text" />
       </ui:VisualElement>
+      <ui:Label name="log" text="" class="game__log" />
+      <ui:Instance template="PlayerCard" name="card-me" />
     </ui:ScrollView>
-    <ui:VisualElement name="action-row" class="action-row">
+    <ui:VisualElement name="action-row" class="game__actions">
       <ui:Button name="btn-split" text="Repartir dedos" class="btn btn--ghost btn--half btn--gap" />
       <ui:Button name="btn-exit" text="Salir" class="btn btn--ghost btn--half" />
+    </ui:VisualElement>
+    <ui:VisualElement name="split-panel" class="overlay overlay--bottom" style="display:none;">
+      <ui:VisualElement class="sheet">
+        <ui:Label text="Elige cómo repartir tus dedos (mano izquierda / mano derecha)" class="sheet__title" />
+        <ui:VisualElement name="split-options" class="split-options" />
+        <ui:Button name="btn-cancel-split" text="Cancelar" class="btn btn--ghost" />
+      </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="gameover" class="overlay overlay--center" style="display:none;">
+      <ui:VisualElement class="gameover__box">
+        <ui:Label name="gameover-title" text="Victoria" class="gameover__title" />
+        <ui:Label name="gameover-text" text="" class="gameover__text" />
+        <ui:Button name="btn-again" text="Jugar otra vez" class="btn" />
+        <ui:Button name="btn-exit-over" text="Salir" class="btn btn--ghost" />
+      </ui:VisualElement>
     </ui:VisualElement>
   </ui:VisualElement>
 </ui:UXML>

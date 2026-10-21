@@ -1,10 +1,36 @@
 /* Pantallas: ajustes propios de cada una */
-.game__log { font-size: 15px; color: var(--ink); -unity-text-align: middle-center; white-space: normal; margin-bottom: 14px; }
-.board { flex-grow: 1; }
-.split-options { flex-direction: row; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
-.split-option { min-width: 84px; margin: 4px; }
-.lobby__info { font-size: 14px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin-bottom: 10px; }
-.online__separator { font-size: 15px; -unity-font-style: bold; color: var(--ink); margin: 8px 0 6px 0; }
-.online__code .unity-base-text-field__input,
-.online__code .unity-text-field__input { -unity-text-align: middle-center; letter-spacing: 8px; -unity-font-style: bold; }
+
+/* Menu principal: cada boton con su color */
+#btn-offline .btn { background-color: var(--blue); color: var(--on-color); border-bottom-color: var(--blue-depth); }
+#btn-online .btn { background-color: var(--green); color: var(--on-green); border-bottom-color: var(--green-depth); }
+
+/* Online */
+#btn-create { background-color: var(--green); color: var(--on-green); border-bottom-color: var(--green-depth); }
+#join-code .unity-base-text-field__input,
+#join-code .unity-text-field__input { -unity-text-align: middle-center; letter-spacing: 10px; font-size: 26px; -unity-font-style: bold; }
 .online__error { font-size: 14px; color: var(--danger); -unity-text-align: middle-center; white-space: normal; margin-bottom: 8px; }
+.lobby__info { font-size: 14px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin-bottom: 6px; }
+
+/* Partida */
+.board { flex-grow: 1; }
+.game__log { font-size: 15px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin-bottom: 14px; }
+.game__actions { flex-direction: row; margin-top: 6px; }
+
+/* Capas encima de la partida: repartir (hoja desde abajo) y fin de partida (caja central) */
+.overlay { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: rgba(10,6,30,0.78); }
+.overlay--bottom { justify-content: flex-end; }
+.overlay--center { justify-content: center; padding: 22px; }
+.sheet {
+    background-color: var(--card); border-top-left-radius: 30px; border-top-right-radius: 30px;
+    border-top-width: 3px; border-color: var(--line); padding: 24px 22px 30px 22px;
+}
+.sheet__title { font-size: 16px; -unity-font-style: bold; color: var(--mute); -unity-text-align: middle-center; white-space: normal; }
+.split-options { flex-direction: row; flex-wrap: wrap; justify-content: center; margin: 14px 0 6px 0; }
+.split-option { min-width: 96px; margin: 4px; }
+.gameover__box {
+    background-color: var(--card); border-width: 3px; border-color: var(--accent);
+    border-radius: 30px; padding: 30px 22px 18px 22px;
+}
+.gameover__title { font-size: 52px; -unity-font-style: bold; color: var(--accent); -unity-text-align: middle-center; }
+.gameover__title--lose { color: var(--danger); }
+.gameover__text { font-size: 15px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin: 6px 0 20px 0; }

@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+  <ui:VisualElement name="segmented" class="seg">
+    <ui:Button name="seg-0" class="seg__item seg__item--on">
+      <ui:Label text="Fácil" class="seg__label" picking-mode="Ignore" />
+      <ui:VisualElement class="stars" picking-mode="Ignore">
+        <ui:VisualElement class="star" picking-mode="Ignore" />
+        <ui:VisualElement class="star star--off" picking-mode="Ignore" />
+        <ui:VisualElement class="star star--off" picking-mode="Ignore" />
+      </ui:VisualElement>
+    </ui:Button>
+    <ui:Button name="seg-1" class="seg__item">
+      <ui:Label text="Medio" class="seg__label" picking-mode="Ignore" />
+      <ui:VisualElement class="stars" picking-mode="Ignore">
+        <ui:VisualElement class="star" picking-mode="Ignore" />
+        <ui:VisualElement class="star" picking-mode="Ignore" />
+        <ui:VisualElement class="star star--off" picking-mode="Ignore" />
+      </ui:VisualElement>
+    </ui:Button>
+    <ui:Button name="seg-2" class="seg__item">
+      <ui:Label text="Difícil" class="seg__label" picking-mode="Ignore" />
+      <ui:VisualElement class="stars" picking-mode="Ignore">
+        <ui:VisualElement class="star" picking-mode="Ignore" />
+        <ui:VisualElement class="star" picking-mode="Ignore" />
+        <ui:VisualElement class="star" picking-mode="Ignore" />
+      </ui:VisualElement>
+    </ui:Button>
+  </ui:VisualElement>
+</ui:UXML>

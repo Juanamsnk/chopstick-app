@@ -1,38 +1,48 @@
-/* Variables de color. El tema se cambia poniendo theme-dark o theme-light en el elemento raiz. */
+/* Colores del tema. El tema se cambia poniendo theme-dark o theme-light en el elemento "app". */
 .theme-dark {
-    --bg: #18181b;
-    --card: #25252a;
-    --ink: #f0f0f0;
-    --mute: #9a9a9a;
-    --line: #38383f;
-    --field: #18181b;
-    --accent: #ff922b;
-    --accent-strong: #e8590c;
-    --on-accent: #ffffff;
-    --ok: #51cf66;
-    --danger: #e03131;
-    --out: #44444a;
+    --bg: #150f3a;
+    --card: #221a57;
+    --card-2: #2d2370;
+    --card-2-depth: #1b1450;
+    --ink: #ffffff;
+    --mute: #aaa0e6;
+    --line: #3b2f8f;
+    --field: #150f3a;
+    --switch-off: #4a3da0;
+    --out: #3a3070;
+    --decor: #2d2370;
 }
 .theme-light {
-    --bg: #f6f3ee;
+    --bg: #f3efff;
     --card: #ffffff;
-    --ink: #222222;
-    --mute: #777777;
-    --line: #e3ddd3;
-    --field: #f6f3ee;
-    --accent: #e8590c;
-    --accent-strong: #e8590c;
-    --on-accent: #ffffff;
-    --ok: #2f9e44;
-    --danger: #e03131;
-    --out: #d0d0d0;
+    --card-2: #e4dcff;
+    --card-2-depth: #c4b8f2;
+    --ink: #1d1550;
+    --mute: #6b5fb3;
+    --line: #d3c8ff;
+    --field: #f3efff;
+    --switch-off: #c9bff0;
+    --out: #d9d3f0;
+    --decor: #e2d9ff;
 }
 /* Comunes a los dos temas */
 .theme-dark, .theme-light {
-    --player-0: #e8590c;
-    --player-1: #1c7ed6;
-    --player-2: #2f9e44;
-    --player-3: #ae3ec9;
-    --skin: #f4b183;
-    --skin-line: #c9784a;
+    --accent: #ffc83d;
+    --accent-depth: #d49a0f;
+    --on-accent: #3a2a00;
+    --blue: #3fa9ff;
+    --blue-depth: #1f6bc2;
+    --green: #34d98a;
+    --green-depth: #1b9c5f;
+    --on-green: #06331f;
+    --ok: #34d98a;
+    --danger: #ff5470;
+    --danger-depth: #c22f4b;
+    --on-color: #ffffff;
+    --player-0: #ff7a2f;
+    --player-1: #8e5cff;
+    --player-2: #34d98a;
+    --player-3: #3fa9ff;
+    --skin: #ffd3a8;
+    --skin-line: #e39a62;
 }
