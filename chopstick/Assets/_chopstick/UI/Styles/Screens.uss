@@ -34,3 +34,7 @@
 .gameover__title { font-size: 52px; -unity-font-style: bold; color: var(--accent); -unity-text-align: middle-center; }
 .gameover__title--lose { color: var(--danger); }
 .gameover__text { font-size: 15px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin: 6px 0 20px 0; }
+
+/* Buscando rival */
+.search__title { font-size: 30px; -unity-font-style: bold; color: var(--ink); -unity-text-align: middle-center; margin-bottom: 10px; }
+.search__status { font-size: 15px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; }

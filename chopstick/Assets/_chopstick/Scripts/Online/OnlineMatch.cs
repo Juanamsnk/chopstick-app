@@ -24,6 +24,7 @@ namespace Chopsticks.Online
         private readonly bool isHost;
         private readonly string myName;
         private readonly bool splitAllowed;
+        private readonly bool autoStart;   // empieza sola al entrar el rival (busqueda rapida)
 
         // Sala
         private readonly List<string> names = new List<string>();
@@ -43,8 +44,9 @@ namespace Chopsticks.Online
         public event Action Closed;
         public event Action<string> Disconnected;
 
-        public OnlineMatch(NetMessenger net, bool isHost, string playerName, bool splitAllowed)
+        public OnlineMatch(NetMessenger net, bool isHost, string playerName, bool splitAllowed, bool autoStart = false)
         {
+            this.autoStart = autoStart;
             this.net = net;
             this.isHost = isHost;
             this.myName = playerName;
@@ -180,6 +182,9 @@ namespace Chopsticks.Online
 
             BroadcastLobby();
             if (LobbyChanged != null) LobbyChanged();
+
+            // En la busqueda rapida no hay boton Empezar: arranca en cuanto hay 2 jugadores
+            if (autoStart && names.Count >= 2) StartGame();
         }
 
         private void OnMove(ulong sender, string json)

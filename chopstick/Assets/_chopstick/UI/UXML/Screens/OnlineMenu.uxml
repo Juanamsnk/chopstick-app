@@ -16,6 +16,7 @@
         <ui:AttributeOverrides element-name="label" text="Tu nombre" />
         <ui:AttributeOverrides element-name="input" value="Jugador 1" />
       </ui:Instance>
+      <ui:Button name="btn-quick" text="Buscar partida" class="btn" />
       <ui:Instance template="CheckOption" name="opt-split">
         <ui:AttributeOverrides element-name="toggle" label="Permitir repartir dedos (al crear)" />
       </ui:Instance>

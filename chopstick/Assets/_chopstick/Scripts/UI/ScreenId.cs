@@ -11,6 +11,7 @@ namespace Chopsticks.UI
         AiSetup,
         OnlineMenu,
         Lobby,
-        Game
+        Game,
+        Search
     }
 }

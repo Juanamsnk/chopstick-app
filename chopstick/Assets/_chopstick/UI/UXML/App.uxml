@@ -6,6 +6,7 @@
   <ui:Template name="OnlineMenu" src="/Assets/_chopstick/UI/UXML/Screens/OnlineMenu.uxml" />
   <ui:Template name="Lobby" src="/Assets/_chopstick/UI/UXML/Screens/Lobby.uxml" />
   <ui:Template name="Game" src="/Assets/_chopstick/UI/UXML/Screens/Game.uxml" />
+  <ui:Template name="Searching" src="/Assets/_chopstick/UI/UXML/Screens/Searching.uxml" />
   <ui:VisualElement name="app" class="app theme-dark">
     <ui:Instance template="MainMenu" name="mainmenu" />
     <ui:Instance template="OfflineSetup" name="offlinesetup" style="display:none;" />
@@ -13,5 +14,6 @@
     <ui:Instance template="OnlineMenu" name="onlinemenu" style="display:none;" />
     <ui:Instance template="Lobby" name="lobby" style="display:none;" />
     <ui:Instance template="Game" name="game" style="display:none;" />
+    <ui:Instance template="Searching" name="searching" style="display:none;" />
   </ui:VisualElement>
 </ui:UXML>

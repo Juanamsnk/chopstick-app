@@ -25,6 +25,7 @@ namespace Chopsticks.UI
         private AiSetupView aiSetup;
         private OnlineMenuView onlineMenu;
         private LobbyView lobbyView;
+        private SearchView searchView;
         private OnlineController onlineController;
 
         private void OnEnable()
@@ -50,6 +51,7 @@ namespace Chopsticks.UI
             navigator.Register(ScreenId.OnlineMenu, root.Q("onlinemenu"));
             navigator.Register(ScreenId.Lobby, root.Q("lobby"));
             navigator.Register(ScreenId.Game, root.Q("game"));
+            navigator.Register(ScreenId.Search, root.Q("searching"));
             menuWiring = new MenuWiring(root, navigator, theme);
 
             // Partida (sirve para offline, contra la maquina y online)
@@ -62,10 +64,11 @@ namespace Chopsticks.UI
             aiSetup = new AiSetupView(root.Q("aisetup"));
             aiSetup.StartClicked += gameController.StartGame;
 
-            // Online
+            // Online (crear, unirse con codigo y buscar partida)
             onlineMenu = new OnlineMenuView(root.Q("onlinemenu"));
             lobbyView = new LobbyView(root.Q("lobby"));
-            onlineController = new OnlineController(navigator, onlineMenu, lobbyView, gameController);
+            searchView = new SearchView(root.Q("searching"));
+            onlineController = new OnlineController(navigator, onlineMenu, lobbyView, searchView, gameController);
 
             navigator.Show(ScreenId.MainMenu);
         }

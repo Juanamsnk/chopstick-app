@@ -16,6 +16,7 @@ namespace Chopsticks.UI
 
         public event Action<string, bool> CreateClicked;   // (nombre, permitir repartir)
         public event Action<string, string> JoinClicked;   // (nombre, codigo)
+        public event Action<string> QuickClicked;          // (nombre) buscar partida rapida
 
         public OnlineMenuView(VisualElement screen)
         {
@@ -25,6 +26,9 @@ namespace Chopsticks.UI
             message = screen.Q<Label>("error");
 
             screen.Q<Button>("btn-create").clicked += OnCreate;
+
+            Button quick = screen.Q<Button>("btn-quick");
+            if (quick != null) quick.clicked += () => { if (QuickClicked != null) QuickClicked(PlayerName()); };
             screen.Q("action-row").Q<Button>("btn-primary").clicked += OnJoin;
         }
 
