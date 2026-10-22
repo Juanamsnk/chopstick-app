@@ -1,20 +1,20 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
-  <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
-  <ui:VisualElement name="screen-search" class="screen">
-    <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore" />
-    <ui:VisualElement class="logo">
-      <ui:Label text="Chop" class="logo__a" />
-      <ui:Label text="sticks" class="logo__b" />
+    <ui:Template name="BgDecor" src="project://database/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml?fileID=9197481963319205126&amp;guid=e7d4d788b246677499e0bb0c2d55fa53&amp;type=3#BgDecor"/>
+    <Style src="project://database/Assets/_chopstick/UI/Styles/Main.uss?fileID=7433441132597879392&amp;guid=815dab59b3928334790fa7ef335b965f&amp;type=3#Main"/>
+    <ui:VisualElement name="screen-search" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:VisualElement class="logo">
+            <ui:Label text="Chop" class="logo__a"/>
+            <ui:Label text="5ticks" class="logo__b"/>
+        </ui:VisualElement>
+        <ui:Label text="El duelo de dedos" class="subtitle"/>
+        <ui:VisualElement class="spacer"/>
+        <ui:VisualElement class="card">
+            <ui:Label name="search-title" text="Buscando rival" class="search__title"/>
+            <ui:Label name="search-status" text="Estamos buscando a alguien con quien jugar." class="search__status"/>
+        </ui:VisualElement>
+        <ui:VisualElement class="spacer"/>
+        <ui:Button name="btn-search-ai" text="Jugar contra la máquina" class="btn btn--blue" style="display: none;"/>
+        <ui:Button name="btn-cancel-search" text="Cancelar" class="btn btn--ghost"/>
     </ui:VisualElement>
-    <ui:Label text="El duelo de dedos" class="subtitle" />
-    <ui:VisualElement class="spacer" />
-    <ui:VisualElement class="card">
-      <ui:Label name="search-title" text="Buscando rival" class="search__title" />
-      <ui:Label name="search-status" text="Estamos buscando a alguien con quien jugar." class="search__status" />
-    </ui:VisualElement>
-    <ui:VisualElement class="spacer" />
-    <ui:Button name="btn-search-ai" text="Jugar contra la máquina" class="btn btn--blue" style="display:none;" />
-    <ui:Button name="btn-cancel-search" text="Cancelar" class="btn btn--ghost" />
-  </ui:VisualElement>
 </ui:UXML>

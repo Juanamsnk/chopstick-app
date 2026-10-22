@@ -1,39 +1,39 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
-  <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
-  <ui:Template name="LabeledField" src="/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml" />
-  <ui:Template name="CheckOption" src="/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml" />
-  <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
-  <ui:VisualElement name="screen-online" class="screen">
-    <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore" />
-    <ui:VisualElement class="logo">
-      <ui:Label text="Chop" class="logo__a" />
-      <ui:Label text="sticks" class="logo__b" />
+    <ui:Template name="ActionRow" src="project://database/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml?fileID=9197481963319205126&amp;guid=c27cb44d1b141f54daab524807ad74bb&amp;type=3#ActionRow"/>
+    <ui:Template name="BgDecor" src="project://database/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml?fileID=9197481963319205126&amp;guid=e7d4d788b246677499e0bb0c2d55fa53&amp;type=3#BgDecor"/>
+    <ui:Template name="CheckOption" src="project://database/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml?fileID=9197481963319205126&amp;guid=fefd2fd5bfbf143428061bdb9a3fbd55&amp;type=3#CheckOption"/>
+    <ui:Template name="LabeledField" src="project://database/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml?fileID=9197481963319205126&amp;guid=af07cc4745ef7d343b677741a9624455&amp;type=3#LabeledField"/>
+    <Style src="project://database/Assets/_chopstick/UI/Styles/Main.uss?fileID=7433441132597879392&amp;guid=815dab59b3928334790fa7ef335b965f&amp;type=3#Main"/>
+    <ui:VisualElement name="screen-online" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:VisualElement class="logo">
+            <ui:Label text="Chop" class="logo__a"/>
+            <ui:Label text="5ticks" class="logo__b"/>
+        </ui:VisualElement>
+        <ui:Label text="El duelo de dedos" class="subtitle"/>
+        <ui:VisualElement class="card">
+            <ui:Instance template="LabeledField" name="my-name">
+                <AttributeOverrides element-name="label" text="Tu nombre"/>
+                <AttributeOverrides element-name="input" value="Jugador 1"/>
+            </ui:Instance>
+            <ui:Button name="btn-quick" text="Buscar partida" class="btn"/>
+            <ui:Instance template="CheckOption" name="opt-split">
+                <AttributeOverrides element-name="toggle" label="Permitir repartir dedos (al crear)"/>
+            </ui:Instance>
+            <ui:Button name="btn-create" text="Crear partida" class="btn"/>
+        </ui:VisualElement>
+        <ui:VisualElement class="card">
+            <ui:Label text="O únete con un código" class="label-bold"/>
+            <ui:Instance template="LabeledField" name="join-code">
+                <AttributeOverrides element-name="label" text="Código"/>
+                <AttributeOverrides element-name="input" value="" max-length="6"/>
+            </ui:Instance>
+            <ui:Label name="error" text="" class="online__error"/>
+        </ui:VisualElement>
+        <ui:VisualElement class="spacer"/>
+        <ui:Instance template="ActionRow" name="action-row">
+            <AttributeOverrides element-name="btn-primary" text="Unirme"/>
+            <AttributeOverrides element-name="btn-secondary" text="Volver"/>
+        </ui:Instance>
     </ui:VisualElement>
-    <ui:Label text="El duelo de dedos" class="subtitle" />
-    <ui:VisualElement class="card">
-      <ui:Instance template="LabeledField" name="my-name">
-        <ui:AttributeOverrides element-name="label" text="Tu nombre" />
-        <ui:AttributeOverrides element-name="input" value="Jugador 1" />
-      </ui:Instance>
-      <ui:Button name="btn-quick" text="Buscar partida" class="btn" />
-      <ui:Instance template="CheckOption" name="opt-split">
-        <ui:AttributeOverrides element-name="toggle" label="Permitir repartir dedos (al crear)" />
-      </ui:Instance>
-      <ui:Button name="btn-create" text="Crear partida" class="btn" />
-    </ui:VisualElement>
-    <ui:VisualElement class="card">
-      <ui:Label text="O únete con un código" class="label-bold" />
-      <ui:Instance template="LabeledField" name="join-code">
-        <ui:AttributeOverrides element-name="label" text="Código" />
-        <ui:AttributeOverrides element-name="input" value="" max-length="6" />
-      </ui:Instance>
-      <ui:Label name="error" text="" class="online__error" />
-    </ui:VisualElement>
-    <ui:VisualElement class="spacer" />
-    <ui:Instance template="ActionRow" name="action-row">
-      <ui:AttributeOverrides element-name="btn-primary" text="Unirme" />
-      <ui:AttributeOverrides element-name="btn-secondary" text="Volver" />
-    </ui:Instance>
-  </ui:VisualElement>
 </ui:UXML>

@@ -1,32 +1,32 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-  <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
-  <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
-  <ui:Template name="DifficultyControl" src="/Assets/_chopstick/UI/UXML/Molecules/DifficultyControl.uxml" />
-  <ui:Template name="LabeledField" src="/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml" />
-  <ui:Template name="CheckOption" src="/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml" />
-  <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
-  <ui:VisualElement name="screen-ai" class="screen">
-    <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore" />
-    <ui:VisualElement class="logo">
-      <ui:Label text="Chop" class="logo__a" />
-      <ui:Label text="sticks" class="logo__b" />
+    <ui:Template name="ActionRow" src="project://database/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml?fileID=9197481963319205126&amp;guid=c27cb44d1b141f54daab524807ad74bb&amp;type=3#ActionRow"/>
+    <ui:Template name="BgDecor" src="project://database/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml?fileID=9197481963319205126&amp;guid=e7d4d788b246677499e0bb0c2d55fa53&amp;type=3#BgDecor"/>
+    <ui:Template name="CheckOption" src="project://database/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml?fileID=9197481963319205126&amp;guid=fefd2fd5bfbf143428061bdb9a3fbd55&amp;type=3#CheckOption"/>
+    <ui:Template name="DifficultyControl" src="project://database/Assets/_chopstick/UI/UXML/Molecules/DifficultyControl.uxml?fileID=9197481963319205126&amp;guid=ddf1c023f81142741988a58f07adc6bc&amp;type=3#DifficultyControl"/>
+    <ui:Template name="LabeledField" src="project://database/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml?fileID=9197481963319205126&amp;guid=af07cc4745ef7d343b677741a9624455&amp;type=3#LabeledField"/>
+    <Style src="project://database/Assets/_chopstick/UI/Styles/Main.uss?fileID=7433441132597879392&amp;guid=815dab59b3928334790fa7ef335b965f&amp;type=3#Main"/>
+    <ui:VisualElement name="screen-ai" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:VisualElement class="logo">
+            <ui:Label text="Chop" class="logo__a"/>
+            <ui:Label text="5ticks" class="logo__b"/>
+        </ui:VisualElement>
+        <ui:Label text="El duelo de dedos" class="subtitle"/>
+        <ui:VisualElement class="card">
+            <ui:Label text="Dificultad" class="label-bold"/>
+            <ui:Instance template="DifficultyControl" name="difficulty"/>
+            <ui:Instance template="LabeledField" name="name-0">
+                <AttributeOverrides element-name="label" text="Tu nombre"/>
+                <AttributeOverrides element-name="input" value="Jugador 1"/>
+            </ui:Instance>
+            <ui:Instance template="CheckOption" name="opt-split">
+                <AttributeOverrides element-name="toggle" label="Permitir repartir dedos"/>
+            </ui:Instance>
+        </ui:VisualElement>
+        <ui:VisualElement class="spacer"/>
+        <ui:Instance template="ActionRow" name="action-row">
+            <AttributeOverrides element-name="btn-primary" text="Empezar"/>
+            <AttributeOverrides element-name="btn-secondary" text="Volver"/>
+        </ui:Instance>
     </ui:VisualElement>
-    <ui:Label text="El duelo de dedos" class="subtitle" />
-    <ui:VisualElement class="card">
-      <ui:Label text="Dificultad" class="label-bold" />
-      <ui:Instance template="DifficultyControl" name="difficulty" />
-      <ui:Instance template="LabeledField" name="name-0">
-        <ui:AttributeOverrides element-name="label" text="Tu nombre" />
-        <ui:AttributeOverrides element-name="input" value="Jugador 1" />
-      </ui:Instance>
-      <ui:Instance template="CheckOption" name="opt-split">
-        <ui:AttributeOverrides element-name="toggle" label="Permitir repartir dedos" />
-      </ui:Instance>
-    </ui:VisualElement>
-    <ui:VisualElement class="spacer" />
-    <ui:Instance template="ActionRow" name="action-row">
-      <ui:AttributeOverrides element-name="btn-primary" text="Empezar" />
-      <ui:AttributeOverrides element-name="btn-secondary" text="Volver" />
-    </ui:Instance>
-  </ui:VisualElement>
 </ui:UXML>
