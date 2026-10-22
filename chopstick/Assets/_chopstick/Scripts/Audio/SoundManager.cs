@@ -5,21 +5,37 @@ namespace Chopsticks.Audio
 {
     /// <summary>
     /// Reproduce los sonidos del juego. Se anade como componente a un GameObject
-    /// (por ejemplo el mismo "UI" que tiene el UIRoot) y los sonidos se arrastran desde el Inspector.
+    /// (por ejemplo el mismo "UI" que tiene el UIRoot). Cada sonido tiene su clip y su propio volumen.
     /// Si dejas un hueco vacio, ese sonido simplemente no suena.
     /// </summary>
     [DisallowMultipleComponent]
     public class SoundManager : MonoBehaviour
     {
-        [Header("Sonidos (arrastra aqui los AudioClip)")]
-        [SerializeField] private AudioClip buttonClip;   // al pulsar un boton
-        [SerializeField] private AudioClip attackClip;   // cuando atacas tu
-        [SerializeField] private AudioClip hitClip;      // cuando te atacan
-        [SerializeField] private AudioClip splitClip;    // al repartir los dedos
-        [SerializeField] private AudioClip winClip;      // cuando ganas la partida
-        [SerializeField] private AudioClip loseClip;     // cuando pierdes la partida
+        [Header("Boton: al pulsar un boton o elegir tu mano")]
+        [SerializeField] private AudioClip buttonClip;
+        [Range(0f, 1f)] [SerializeField] private float buttonVolume = 1f;
 
-        [Header("Volumen")]
+        [Header("Ataque: cuando atacas tu")]
+        [SerializeField] private AudioClip attackClip;
+        [Range(0f, 1f)] [SerializeField] private float attackVolume = 1f;
+
+        [Header("Golpe: cuando te atacan")]
+        [SerializeField] private AudioClip hitClip;
+        [Range(0f, 1f)] [SerializeField] private float hitVolume = 1f;
+
+        [Header("Reparto: al repartir los dedos")]
+        [SerializeField] private AudioClip splitClip;
+        [Range(0f, 1f)] [SerializeField] private float splitVolume = 1f;
+
+        [Header("Victoria: cuando ganas la partida")]
+        [SerializeField] private AudioClip winClip;
+        [Range(0f, 1f)] [SerializeField] private float winVolume = 1f;
+
+        [Header("Derrota: cuando pierdes la partida")]
+        [SerializeField] private AudioClip loseClip;
+        [Range(0f, 1f)] [SerializeField] private float loseVolume = 1f;
+
+        [Header("Volumen general (se multiplica por el de cada sonido)")]
         [Range(0f, 1f)] [SerializeField] private float volume = 1f;
         [SerializeField] private bool muted;
 
@@ -56,7 +72,7 @@ namespace Chopsticks.Audio
             if (clip == null) return;
 
             // PlayOneShot permite que varios sonidos suenen a la vez sin cortarse
-            source.PlayOneShot(clip, volume);
+            source.PlayOneShot(clip, volume * GetVolume(id));
         }
 
         /// <summary>Reproduce el sonido despues de unos segundos (por ejemplo, para no pisar el golpe final).</summary>
@@ -83,6 +99,20 @@ namespace Chopsticks.Audio
                 case SoundId.Win: return winClip;
                 case SoundId.Lose: return loseClip;
                 default: return null;
+            }
+        }
+
+        private float GetVolume(SoundId id)
+        {
+            switch (id)
+            {
+                case SoundId.Button: return buttonVolume;
+                case SoundId.Attack: return attackVolume;
+                case SoundId.Hit: return hitVolume;
+                case SoundId.Split: return splitVolume;
+                case SoundId.Win: return winVolume;
+                case SoundId.Lose: return loseVolume;
+                default: return 1f;
             }
         }
     }

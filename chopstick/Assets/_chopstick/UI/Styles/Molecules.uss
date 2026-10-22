@@ -24,20 +24,21 @@
     border-radius: 14px; padding: 12px; font-size: 17px; -unity-font-style: bold;
 }
 
-/* Casilla estilo interruptor */
+/* Casilla de marcar (checkbox): etiqueta a la izquierda y cuadrado a la derecha */
 .check { flex-direction: row; align-items: center; justify-content: space-between; margin: 4px 0 14px 0; }
-.check .unity-label { flex-grow: 1; margin: 0; padding: 0; min-width: 0; color: var(--ink); font-size: 16px; -unity-font-style: bold; }
-.check .unity-toggle__input {
-    flex-grow: 0; width: 52px; height: 30px; padding: 0; border-radius: 15px;
-    background-color: var(--switch-off); border-width: 0;
+.check .unity-base-field__label,
+.check .unity-toggle__label,
+.check .unity-label {
+    flex-grow: 1; flex-shrink: 1; min-width: 0; width: auto; margin: 0; padding: 0;
+    color: var(--ink); font-size: 16px; -unity-font-style: bold; white-space: normal;
 }
-.check .unity-toggle__input:checked { background-color: var(--green); }
+.check .unity-toggle__input { flex-grow: 0; flex-shrink: 0; margin: 0 0 0 12px; padding: 0; background-color: rgba(0,0,0,0); }
 .check .unity-toggle__checkmark {
-    width: 24px; height: 24px; margin: 3px; border-radius: 12px;
-    background-color: #ffffff; background-image: none;
-    transition-property: translate; transition-duration: 0.15s;
+    width: 30px; height: 30px; margin: 0; border-radius: 9px;
+    background-color: var(--field); border-width: 3px; border-color: var(--line);
+    -unity-background-image-tint-color: #ffffff;
 }
-.check .unity-toggle__input:checked .unity-toggle__checkmark { translate: 22px 0; }
+.check .unity-toggle__input:checked .unity-toggle__checkmark { background-color: var(--green); border-color: var(--green-depth); }
 
 .player-row {
     flex-direction: row; align-items: center; padding: 12px; margin-bottom: 8px;
