@@ -140,6 +140,18 @@ namespace Chopsticks.Game
                     search.SetStatus("Rival encontrado. Conectando...");
                 }
             }
+            catch (NoOpenGameException)
+            {
+                // Solo pasa en la version web: no hay ninguna sala abierta a la que unirse
+                if (id == searchId)
+                {
+                    searching = false;
+                    search.End();
+                    CleanUp();
+                    menu.ShowMessage("No hay partidas abiertas ahora mismo. Prueba otra vez en unos segundos o juega contra la máquina.");
+                    navigator.Show(ScreenId.OnlineMenu);
+                }
+            }
             catch (Exception e)
             {
                 if (id == searchId)

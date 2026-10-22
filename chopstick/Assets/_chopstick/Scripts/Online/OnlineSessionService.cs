@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
@@ -12,6 +13,12 @@ namespace Chopsticks.Online
     /// con codigo, unirse con un codigo, buscar partida rapida y salir.
     /// No sabe nada del juego ni de los mensajes.
     /// </summary>
+    /// <summary>La busqueda no encontro ninguna sala abierta y este dispositivo no puede crear una (version web).</summary>
+    public class NoOpenGameException : Exception
+    {
+        public NoOpenGameException() : base("No hay partidas abiertas") { }
+    }
+
     public class OnlineSessionService
     {
         private const int QuickJoinTimeoutSeconds = 4;
@@ -58,16 +65,35 @@ namespace Chopsticks.Online
             {
                 session = await MultiplayerService.Instance.MatchmakeSessionAsync(
                     BuildQuickJoin(regionTag, false), BuildSessionOptions(regionTag));
+                Debug.Log("[QuickMatch] Paso 1: unido a una sala de tu region. Eres anfitrion: " + session.IsHost);
                 return;
             }
-            catch (SessionException)
+            catch (SessionException e)
             {
                 // Nadie en tu region ahora mismo
+                Debug.Log("[QuickMatch] Paso 1 (tu region): no hay salas. " + e.Message);
             }
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+            // 2) La version web no puede crear salas para la busqueda (los demas no podrian entrar):
+            //    solo se une a una sala abierta de cualquier region.
+            try
+            {
+                session = await MultiplayerService.Instance.MatchmakeSessionAsync(
+                    BuildQuickJoin(null, false), BuildSessionOptions(regionTag));
+                Debug.Log("[QuickMatch] Paso 2: unido a una sala abierta. Eres anfitrion: " + session.IsHost);
+            }
+            catch (SessionException e)
+            {
+                Debug.Log("[QuickMatch] Paso 2 (cualquier region): no hay salas. " + e.Message);
+                throw new NoOpenGameException();
+            }
+#else
             // 2) Cualquier region; si no hay nadie, crea la sala
             session = await MultiplayerService.Instance.MatchmakeSessionAsync(
                 BuildQuickJoin(null, true), BuildSessionOptions(regionTag));
+            Debug.Log("[QuickMatch] Paso 2: sala encontrada o creada. Eres anfitrion: " + session.IsHost + ". Codigo: " + session.Code);
+#endif
         }
 
         private static QuickJoinOptions BuildQuickJoin(string regionTag, bool createIfNone)
@@ -95,8 +121,8 @@ namespace Chopsticks.Online
             var options = new SessionOptions { MaxPlayers = 2, IsPrivate = false, Type = "Session" }.WithRelayNetwork();
             options.SessionProperties = new Dictionary<string, SessionProperty>
             {
-                // Si el compilador dice que VisibilityOptions no existe, en tu version se llama VisibilityPropertyOptions
-              { "region", new SessionProperty(regionTag, VisibilityPropertyOptions.Public, PropertyIndex.String1) }
+                // En algunas versiones del SDK esta enumeracion se llama VisibilityOptions
+                { "region", new SessionProperty(regionTag, VisibilityPropertyOptions.Public, PropertyIndex.String1) }
             };
             return options;
         }
