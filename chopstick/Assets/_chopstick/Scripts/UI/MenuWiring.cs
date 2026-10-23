@@ -36,13 +36,13 @@ namespace Chopsticks.UI
             OnClick(MenuButton(main, "btn-ai"), () => navigator.Show(ScreenId.AiSetup));
             OnClick(MenuButton(main, "btn-online"), () => navigator.Show(ScreenId.OnlineMenu));
 
-            themeButton = main.Q<Button>("btn-theme");
-            OnClick(themeButton, () =>
-            {
-                theme.Toggle();
-                RefreshThemeText();
-            });
-            RefreshThemeText();
+            //themeButton = main.Q<Button>("btn-theme");
+            //OnClick(themeButton, () =>
+            //{
+            //    theme.Toggle();
+            //    RefreshThemeText();
+            //});
+            //RefreshThemeText();
         }
 
         // ---- Botones de volver / salir ----

@@ -1,11 +1,11 @@
 /* Pantallas: ajustes propios de cada una */
 
 /* Menu principal: cada boton con su color */
-#btn-offline .btn { background-color: var(--blue); color: var(--on-color); border-bottom-color: var(--blue-depth); }
-#btn-online .btn { background-color: var(--green); color: var(--on-green); border-bottom-color: var(--green-depth); }
+#btn-offline .btn { background-color: var(--blue); color: var(--on-color); border-color: var(--blue-depth); }
+#btn-online .btn { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }
 
 /* Online */
-#btn-create { background-color: var(--green); color: var(--on-green); border-bottom-color: var(--green-depth); }
+#btn-create { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }
 #join-code .unity-base-text-field__input,
 #join-code .unity-text-field__input { -unity-text-align: middle-center; letter-spacing: 10px; font-size: 26px; -unity-font-style: bold; }
 .online__error { font-size: 14px; color: var(--danger); -unity-text-align: middle-center; white-space: normal; margin-bottom: 8px; }

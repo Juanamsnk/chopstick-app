@@ -24,21 +24,28 @@
     border-radius: 14px; padding: 12px; font-size: 17px; -unity-font-style: bold;
 }
 
-/* Casilla de marcar (checkbox): etiqueta a la izquierda y cuadrado a la derecha */
-.check { flex-direction: row; align-items: center; justify-content: space-between; margin: 4px 0 14px 0; }
-.check .unity-base-field__label,
-.check .unity-toggle__label,
-.check .unity-label {
-    flex-grow: 1; flex-shrink: 1; min-width: 0; width: auto; margin: 0; padding: 0;
-    color: var(--ink); font-size: 16px; -unity-font-style: bold; white-space: normal;
+/* Casilla de marcar: toda la fila es un boton con la etiqueta a la izquierda y un cuadrado a la derecha */
+.check {
+    flex-direction: row; align-items: center; justify-content: space-between;
+    background-color: rgba(0,0,0,0); border-width: 0; padding: 0; margin: 4px 0 14px 0;
 }
-.check .unity-toggle__input { flex-grow: 0; flex-shrink: 0; margin: 0 0 0 12px; padding: 0; background-color: rgba(0,0,0,0); }
-.check .unity-toggle__checkmark {
-    width: 30px; height: 30px; margin: 0; border-radius: 9px;
-    background-color: var(--field); border-width: 3px; border-color: var(--line);
-    -unity-background-image-tint-color: #ffffff;
+.check:hover, .check:active, .check:focus { background-color: rgba(0,0,0,0); }
+.check__label {
+    flex-grow: 1; flex-shrink: 1; margin: 0; padding: 0; white-space: normal;
+    font-size: 16px; -unity-font-style: bold; -unity-text-align: middle-left; color: var(--ink);
 }
-.check .unity-toggle__input:checked .unity-toggle__checkmark { background-color: var(--green); border-color: var(--green-depth); }
+.check__box {
+    width: 30px; height: 30px; margin-left: 12px; flex-shrink: 0;
+    align-items: center; justify-content: center;
+    background-color: var(--field); border-width: 3px; border-color: var(--line); border-radius: 9px;
+}
+/* La marca: dos bordes de un rectangulo girado forman un tick */
+.check__tick {
+    display: none; width: 8px; height: 15px; margin-top: -3px;
+    border-right-width: 4px; border-bottom-width: 4px; border-color: #ffffff; rotate: 45deg;
+}
+.check--on .check__box { background-color: var(--green); border-color: var(--green-depth); }
+.check--on .check__tick { display: flex; }
 
 .player-row {
     flex-direction: row; align-items: center; padding: 12px; margin-bottom: 8px;

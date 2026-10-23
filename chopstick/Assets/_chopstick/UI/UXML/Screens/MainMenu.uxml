@@ -22,6 +22,5 @@
             <AttributeOverrides element-name="title" text="Modo online"/>
             <AttributeOverrides element-name="subtitle" text="Cada uno en su dispositivo"/>
         </ui:Instance>
-        <ui:Button name="btn-theme" text="Cambiar tema" class="btn btn--ghost"/>
     </ui:VisualElement>
 </ui:UXML>

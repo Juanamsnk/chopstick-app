@@ -10,7 +10,7 @@ namespace Chopsticks.UI
     {
         private readonly SegmentedControlView difficultySelector;
         private readonly TextField nameField;
-        private readonly Toggle splitToggle;
+        private readonly CheckOptionView splitOption;
 
         public event Action<GameSetup> StartClicked;
 
@@ -20,7 +20,7 @@ namespace Chopsticks.UI
             difficultySelector.Select(1);   // empieza en Medio
 
             nameField = screen.Q("name-0").Q<TextField>("input");
-            splitToggle = screen.Q("opt-split").Q<Toggle>("toggle");
+            splitOption = new CheckOptionView(screen.Q("opt-split"));
 
             screen.Q("action-row").Q<Button>("btn-primary").clicked += OnStart;
         }
@@ -30,7 +30,7 @@ namespace Chopsticks.UI
             string playerName = nameField.value.Trim();
             var setup = new GameSetup
             {
-                SplitAllowed = splitToggle.value,
+                SplitAllowed = splitOption.Value,
                 VsAI = true,
                 // Los botones son Facil, Medio, Dificil: 0, 1, 2 coinciden con el enum Difficulty
                 Difficulty = (Difficulty)difficultySelector.SelectedIndex

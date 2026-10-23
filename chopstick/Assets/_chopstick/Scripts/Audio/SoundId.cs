@@ -8,6 +8,7 @@ namespace Chopsticks.Audio
         Hit,      // te atacan
         Split,    // repartir dedos
         Win,      // ganas la partida
-        Lose      // pierdes la partida
+        Lose,      // pierdes la partida
+        LoseHand   //pierdes una mano
     }
 }

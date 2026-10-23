@@ -1,7 +1,7 @@
 /* Organismos: bloques completos */
 .turn-banner {
     align-self: center; align-items: center; padding: 10px 28px; margin-bottom: 12px;
-    border-radius: 26px; border-bottom-width: 5px; border-bottom-color: rgba(0,0,0,0.28);
+    border-radius: 26px; border-bottom-width: 5px; border-color: rgba(0,0,0,0.28);
     background-color: var(--green);
 }
 .turn-banner__title { font-size: 20px; -unity-font-style: bold; color: #ffffff; }
@@ -30,7 +30,7 @@
 
 .vs-badge {
     align-self: center; width: 46px; height: 46px; border-radius: 23px;
-    background-color: var(--danger); border-bottom-width: 4px; border-bottom-color: var(--danger-depth);
+    background-color: var(--danger); border-bottom-width: 4px; border-color: var(--danger-depth);
     align-items: center; justify-content: center; margin: -4px 0 8px 0;
 }
 .vs-badge__text { font-size: 17px; -unity-font-style: bold; color: #ffffff; }

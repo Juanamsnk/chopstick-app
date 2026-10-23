@@ -11,7 +11,7 @@ namespace Chopsticks.UI
     {
         private readonly TextField nameField;
         private readonly TextField codeField;
-        private readonly Toggle splitToggle;
+        private readonly CheckOptionView splitOption;
         private readonly Label message;
 
         public event Action<string, bool> CreateClicked;   // (nombre, permitir repartir)
@@ -22,7 +22,7 @@ namespace Chopsticks.UI
         {
             nameField = screen.Q("my-name").Q<TextField>("input");
             codeField = screen.Q("join-code").Q<TextField>("input");
-            splitToggle = screen.Q("opt-split").Q<Toggle>("toggle");
+            splitOption = new CheckOptionView(screen.Q("opt-split"));
             message = screen.Q<Label>("error");
 
             screen.Q<Button>("btn-create").clicked += OnCreate;
@@ -46,7 +46,7 @@ namespace Chopsticks.UI
 
         private void OnCreate()
         {
-            if (CreateClicked != null) CreateClicked(PlayerName(), splitToggle.value);
+            if (CreateClicked != null) CreateClicked(PlayerName(), splitOption.Value);
         }
 
         private void OnJoin()

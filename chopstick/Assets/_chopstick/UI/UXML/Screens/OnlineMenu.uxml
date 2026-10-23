@@ -18,7 +18,7 @@
             </ui:Instance>
             <ui:Button name="btn-quick" text="Buscar partida" class="btn"/>
             <ui:Instance template="CheckOption" name="opt-split">
-                <AttributeOverrides element-name="toggle" label="Permitir repartir dedos (al crear)"/>
+                <AttributeOverrides element-name="label" text="Permitir repartir dedos (al crear)"/>
             </ui:Instance>
             <ui:Button name="btn-create" text="Crear partida" class="btn"/>
         </ui:VisualElement>

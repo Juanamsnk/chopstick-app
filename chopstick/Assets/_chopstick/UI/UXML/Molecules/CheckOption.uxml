@@ -1,4 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
   <ui:Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
-  <ui:Toggle name="toggle" class="check" value="true" />
+  <ui:Button name="check" class="check">
+    <ui:Label name="label" class="check__label" picking-mode="Ignore" />
+    <ui:VisualElement name="box" class="check__box" picking-mode="Ignore">
+      <ui:VisualElement name="tick" class="check__tick" picking-mode="Ignore" />
+    </ui:VisualElement>
+  </ui:Button>
 </ui:UXML>

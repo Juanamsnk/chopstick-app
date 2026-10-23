@@ -11,7 +11,7 @@ namespace Chopsticks.UI
     public class OfflineSetupView
     {
         private readonly TextField[] nameFields = new TextField[2];
-        private readonly Toggle splitToggle;
+        private readonly CheckOptionView splitOption;
 
         public event Action<GameSetup> StartClicked;
 
@@ -21,14 +21,14 @@ namespace Chopsticks.UI
             {
                 nameFields[i] = screen.Q("name-" + i).Q<TextField>("input");
             }
-            splitToggle = screen.Q("opt-split").Q<Toggle>("toggle");
+            splitOption = new CheckOptionView(screen.Q("opt-split"));
 
             screen.Q("action-row").Q<Button>("btn-primary").clicked += OnStart;
         }
 
         private void OnStart()
         {
-            var setup = new GameSetup { SplitAllowed = splitToggle.value, VsAI = false };
+            var setup = new GameSetup { SplitAllowed = splitOption.Value, VsAI = false };
 
             for (int i = 0; i < nameFields.Length; i++)
             {

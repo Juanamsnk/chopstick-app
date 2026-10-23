@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Chopsticks.Audio
 {
     /// <summary>
-    /// Reproduce los sonidos del juego. Se anade como componente a un GameObject
-    /// (por ejemplo el mismo "UI" que tiene el UIRoot). Cada sonido tiene su clip y su propio volumen.
-    /// Si dejas un hueco vacio, ese sonido simplemente no suena.
+    /// Reproduce los sonidos y la musica de fondo del juego. Se anade como componente a un GameObject
+    /// (por ejemplo el mismo "UI" que tiene el UIRoot). Cada sonido tiene su clip y su propio volumen,
+    /// y la musica tiene el suyo. Si dejas un hueco vacio, ese sonido simplemente no suena.
     /// </summary>
     [DisallowMultipleComponent]
     public class SoundManager : MonoBehaviour
@@ -35,16 +35,34 @@ namespace Chopsticks.Audio
         [SerializeField] private AudioClip loseClip;
         [Range(0f, 1f)] [SerializeField] private float loseVolume = 1f;
 
-        [Header("Volumen general (se multiplica por el de cada sonido)")]
+        [Header("Musica de fondo (se repite en bucle)")]
+        [SerializeField] private AudioClip musicClip;
+        [Range(0f, 1f)] [SerializeField] private float musicVolume = 0.5f;
+        [SerializeField] private bool playMusicOnStart = true;
+        [Min(0f)] [SerializeField] private float musicFadeInSeconds = 1.5f;
+        [SerializeField] private bool musicMuted;
+
+        [Header("Volumen general (se multiplica por el de cada sonido y el de la musica)")]
         [Range(0f, 1f)] [SerializeField] private float volume = 1f;
+        [Tooltip("Silencia los efectos de sonido (la musica tiene su propio interruptor)")]
         [SerializeField] private bool muted;
 
-        private AudioSource source;
+        private AudioSource source;        // efectos
+        private AudioSource musicSource;   // musica
+        private float musicFade;           // 0 a 1: sube poco a poco al empezar la musica
 
+        /// <summary>Silencia o activa los efectos de sonido.</summary>
         public bool Muted
         {
             get { return muted; }
             set { muted = value; }
+        }
+
+        /// <summary>Silencia o activa la musica de fondo.</summary>
+        public bool MusicMuted
+        {
+            get { return musicMuted; }
+            set { musicMuted = value; }
         }
 
         private void Awake()
@@ -54,6 +72,14 @@ namespace Chopsticks.Audio
             if (source == null) source = gameObject.AddComponent<AudioSource>();
             source.playOnAwake = false;
             source.spatialBlend = 0f;   // sonido 2D
+
+            // La musica va en su propio AudioSource, dentro de un objeto hijo, para no mezclarse con los efectos
+            var musicObject = new GameObject("Musica");
+            musicObject.transform.SetParent(transform);
+            musicSource = musicObject.AddComponent<AudioSource>();
+            musicSource.playOnAwake = false;
+            musicSource.loop = true;
+            musicSource.spatialBlend = 0f;
         }
 
         private void Start()
@@ -62,6 +88,33 @@ namespace Chopsticks.Audio
             {
                 Debug.LogWarning("[SoundManager] No hay ningun AudioListener en la escena (suele estar en la Main Camera). Sin el, no se oye nada.");
             }
+
+            if (playMusicOnStart) PlayMusic();
+        }
+
+        private void Update()
+        {
+            if (musicSource == null) return;
+
+            // El volumen de la musica se recalcula siempre: asi los cambios en el Inspector se oyen al momento
+            musicFade = musicFadeInSeconds <= 0f ? 1f : Mathf.MoveTowards(musicFade, 1f, Time.unscaledDeltaTime / musicFadeInSeconds);
+            musicSource.volume = musicMuted ? 0f : volume * musicVolume * musicFade;
+        }
+
+        /// <summary>Empieza la musica de fondo (si no esta ya sonando).</summary>
+        public void PlayMusic()
+        {
+            if (musicSource == null || musicClip == null || musicSource.isPlaying) return;
+
+            musicSource.clip = musicClip;
+            musicFade = 0f;
+            musicSource.Play();
+        }
+
+        /// <summary>Para la musica de fondo.</summary>
+        public void StopMusic()
+        {
+            if (musicSource != null) musicSource.Stop();
         }
 
         public void Play(SoundId id)

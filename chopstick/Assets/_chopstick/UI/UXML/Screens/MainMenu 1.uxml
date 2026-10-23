@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="BgDecor" src="project://database/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml?fileID=9197481963319205126&amp;guid=e7d4d788b246677499e0bb0c2d55fa53&amp;type=3#BgDecor"/>
+    <ui:Template name="MenuButton" src="project://database/Assets/_chopstick/UI/UXML/Molecules/MenuButton.uxml?fileID=9197481963319205126&amp;guid=88370be381a8efa4b8e4de378d4ae28a&amp;type=3#MenuButton"/>
+    <Style src="project://database/Assets/_chopstick/UI/Styles/Main.uss?fileID=7433441132597879392&amp;guid=815dab59b3928334790fa7ef335b965f&amp;type=3#Main"/>
+    <ui:VisualElement name="screen-main" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:VisualElement class="logo">
+            <ui:Label text="Chop" name="Label" class="logo__a"/>
+            <ui:Label text="5ticks" class="logo__b"/>
+        </ui:VisualElement>
+        <ui:Label text="El duelo de dedos" class="subtitle"/>
+        <ui:VisualElement class="spacer"/>
+        <ui:Instance template="MenuButton" name="btn-ai">
+            <AttributeOverrides element-name="title" text="Contra la máquina"/>
+            <AttributeOverrides element-name="subtitle" text="Tres niveles de dificultad"/>
+        </ui:Instance>
+        <ui:Instance template="MenuButton" name="btn-offline">
+            <AttributeOverrides element-name="title" text="Modo offline"/>
+            <AttributeOverrides element-name="subtitle" text="Dos jugadores en el mismo móvil"/>
+        </ui:Instance>
+        <ui:Instance template="MenuButton" name="btn-online">
+            <AttributeOverrides element-name="title" text="Modo online"/>
+            <AttributeOverrides element-name="subtitle" text="Cada uno en su dispositivo"/>
+        </ui:Instance>
+        <ui:Button name="btn-theme" text="Cambiar tema" class="btn btn--ghost"/>
+    </ui:VisualElement>
+</ui:UXML>

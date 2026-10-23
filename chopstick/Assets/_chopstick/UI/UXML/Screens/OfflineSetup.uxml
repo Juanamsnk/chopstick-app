@@ -22,7 +22,7 @@
                 <AttributeOverrides element-name="input" value="Jugador 2"/>
             </ui:Instance>
             <ui:Instance template="CheckOption" name="opt-split">
-                <AttributeOverrides element-name="toggle" label="Permitir repartir dedos"/>
+                <AttributeOverrides element-name="label" text="Permitir repartir dedos"/>
             </ui:Instance>
         </ui:VisualElement>
         <ui:VisualElement class="spacer"/>
