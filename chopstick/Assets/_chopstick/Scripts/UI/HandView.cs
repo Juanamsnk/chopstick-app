@@ -14,6 +14,9 @@ namespace Chopsticks.UI
 
         public event Action Clicked;
 
+        /// <summary>El elemento de la mano (para moverlo y animarlo).</summary>
+        public VisualElement Root { get { return button; } }
+
         public HandView(VisualElement container)
         {
             button = container.Q<Button>("hand");

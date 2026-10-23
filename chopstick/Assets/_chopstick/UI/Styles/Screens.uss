@@ -38,3 +38,6 @@
 /* Buscando rival */
 .search__title { font-size: 30px; -unity-font-style: bold; color: var(--ink); -unity-text-align: middle-center; margin-bottom: 10px; }
 .search__status { font-size: 15px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; }
+
+/* Destello rojo de toda la pantalla cuando te atacan (empieza invisible; lo anima AttackEffects) */
+.hit-flash { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: rgba(255,84,112,0.30); opacity: 0; }

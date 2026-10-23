@@ -20,6 +20,7 @@
       <ui:Button name="btn-split" text="Repartir dedos" class="btn btn--ghost btn--half btn--gap" />
       <ui:Button name="btn-exit" text="Salir" class="btn btn--ghost btn--half" />
     </ui:VisualElement>
+    <ui:VisualElement name="hit-flash" class="hit-flash" picking-mode="Ignore" />
     <ui:VisualElement name="split-panel" class="overlay overlay--bottom" style="display:none;">
       <ui:VisualElement class="sheet">
         <ui:Label text="Elige cómo repartir tus dedos (mano izquierda / mano derecha)" class="sheet__title" />

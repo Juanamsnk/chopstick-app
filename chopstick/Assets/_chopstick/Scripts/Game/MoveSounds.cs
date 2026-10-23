@@ -7,7 +7,7 @@ namespace Chopsticks.Game
     /// Elige el sonido de cada jugada y del final de la partida. Se le pasa el estado cada vez
     /// que la pantalla se redibuja y suena solo cuando hay algo nuevo:
     ///   - atacas tu           -> Attack
-    ///   - te atacan           -> Hit
+    ///   - te atacan           -> Hit (o HandLost si te eliminan la mano)
     ///   - alguien reparte     -> Split
     ///   - termina la partida  -> Win si ganas, Lose si pierdes (un poco despues del golpe final)
     /// Sirve igual para offline, contra la maquina y online (tambien las jugadas del rival).
@@ -71,7 +71,8 @@ namespace Chopsticks.Game
             }
             else if (move.TargetPlayer == localPlayer)
             {
-                sounds.Play(SoundId.Hit);
+                // Si te eliminan una mano suena su propio sonido; si no, el golpe normal
+                sounds.Play(move.Eliminated ? SoundId.HandLost : SoundId.Hit);
             }
         }
 

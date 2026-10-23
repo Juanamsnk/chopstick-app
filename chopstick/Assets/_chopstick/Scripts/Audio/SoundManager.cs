@@ -23,6 +23,10 @@ namespace Chopsticks.Audio
         [SerializeField] private AudioClip hitClip;
         [Range(0f, 1f)] [SerializeField] private float hitVolume = 1f;
 
+        [Header("Mano perdida: cuando te eliminan una mano (suena en lugar del golpe)")]
+        [SerializeField] private AudioClip handLostClip;
+        [Range(0f, 1f)] [SerializeField] private float handLostVolume = 1f;
+
         [Header("Reparto: al repartir los dedos")]
         [SerializeField] private AudioClip splitClip;
         [Range(0f, 1f)] [SerializeField] private float splitVolume = 1f;
@@ -148,6 +152,7 @@ namespace Chopsticks.Audio
                 case SoundId.Button: return buttonClip;
                 case SoundId.Attack: return attackClip;
                 case SoundId.Hit: return hitClip;
+                case SoundId.HandLost: return handLostClip;
                 case SoundId.Split: return splitClip;
                 case SoundId.Win: return winClip;
                 case SoundId.Lose: return loseClip;
@@ -162,6 +167,7 @@ namespace Chopsticks.Audio
                 case SoundId.Button: return buttonVolume;
                 case SoundId.Attack: return attackVolume;
                 case SoundId.Hit: return hitVolume;
+                case SoundId.HandLost: return handLostVolume;
                 case SoundId.Split: return splitVolume;
                 case SoundId.Win: return winVolume;
                 case SoundId.Lose: return loseVolume;

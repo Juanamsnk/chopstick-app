@@ -26,6 +26,8 @@ namespace Chopsticks.UI
         private readonly Label gameOverTitle;
         private readonly Label gameOverText;
         private readonly Button againButton;
+        private readonly VisualElement hitFlash;     // destello rojo cuando te atacan (puede no existir en el UXML)
+        private MoveResult lastAnimated;             // ultima jugada ya animada, para no repetir los efectos
 
         public event Action<int, int> HandClicked;       // (jugador, mano)
         public event Action SplitButtonClicked;
@@ -68,6 +70,7 @@ namespace Chopsticks.UI
 
             // Capa de fin de partida
             gameOverPanel = root.Q("gameover");
+            hitFlash = root.Q("hit-flash");
             gameOverTitle = root.Q<Label>("gameover-title");
             gameOverText = root.Q<Label>("gameover-text");
             againButton = root.Q<Button>("btn-again");
@@ -105,6 +108,7 @@ namespace Chopsticks.UI
             }
 
             RenderLastMoveMarks(d);
+            PlayMoveEffects(d);
             RenderBanner(d);
             log.text = LogText(state);
             RenderButtons(d);
@@ -173,6 +177,27 @@ namespace Chopsticks.UI
                 HandOf(m.Player, 0).SetMark("Reparte", color);
                 HandOf(m.Player, 1).SetMark("Reparte", color);
             }
+        }
+
+        /// <summary>Lanza los efectos de la ultima jugada una sola vez, aunque la pantalla se redibuje varias veces.</summary>
+        private void PlayMoveEffects(GameViewData d)
+        {
+            MoveResult m = d.State.LastMove;
+            if (m == null)
+            {
+                lastAnimated = null;
+                return;
+            }
+            if (ReferenceEquals(m, lastAnimated)) return;
+            lastAnimated = m;
+            if (m.Type != MoveType.Attack) return;
+
+            HandView attacker = HandOf(m.Player, m.FromHand);
+            HandView target = HandOf(m.TargetPlayer, m.TargetHand);
+            bool attackerIsBottom = slotPlayer[MySlot] == m.Player;
+            bool youWereHit = m.TargetPlayer == d.BottomPlayer;
+
+            AttackEffects.Play(attacker, target, attackerIsBottom, m.Eliminated, youWereHit ? hitFlash : null);
         }
 
         private HandView HandOf(int player, int hand)
