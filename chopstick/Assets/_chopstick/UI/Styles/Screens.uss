@@ -3,6 +3,7 @@
 /* Menu principal: cada boton con su color */
 #btn-offline .btn { background-color: var(--blue); color: var(--on-color); border-color: var(--blue-depth); }
 #btn-career .btn { background-color: var(--player-0); color: var(--on-color); border-color: #c75a14; }
+#btn-friends .btn { background-color: var(--player-1); color: var(--on-color); border-color: #5a2fd0; }
 #btn-online .btn { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }
 
 /* Modo carrera: lista de 100 niveles (5 por fila, agrupados por rango) */
@@ -38,9 +39,36 @@
     border-width: 3px; border-bottom-width: 5px; border-color: var(--line); border-radius: 14px;
     font-size: 18px; -unity-font-style: bold; -unity-text-align: middle-center;
 }
+.career__hint { font-size: 12px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin: 0 6px 8px 6px; }
+.level-btn { flex-direction: column; align-items: center; justify-content: center; height: 62px; }
+.level-btn__num { font-size: 18px; -unity-font-style: bold; margin: 0; padding: 0; -unity-text-align: middle-center; }
+.level-btn__reward { flex-direction: row; align-items: center; justify-content: center; margin-top: 1px; }
+.level-btn__coin { width: 8px; height: 8px; border-radius: 4px; margin-right: 3px; background-color: var(--accent); border-width: 1px; border-color: var(--accent-depth); }
+.level-btn__coins { font-size: 10px; -unity-font-style: bold; margin: 0; padding: 0; -unity-text-align: middle-center; }
+.level-btn--bonus { border-color: var(--accent); }
 .level-btn--done { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }
 .level-btn--current { background-color: var(--accent); color: var(--on-accent); border-color: var(--accent-depth); }
 .level-btn--locked { opacity: 0.35; }
+
+/* Amigos */
+.friends__panel { flex-grow: 1; }
+.friends__signed { flex-grow: 1; }
+.friends__hint { font-size: 14px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin: 4px 0 10px 0; }
+.friends__msg { font-size: 14px; color: var(--mute); -unity-text-align: middle-center; white-space: normal; margin: 2px 0 6px 0; min-height: 18px; }
+.friends__msg--error { color: var(--danger); }
+.friend-row {
+    flex-direction: row; align-items: center;
+    background-color: var(--card-2); border-radius: 16px; padding: 8px 10px 8px 14px; margin-bottom: 8px;
+}
+.friend-row__name { flex-grow: 1; flex-shrink: 1; font-size: 17px; -unity-font-style: bold; color: var(--ink); white-space: nowrap; overflow: hidden; }
+.mini-btn {
+    height: 36px; margin: 0 0 0 6px; padding: 0 12px; border-radius: 12px;
+    border-width: 2px; border-bottom-width: 4px; font-size: 14px; -unity-font-style: bold;
+}
+.mini-btn--ok { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }
+.mini-btn--no { background-color: var(--danger); color: var(--on-color); border-color: var(--danger-depth); }
+.mini-btn--fight { background-color: var(--player-0); color: var(--on-color); border-color: #c75a14; }
+.mini-btn--ghost { background-color: transparent; color: var(--mute); border-color: var(--line); }
 
 /* Online */
 #btn-create { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }

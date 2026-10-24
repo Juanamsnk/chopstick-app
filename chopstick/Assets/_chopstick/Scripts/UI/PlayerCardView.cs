@@ -67,6 +67,12 @@ namespace Chopsticks.UI
             }
         }
 
+        /// <summary>El estilo de las dos manos de esta tarjeta.</summary>
+        public void SetSkin(string skinId, int tone)
+        {
+            for (int i = 0; i < Hands.Length; i++) Hands[i].SetSkin(skinId, tone);
+        }
+
         public void SetDead(bool dead)
         {
             card.EnableInClassList("player-card--dead", dead);

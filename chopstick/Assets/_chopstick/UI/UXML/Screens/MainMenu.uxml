@@ -22,9 +22,17 @@
             <AttributeOverrides element-name="title" text="Modo offline"/>
             <AttributeOverrides element-name="subtitle" text="Dos jugadores en el mismo móvil"/>
         </ui:Instance>
+        <ui:Instance template="MenuButton" name="btn-friends">
+            <AttributeOverrides element-name="title" text="Amigos"/>
+            <AttributeOverrides element-name="subtitle" text="Inicia sesión y rétalos a una partida"/>
+        </ui:Instance>
         <ui:Instance template="MenuButton" name="btn-online">
             <AttributeOverrides element-name="title" text="Modo online"/>
             <AttributeOverrides element-name="subtitle" text="Cada uno en su dispositivo"/>
+        </ui:Instance>
+        <ui:Instance template="MenuButton" name="btn-shop">
+            <AttributeOverrides element-name="title" text="Tienda"/>
+            <AttributeOverrides element-name="subtitle" text="Estilos de mano con tus monedas"/>
         </ui:Instance>
     </ui:VisualElement>
 </ui:UXML>

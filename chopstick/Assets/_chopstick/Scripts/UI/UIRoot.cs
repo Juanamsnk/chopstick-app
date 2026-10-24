@@ -1,6 +1,8 @@
 using Chopsticks.Audio;
 using Chopsticks.Career;
 using Chopsticks.Game;
+using Chopsticks.Shop;
+using Chopsticks.Social;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -26,10 +28,15 @@ namespace Chopsticks.UI
         private AiSetupView aiSetup;
         private CareerProgress careerProgress;
         private CareerView careerView;
+        private ShopInventory shopInventory;
+        private ShopView shopView;
         private OnlineMenuView onlineMenu;
         private LobbyView lobbyView;
         private SearchView searchView;
         private OnlineController onlineController;
+        private FriendsView friendsView;
+        private ChallengePopupView challengePopup;
+        private SocialController socialController;
 
         private void OnEnable()
         {
@@ -52,6 +59,8 @@ namespace Chopsticks.UI
             navigator.Register(ScreenId.OfflineSetup, root.Q("offlinesetup"));
             navigator.Register(ScreenId.AiSetup, root.Q("aisetup"));
             navigator.Register(ScreenId.Career, root.Q("career"));
+            navigator.Register(ScreenId.Shop, root.Q("shop"));
+            navigator.Register(ScreenId.Friends, root.Q("friends"));
             navigator.Register(ScreenId.OnlineMenu, root.Q("onlinemenu"));
             navigator.Register(ScreenId.Lobby, root.Q("lobby"));
             navigator.Register(ScreenId.Game, root.Q("game"));
@@ -59,9 +68,10 @@ namespace Chopsticks.UI
             menuWiring = new MenuWiring(root, navigator, theme);
 
             // Partida (sirve para offline, contra la maquina y online)
-            gameView = new GameScreenView(root.Q("game"));
+            shopInventory = new ShopInventory();
+            gameView = new GameScreenView(root.Q("game"), shopInventory);
             careerProgress = new CareerProgress();
-            gameController = new GameController(gameView, navigator, new MoveSounds(soundManager), careerProgress);
+            gameController = new GameController(gameView, navigator, new MoveSounds(soundManager), careerProgress, shopInventory);
 
             // Ajustes offline y contra la maquina
             offlineSetup = new OfflineSetupView(root.Q("offlinesetup"));
@@ -74,11 +84,21 @@ namespace Chopsticks.UI
             careerView.LevelChosen += gameController.StartCareerLevel;
             navigator.Shown += id => { if (id == ScreenId.Career) careerView.Refresh(); };
 
+            // Tienda: estilos de mano que se compran con las monedas del modo carrera
+            shopView = new ShopView(root.Q("shop"), shopInventory);
+            navigator.Shown += id => { if (id == ScreenId.Shop) shopView.Refresh(); };
+
             // Online (crear, unirse con codigo y buscar partida)
             onlineMenu = new OnlineMenuView(root.Q("onlinemenu"));
             lobbyView = new LobbyView(root.Q("lobby"));
             searchView = new SearchView(root.Q("searching"));
             onlineController = new OnlineController(navigator, onlineMenu, lobbyView, searchView, gameController);
+
+            // Amigos (Firebase): iniciar sesion con Google, anadir amigos y retarlos
+            friendsView = new FriendsView(root.Q("friends"));
+            challengePopup = new ChallengePopupView(root.Q("challenge"));
+            socialController = new SocialController(navigator, friendsView, challengePopup, onlineController);
+            socialController.Start();
 
             navigator.Show(ScreenId.MainMenu);
         }
@@ -87,6 +107,7 @@ namespace Chopsticks.UI
         {
             // Si se cierra la interfaz, se cierra tambien la sala online
             if (onlineController != null) onlineController.CleanUp();
+            if (socialController != null) socialController.Stop();
         }
     }
 }

@@ -17,6 +17,8 @@ namespace Chopsticks.Game
         bool CanRestart { get; }        // este dispositivo puede pedir "Jugar otra vez"
         string RestartLabel { get { return "Jugar otra vez"; } }   // texto del boton al terminar (el modo carrera lo cambia)
 
+        string ResultNote { get { return null; } }   // linea extra en la caja de fin de partida (monedas ganadas)
+
         event Action Changed;           // el estado cambio: hay que redibujar
 
         void Begin();                   // se llama cuando la pantalla ya esta lista

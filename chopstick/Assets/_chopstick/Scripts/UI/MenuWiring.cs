@@ -35,6 +35,8 @@ namespace Chopsticks.UI
             OnClick(MenuButton(main, "btn-career"), () => navigator.Show(ScreenId.Career));
             OnClick(MenuButton(main, "btn-offline"), () => navigator.Show(ScreenId.OfflineSetup));
             OnClick(MenuButton(main, "btn-ai"), () => navigator.Show(ScreenId.AiSetup));
+            OnClick(MenuButton(main, "btn-shop"), () => navigator.Show(ScreenId.Shop));
+            OnClick(MenuButton(main, "btn-friends"), () => navigator.Show(ScreenId.Friends));
             OnClick(MenuButton(main, "btn-online"), () => navigator.Show(ScreenId.OnlineMenu));
 
             //themeButton = main.Q<Button>("btn-theme");
@@ -53,6 +55,8 @@ namespace Chopsticks.UI
             BackFromActionRow("offlinesetup");
             BackFromActionRow("aisetup");
             BackFromActionRow("career");
+            BackFromActionRow("shop");
+            BackFromActionRow("friends");
             BackFromActionRow("onlinemenu");
             BackFromActionRow("lobby");
 

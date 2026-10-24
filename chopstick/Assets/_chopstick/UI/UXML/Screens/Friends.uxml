@@ -1,0 +1,37 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
+    <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
+    <ui:Template name="LabeledField" src="/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml" />
+    <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+    <ui:VisualElement name="screen-friends" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:Label text="Amigos" class="career__title"/>
+        <ui:Label name="friends-msg" text="" class="friends__msg"/>
+        <ui:VisualElement name="signed-out" class="friends__panel">
+            <ui:VisualElement class="card">
+                <ui:Label name="friends-hint" text="Conectando..." class="friends__hint"/>
+                <ui:Button name="btn-google" text="Iniciar sesión con Google" class="btn"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="signed-in" class="friends__signed" style="display:none;">
+            <ui:VisualElement class="card">
+                <ui:Label name="me-name" text="" class="label-bold"/>
+                <ui:Label text="Tu código de amigo" class="friends__hint"/>
+                <ui:Label name="my-code" text="------" class="code"/>
+                <ui:Button name="btn-copy" text="Copiar código" class="btn btn--ghost"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="card">
+                <ui:Instance template="LabeledField" name="friend-code">
+                    <AttributeOverrides element-name="label" text="Código de tu amigo"/>
+                    <AttributeOverrides element-name="input" value="" max-length="6"/>
+                </ui:Instance>
+                <ui:Button name="btn-add" text="Añadir amigo" class="btn"/>
+            </ui:VisualElement>
+            <ui:ScrollView name="friends-list" horizontal-scroller-visibility="Hidden" class="career__levels"/>
+        </ui:VisualElement>
+        <ui:Instance template="ActionRow" name="action-row">
+            <AttributeOverrides element-name="btn-primary" text="Cerrar sesión"/>
+            <AttributeOverrides element-name="btn-secondary" text="Volver"/>
+        </ui:Instance>
+    </ui:VisualElement>
+</ui:UXML>

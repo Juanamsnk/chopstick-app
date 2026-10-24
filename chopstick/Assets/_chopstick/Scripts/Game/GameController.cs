@@ -1,5 +1,6 @@
 using Chopsticks.Career;
 using Chopsticks.Core;
+using Chopsticks.Shop;
 using Chopsticks.UI;
 
 namespace Chopsticks.Game
@@ -15,17 +16,19 @@ namespace Chopsticks.Game
         private readonly ScreenNavigator navigator;
         private readonly MoveSounds moveSounds;
         private readonly CareerProgress career;
+        private readonly ShopInventory shop;
 
         private IMatch match;
         private int selectedHand = -1;   // mano propia elegida para atacar (-1 = ninguna)
         private bool splitting;          // panel de repartir abierto
 
-        public GameController(GameScreenView view, ScreenNavigator navigator, MoveSounds moveSounds, CareerProgress career)
+        public GameController(GameScreenView view, ScreenNavigator navigator, MoveSounds moveSounds, CareerProgress career, ShopInventory shop)
         {
             this.view = view;
             this.navigator = navigator;
             this.moveSounds = moveSounds;
             this.career = career;
+            this.shop = shop;
 
             view.HandClicked += OnHandClicked;
             view.SplitButtonClicked += OnSplitButton;
@@ -45,7 +48,7 @@ namespace Chopsticks.Game
         /// <summary>Empieza un nivel del modo carrera (1 a 100).</summary>
         public void StartCareerLevel(int level)
         {
-            StartMatch(new CareerMatch(level, view.Schedule, career));
+            StartMatch(new CareerMatch(level, view.Schedule, career, shop));
         }
 
         /// <summary>Empieza cualquier partida (la usa tambien el modo online).</summary>
@@ -159,6 +162,7 @@ namespace Chopsticks.Game
                 Thinking = match.Thinking,
                 CanRestart = match.CanRestart,
                 RestartLabel = match.RestartLabel,
+                ResultNote = match.ResultNote,
                 CanSplit = GameRules.CanSplit(match.State),
                 SplitOptions = splitting ? match.GetSplitOptions() : null
             };

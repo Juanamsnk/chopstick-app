@@ -1,0 +1,233 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Chopsticks.Social;
+using Chopsticks.UI;
+using UnityEngine;
+
+namespace Chopsticks.Game
+{
+    /// <summary>
+    /// Une la pantalla de amigos con Firebase (SocialBackend) y con el modo online.
+    ///  - Retar a un amigo: crea una sala online normal y le envia el codigo de la sala.
+    ///  - Recibir un reto: sale una ventana; al aceptar, entras en esa sala con el codigo.
+    /// </summary>
+    public class SocialController
+    {
+        private const int ChallengeLifetimeMs = 90000;
+
+        private readonly ScreenNavigator navigator;
+        private readonly FriendsView view;
+        private readonly ChallengePopupView popup;
+        private readonly OnlineController online;
+        private readonly SocialBackend backend = new SocialBackend();
+
+        private ChallengeInfo pending;   // reto recibido que se esta mostrando
+        private string initError;
+        private bool busy;
+
+        public SocialController(ScreenNavigator navigator, FriendsView view, ChallengePopupView popup, OnlineController online)
+        {
+            this.navigator = navigator;
+            this.view = view;
+            this.popup = popup;
+            this.online = online;
+
+            navigator.Shown += id => { if (id == ScreenId.Friends) Refresh(); };
+
+            view.GoogleClicked += OnGoogle;
+            view.SignOutClicked += OnSignOut;
+            view.AddClicked += OnAdd;
+            view.AcceptClicked += r => Run(() => backend.AcceptRequestAsync(r.Uid), r.Name + " ahora es tu amigo.");
+            view.DeclineClicked += r => Run(() => backend.DeclineRequestAsync(r.Uid), "");
+            view.RemoveClicked += f => Run(() => backend.RemoveFriendAsync(f.Uid), "");
+            view.ChallengeClicked += OnChallenge;
+
+            popup.AcceptClicked += OnAcceptChallenge;
+            popup.DeclineClicked += OnDeclineChallenge;
+
+            backend.SignInChanged += Refresh;
+            backend.FriendsChanged += list => view.SetFriends(list);
+            backend.RequestsChanged += list => view.SetRequests(list);
+            backend.ChallengeReceived += OnChallengeReceived;
+        }
+
+        /// <summary>Arranca Firebase. Si habia una sesion guardada, se recupera sola.</summary>
+        public async void Start()
+        {
+            if (!SocialBackend.IsSupported)
+            {
+                initError = "Los amigos no están disponibles en la versión web.";
+                Refresh();
+                return;
+            }
+            try
+            {
+                await backend.InitAsync();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[Social] No se pudo iniciar Firebase: " + e);
+                initError = e is SocialException ? e.Message : "No se pudo conectar con Firebase.";
+            }
+            Refresh();
+        }
+
+        /// <summary>Deja de escuchar a Firebase (al cerrar la interfaz).</summary>
+        public void Stop()
+        {
+            backend.StopListening();
+        }
+
+        // ------------------------------------------------------------
+        // Sesion
+        // ------------------------------------------------------------
+        private void Refresh()
+        {
+            if (backend.IsSignedIn)
+            {
+                view.ShowSignedIn(backend.MyName, backend.MyCode);
+                return;
+            }
+
+            if (initError != null) view.ShowSignedOut(false, initError);
+            else if (!backend.Ready) view.ShowSignedOut(false, "Conectando...");
+            else view.ShowSignedOut(true, "Inicia sesión para añadir amigos y retarlos a una partida online.");
+        }
+
+        private async void OnGoogle()
+        {
+            if (busy) return;
+            busy = true;
+            view.SetBusy(true);
+            view.ShowMessage("Iniciando sesión...", false);
+            try
+            {
+                await backend.SignInWithGoogleAsync();
+                view.ShowMessage("", false);
+            }
+            catch (Exception e)
+            {
+                view.ShowMessage(MessageOf(e), true);
+            }
+            view.SetBusy(false);
+            busy = false;
+            Refresh();
+        }
+
+        private void OnSignOut()
+        {
+            backend.SignOut();
+            view.SetFriends(new List<FriendInfo>());
+            view.SetRequests(new List<FriendRequestInfo>());
+            view.ShowMessage("", false);
+            Refresh();
+        }
+
+        // ------------------------------------------------------------
+        // Amigos
+        // ------------------------------------------------------------
+        private async void OnAdd(string code)
+        {
+            if (busy) return;
+            busy = true;
+            view.SetBusy(true);
+            try
+            {
+                string name = await backend.SendFriendRequestAsync(code);
+                view.ClearCodeField();
+                view.ShowMessage("Petición enviada a " + name + ".", false);
+            }
+            catch (Exception e)
+            {
+                view.ShowMessage(MessageOf(e), true);
+            }
+            view.SetBusy(false);
+            busy = false;
+        }
+
+        /// <summary>Ejecuta una accion de Firebase y ensena el resultado en la pantalla de amigos.</summary>
+        private async void Run(Func<Task> action, string successMessage)
+        {
+            try
+            {
+                await action();
+                view.ShowMessage(successMessage, false);
+            }
+            catch (Exception e)
+            {
+                view.ShowMessage(MessageOf(e), true);
+            }
+        }
+
+        // ------------------------------------------------------------
+        // Retos
+        // ------------------------------------------------------------
+        /// <summary>Retar: se crea una sala online (como "Crear partida") y se le manda el codigo al amigo.</summary>
+        private void OnChallenge(FriendInfo friend)
+        {
+            view.ShowMessage("", false);
+            online.CreateRoom(backend.MyName, true,
+                code => SendChallenge(friend, code),
+                message => view.ShowMessage(message, true));
+        }
+
+        private async void SendChallenge(FriendInfo friend, string joinCode)
+        {
+            try
+            {
+                await backend.SendChallengeAsync(friend.Uid, joinCode);
+                await Task.Delay(ChallengeLifetimeMs);   // si no lo acepta en un rato, se retira
+                await backend.CancelChallengeAsync(friend.Uid);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[Social] Reto: " + e.Message);
+            }
+        }
+
+        private void OnChallengeReceived(ChallengeInfo challenge)
+        {
+            // En plena partida, sala o busqueda no se molesta: el reto se descarta
+            ScreenId now = navigator.Current;
+            if (now == ScreenId.Game || now == ScreenId.Lobby || now == ScreenId.Search)
+            {
+                Run(() => backend.DismissChallengeAsync(challenge.FromUid), "");
+                return;
+            }
+
+            pending = challenge;
+            popup.Show(challenge.FromName);
+        }
+
+        private void OnAcceptChallenge()
+        {
+            popup.Hide();
+            ChallengeInfo challenge = pending;
+            pending = null;
+            if (challenge == null) return;
+
+            Run(() => backend.DismissChallengeAsync(challenge.FromUid), "");
+            online.JoinRoom(backend.MyName, challenge.JoinCode, message =>
+            {
+                navigator.Show(ScreenId.Friends);
+                view.ShowMessage(message, true);
+            });
+        }
+
+        private void OnDeclineChallenge()
+        {
+            popup.Hide();
+            ChallengeInfo challenge = pending;
+            pending = null;
+            if (challenge != null) Run(() => backend.DismissChallengeAsync(challenge.FromUid), "");
+        }
+
+        private static string MessageOf(Exception e)
+        {
+            if (e is SocialException) return e.Message;
+            Debug.LogWarning("[Social] " + e);
+            return "No se pudo completar la acción. Revisa tu conexión.";
+        }
+    }
+}

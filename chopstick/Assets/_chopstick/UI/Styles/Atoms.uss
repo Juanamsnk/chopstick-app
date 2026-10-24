@@ -40,7 +40,7 @@
     width: 15px; height: 52px; margin: 0 2px; background-color: var(--skin);
     border-width: 2px; border-color: var(--skin-line); border-radius: 8px 8px 3px 3px;
 }
-.finger--down { height: 16px; opacity: 0.35; }
+.finger--down { height: 22px; opacity: 1; border-radius: 8px; }
 .palm {
     width: 84px; height: 18px; background-color: var(--skin);
     border-width: 2px; border-color: var(--skin-line); border-radius: 0 0 14px 14px;

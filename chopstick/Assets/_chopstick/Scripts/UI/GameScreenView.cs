@@ -1,5 +1,6 @@
 using System;
 using Chopsticks.Core;
+using Chopsticks.Shop;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -15,6 +16,7 @@ namespace Chopsticks.UI
         private const int MySlot = 1;
 
         private readonly VisualElement root;
+        private readonly ShopInventory shop;
         private readonly TurnBannerView banner;
         private readonly Label log;
         private readonly PlayerCardView[] cards = new PlayerCardView[2];
@@ -36,9 +38,10 @@ namespace Chopsticks.UI
 
         public bool IsVisible { get { return root.style.display.value != DisplayStyle.None; } }
 
-        public GameScreenView(VisualElement gameScreen)
+        public GameScreenView(VisualElement gameScreen, ShopInventory shop)
         {
             root = gameScreen;
+            this.shop = shop;
             banner = new TurnBannerView(root.Q("banner"));
             log = root.Q<Label>("log");
 
@@ -129,6 +132,7 @@ namespace Chopsticks.UI
             gameOverTitle.text = won ? "Victoria" : "Derrota";
             gameOverTitle.EnableInClassList("gameover__title--lose", !won);
             gameOverText.text = d.State.Players[d.State.Winner].Name + " ha ganado la partida";
+            if (!string.IsNullOrEmpty(d.ResultNote)) gameOverText.text += "\n" + d.ResultNote;
             againButton.style.display = d.CanRestart ? DisplayStyle.Flex : DisplayStyle.None;
             againButton.text = d.RestartLabel;
         }
@@ -146,6 +150,10 @@ namespace Chopsticks.UI
             card.SetPlayer(p.Name, color);
             card.SetTurn(isCurrent, color);
             card.SetDead(!p.IsAlive);
+
+            // Tu estilo de mano solo se ve en tu dispositivo; las manos rivales son las clasicas
+            if (slot == MySlot) card.SetSkin(shop.EquippedId, shop.Tone);
+            else card.SetSkin(HandSkinCatalog.DefaultId, 0);
 
             for (int h = 0; h < 2; h++)
             {

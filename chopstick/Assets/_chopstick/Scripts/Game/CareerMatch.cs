@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Chopsticks.Career;
 using Chopsticks.Core;
+using Chopsticks.Shop;
 
 namespace Chopsticks.Game
 {
@@ -14,19 +15,22 @@ namespace Chopsticks.Game
     {
         private readonly Action<long, Action> schedule;
         private readonly CareerProgress progress;
+        private readonly ShopInventory shop;
 
         private LocalMatch inner;
         private int level;
         private bool recorded;   // la victoria de esta partida ya se guardo
         private bool closed;
+        private int reward;      // monedas ganadas en esta partida
 
         public event Action Changed;
 
-        public CareerMatch(int level, Action<long, Action> schedule, CareerProgress progress)
+        public CareerMatch(int level, Action<long, Action> schedule, CareerProgress progress, ShopInventory shop)
         {
             this.level = level;
             this.schedule = schedule;
             this.progress = progress;
+            this.shop = shop;
             CreateInner();
         }
 
@@ -50,6 +54,11 @@ namespace Chopsticks.Game
                 if (!Won) return "Reintentar";
                 return level < CareerLevels.Count ? "Siguiente nivel" : "Repetir nivel";
             }
+        }
+
+        public string ResultNote
+        {
+            get { return Won && reward > 0 ? "+" + reward + " monedas" : null; }
         }
 
         public void Begin()
@@ -93,6 +102,7 @@ namespace Chopsticks.Game
             inner = new LocalMatch(CareerLevels.CreateSetup(level), schedule);
             inner.Changed += OnInnerChanged;
             recorded = false;
+            reward = 0;
         }
 
         private void DisposeInner()
@@ -107,7 +117,10 @@ namespace Chopsticks.Game
             if (!recorded && Won)
             {
                 recorded = true;
-                progress.Complete(level);
+                // Primera vez: premio completo. Repetir un nivel ya superado: premio pequeno.
+                bool firstTime = progress.Complete(level);
+                reward = firstTime ? CareerRewards.FirstClear(level) : CareerRewards.ReplayReward;
+                shop.AddCoins(reward);
             }
             Raise();
         }

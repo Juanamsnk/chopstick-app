@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "615838771385",
+    "firebase_url": "https://chop-5ticks-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "chop-5ticks",
+    "storage_bucket": "chop-5ticks.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615838771385:android:f8e7975b92f3e3c96b9368",
+        "android_client_info": {
+          "package_name": "com.SenekaGames.Chop5ticks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615838771385-2sabs3vh134d7844tqtgtd0p04446gh9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.SenekaGames.Chop5ticks",
+            "certificate_hash": "5b62207bf1c33c409ffd54f124a9ba229e0fb772"
+          }
+        },
+        {
+          "client_id": "615838771385-pms581p5lpaahmqodf8cmoictv7k849d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.SenekaGames.Chop5ticks",
+            "certificate_hash": "295c62bd2c642054714b47e107a925815ee7233e"
+          }
+        },
+        {
+          "client_id": "615838771385-fbaqs27tm27hbgunja92gc9kvsvf2k5g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASHytBjD-hMcNVRszZxB4Z5ZNsEuxHBqU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615838771385-fbaqs27tm27hbgunja92gc9kvsvf2k5g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "615838771385-5khcqmi9a4116d4i02tgkp743shhilin.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.SenekaGames.Chop5ticks"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

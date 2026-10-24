@@ -6,6 +6,7 @@
         <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
         <ui:Label text="Modo carrera" class="career__title"/>
         <ui:Label name="career-progress" text="" class="career__progress"/>
+        <ui:Label text="Cada nivel muestra las monedas que ganas al superarlo." class="career__hint"/>
         <ui:ScrollView name="levels" horizontal-scroller-visibility="Hidden" class="career__levels"/>
         <ui:Instance template="ActionRow" name="action-row">
             <AttributeOverrides element-name="btn-primary" text="Continuar"/>

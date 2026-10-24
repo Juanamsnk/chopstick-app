@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
+    <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
+    <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+    <ui:VisualElement name="screen-shop" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:VisualElement class="shop__header">
+            <ui:Label text="Tienda" class="shop__title"/>
+            <ui:VisualElement class="shop__coins">
+                <ui:VisualElement class="coin" picking-mode="Ignore"/>
+                <ui:Label name="shop-coins" text="0" class="shop__coins-text"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label text="Las monedas se consiguen en el Modo carrera: ganas monedas al superar cada nivel." class="shop__hint"/>
+        <ui:VisualElement name="legend" class="shop__legend"/>
+        <ui:VisualElement class="shop__skinrow">
+            <ui:Label text="Piel" class="shop__skinrow-label"/>
+            <ui:VisualElement name="tones" class="shop__tones"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="skins" horizontal-scroller-visibility="Hidden" class="career__levels shop__scroll"/>
+        <ui:Instance template="ActionRow" name="action-row">
+            <AttributeOverrides element-name="btn-secondary" text="Volver"/>
+        </ui:Instance>
+    </ui:VisualElement>
+</ui:UXML>

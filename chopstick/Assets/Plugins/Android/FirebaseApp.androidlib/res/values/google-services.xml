@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_android_client_id,@string/default_web_client_id">
+  <string name="firebase_database_url" translatable="false">https://chop-5ticks-default-rtdb.europe-west1.firebasedatabase.app</string>
+  <string name="gcm_defaultSenderId" translatable="false">615838771385</string>
+  <string name="google_storage_bucket" translatable="false">chop-5ticks.firebasestorage.app</string>
+  <string name="project_id" translatable="false">chop-5ticks</string>
+  <string name="google_api_key" translatable="false">AIzaSyASHytBjD-hMcNVRszZxB4Z5ZNsEuxHBqU</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyASHytBjD-hMcNVRszZxB4Z5ZNsEuxHBqU</string>
+  <string name="google_app_id" translatable="false">1:615838771385:android:f8e7975b92f3e3c96b9368</string>
+  <string name="default_android_client_id" translatable="false">615838771385-2sabs3vh134d7844tqtgtd0p04446gh9.apps.googleusercontent.com</string>
+  <string name="default_web_client_id" translatable="false">615838771385-fbaqs27tm27hbgunja92gc9kvsvf2k5g.apps.googleusercontent.com</string>
+</resources>

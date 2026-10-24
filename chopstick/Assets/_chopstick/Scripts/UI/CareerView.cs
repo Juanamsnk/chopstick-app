@@ -1,5 +1,6 @@
 using System;
 using Chopsticks.Career;
+using Chopsticks.Shop;
 using UnityEngine.UIElements;
 
 namespace Chopsticks.UI
@@ -16,6 +17,7 @@ namespace Chopsticks.UI
         private readonly Label progressLabel;
         private readonly Button continueButton;
         private readonly Button[] levelButtons = new Button[CareerLevels.Count + 1];   // posicion = numero de nivel
+        private readonly Label[] rewardLabels = new Label[CareerLevels.Count + 1];
 
         public event Action<int> LevelChosen;
 
@@ -38,7 +40,10 @@ namespace Chopsticks.UI
                 int first = tier * CareerLevels.LevelsPerTier + 1;
                 int last = first + CareerLevels.LevelsPerTier - 1;
 
-                var title = new Label(CareerLevels.TierNameByIndex(tier) + "  (" + first + " - " + last + ")");
+                int tierCoins = 0;
+                for (int l = first; l <= last; l++) tierCoins += CareerRewards.FirstClear(l);
+
+                var title = new Label(CareerLevels.TierNameByIndex(tier) + "  (" + first + " - " + last + ")  ·  " + tierCoins + " monedas");
                 title.AddToClassList("career__tier");
                 scroll.Add(title);
 
@@ -50,8 +55,28 @@ namespace Chopsticks.UI
                 {
                     int chosen = level;
                     var button = new Button();
-                    button.text = level.ToString();
                     button.AddToClassList("level-btn");
+                    if (level % CareerLevels.LevelsPerTier == 0) button.AddToClassList("level-btn--bonus");   // incluye bonus de rango
+
+                    var num = new Label(level.ToString());
+                    num.AddToClassList("level-btn__num");
+                    num.pickingMode = PickingMode.Ignore;
+                    button.Add(num);
+
+                    var reward = new VisualElement();
+                    reward.AddToClassList("level-btn__reward");
+                    reward.pickingMode = PickingMode.Ignore;
+                    var coin = new VisualElement();
+                    coin.AddToClassList("level-btn__coin");
+                    coin.pickingMode = PickingMode.Ignore;
+                    var coins = new Label();
+                    coins.AddToClassList("level-btn__coins");
+                    coins.pickingMode = PickingMode.Ignore;
+                    reward.Add(coin);
+                    reward.Add(coins);
+                    button.Add(reward);
+                    rewardLabels[level] = coins;
+
                     button.clicked += () => Choose(chosen);
                     row.Add(button);
                     levelButtons[level] = button;
@@ -77,6 +102,10 @@ namespace Chopsticks.UI
                 b.EnableInClassList("level-btn--done", progress.IsCompleted(level));
                 b.EnableInClassList("level-btn--current", !allDone && level == next);
                 b.EnableInClassList("level-btn--locked", !progress.IsUnlocked(level));
+
+                // Monedas que da este nivel: la primera vez lo normal, y despues solo la repeticion
+                int coins = progress.IsCompleted(level) ? CareerRewards.ReplayReward : CareerRewards.FirstClear(level);
+                rewardLabels[level].text = "+" + coins;
             }
 
             progressLabel.text = allDone

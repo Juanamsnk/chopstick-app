@@ -46,9 +46,22 @@ namespace Chopsticks.Game
         // ------------------------------------------------------------
         // Crear sala con codigo
         // ------------------------------------------------------------
-        private async void OnCreate(string playerName, bool splitAllowed)
+        private void OnCreate(string playerName, bool splitAllowed)
         {
-            if (busy) return;
+            CreateRoom(playerName, splitAllowed, null, null);
+        }
+
+        /// <summary>
+        /// Crea una sala con codigo y va a la sala de espera. Tambien la usa la pantalla de amigos para retar:
+        /// onCreated recibe el codigo y onError un mensaje si falla (si es null, el error sale en el menu online).
+        /// </summary>
+        public async void CreateRoom(string playerName, bool splitAllowed, Action<string> onCreated, Action<string> onError)
+        {
+            if (busy)
+            {
+                if (onError != null) onError("Espera un momento...");
+                return;
+            }
             busy = true;
             menu.ShowMessage("Creando la partida...");
             try
@@ -60,11 +73,13 @@ namespace Chopsticks.Game
                 RefreshLobby();
                 menu.ShowMessage("");
                 navigator.Show(ScreenId.Lobby);
+                if (onCreated != null) onCreated(code);
             }
             catch (Exception e)
             {
                 Debug.LogWarning("No se pudo crear la partida: " + e);
-                menu.ShowMessage("No se pudo crear la partida. Revisa tu conexión.");
+                string message = "No se pudo crear la partida. Revisa tu conexión.";
+                if (onError != null) onError(message); else menu.ShowMessage(message);
                 CleanUp();
             }
             busy = false;
@@ -73,9 +88,22 @@ namespace Chopsticks.Game
         // ------------------------------------------------------------
         // Unirse con codigo
         // ------------------------------------------------------------
-        private async void OnJoin(string playerName, string code)
+        private void OnJoin(string playerName, string code)
         {
-            if (busy) return;
+            JoinRoom(playerName, code, null);
+        }
+
+        /// <summary>
+        /// Se une a una sala con su codigo y va a la sala de espera. Tambien la usa la pantalla de amigos
+        /// al aceptar un reto: onError recibe un mensaje si falla (si es null, el error sale en el menu online).
+        /// </summary>
+        public async void JoinRoom(string playerName, string code, Action<string> onError)
+        {
+            if (busy)
+            {
+                if (onError != null) onError("Espera un momento...");
+                return;
+            }
             busy = true;
             menu.ShowMessage("Uniéndose a la partida...");
             try
@@ -91,7 +119,8 @@ namespace Chopsticks.Game
             catch (Exception e)
             {
                 Debug.LogWarning("No se pudo unir a la partida: " + e);
-                menu.ShowMessage("No se encontró esa partida o no se pudo unir.");
+                string message = "No se encontró esa partida o no se pudo unir.";
+                if (onError != null) onError(message); else menu.ShowMessage(message);
                 CleanUp();
             }
             busy = false;

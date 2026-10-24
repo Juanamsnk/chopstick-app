@@ -4,6 +4,8 @@
   <ui:Template name="OfflineSetup" src="/Assets/_chopstick/UI/UXML/Screens/OfflineSetup.uxml" />
   <ui:Template name="AiSetup" src="/Assets/_chopstick/UI/UXML/Screens/AiSetup.uxml" />
   <ui:Template name="Career" src="/Assets/_chopstick/UI/UXML/Screens/Career.uxml" />
+  <ui:Template name="Shop" src="/Assets/_chopstick/UI/UXML/Screens/Shop.uxml" />
+  <ui:Template name="Friends" src="/Assets/_chopstick/UI/UXML/Screens/Friends.uxml" />
   <ui:Template name="OnlineMenu" src="/Assets/_chopstick/UI/UXML/Screens/OnlineMenu.uxml" />
   <ui:Template name="Lobby" src="/Assets/_chopstick/UI/UXML/Screens/Lobby.uxml" />
   <ui:Template name="Game" src="/Assets/_chopstick/UI/UXML/Screens/Game.uxml" />
@@ -13,9 +15,19 @@
     <ui:Instance template="OfflineSetup" name="offlinesetup" style="display:none;" />
     <ui:Instance template="AiSetup" name="aisetup" style="display:none;" />
     <ui:Instance template="Career" name="career" style="display:none;" />
+    <ui:Instance template="Shop" name="shop" style="display:none;" />
+    <ui:Instance template="Friends" name="friends" style="display:none;" />
     <ui:Instance template="OnlineMenu" name="onlinemenu" style="display:none;" />
     <ui:Instance template="Lobby" name="lobby" style="display:none;" />
     <ui:Instance template="Game" name="game" style="display:none;" />
     <ui:Instance template="Searching" name="searching" style="display:none;" />
+    <ui:VisualElement name="challenge" class="overlay overlay--center" style="display:none;">
+      <ui:VisualElement class="gameover__box">
+        <ui:Label text="¡Reto!" class="gameover__title" />
+        <ui:Label name="challenge-text" text="" class="gameover__text" />
+        <ui:Button name="btn-challenge-accept" text="Aceptar" class="btn" />
+        <ui:Button name="btn-challenge-decline" text="Rechazar" class="btn btn--ghost" />
+      </ui:VisualElement>
+    </ui:VisualElement>
   </ui:VisualElement>
 </ui:UXML>

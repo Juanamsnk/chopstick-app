@@ -8,6 +8,7 @@
       <ui:VisualElement name="finger-3" class="finger finger--down" picking-mode="Ignore" />
     </ui:VisualElement>
     <ui:VisualElement name="palm" class="palm" picking-mode="Ignore" />
+    <ui:VisualElement name="sprite" class="hand__sprite" picking-mode="Ignore" style="display:none;" />
     <ui:Label name="count" text="1" class="hand__count" picking-mode="Ignore" />
     <ui:Label name="tag" class="tag" picking-mode="Ignore" />
   </ui:Button>
