@@ -1,4 +1,5 @@
 using Chopsticks.Audio;
+using Chopsticks.Career;
 using Chopsticks.Game;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -23,6 +24,8 @@ namespace Chopsticks.UI
         private GameController gameController;
         private OfflineSetupView offlineSetup;
         private AiSetupView aiSetup;
+        private CareerProgress careerProgress;
+        private CareerView careerView;
         private OnlineMenuView onlineMenu;
         private LobbyView lobbyView;
         private SearchView searchView;
@@ -48,6 +51,7 @@ namespace Chopsticks.UI
             navigator.Register(ScreenId.MainMenu, root.Q("mainmenu"));
             navigator.Register(ScreenId.OfflineSetup, root.Q("offlinesetup"));
             navigator.Register(ScreenId.AiSetup, root.Q("aisetup"));
+            navigator.Register(ScreenId.Career, root.Q("career"));
             navigator.Register(ScreenId.OnlineMenu, root.Q("onlinemenu"));
             navigator.Register(ScreenId.Lobby, root.Q("lobby"));
             navigator.Register(ScreenId.Game, root.Q("game"));
@@ -56,13 +60,19 @@ namespace Chopsticks.UI
 
             // Partida (sirve para offline, contra la maquina y online)
             gameView = new GameScreenView(root.Q("game"));
-            gameController = new GameController(gameView, navigator, new MoveSounds(soundManager));
+            careerProgress = new CareerProgress();
+            gameController = new GameController(gameView, navigator, new MoveSounds(soundManager), careerProgress);
 
             // Ajustes offline y contra la maquina
             offlineSetup = new OfflineSetupView(root.Q("offlinesetup"));
             offlineSetup.StartClicked += gameController.StartGame;
             aiSetup = new AiSetupView(root.Q("aisetup"));
             aiSetup.StartClicked += gameController.StartGame;
+
+            // Modo carrera: al mostrar la lista se repinta con el progreso guardado
+            careerView = new CareerView(root.Q("career"), careerProgress);
+            careerView.LevelChosen += gameController.StartCareerLevel;
+            navigator.Shown += id => { if (id == ScreenId.Career) careerView.Refresh(); };
 
             // Online (crear, unirse con codigo y buscar partida)
             onlineMenu = new OnlineMenuView(root.Q("onlinemenu"));

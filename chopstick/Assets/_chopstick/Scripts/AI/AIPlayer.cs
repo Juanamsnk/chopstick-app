@@ -11,15 +11,20 @@ namespace Chopsticks.AI
     ///   Medio:  15% mira 1, 70% mira 2, 15% mira 3
     ///   Dificil: 20% mira 2, 80% mira 3
     /// Ese sorteo es lo que la hace batible.
+    /// El modo carrera usa un AiProfile propio para cada uno de los 100 niveles.
     /// </summary>
     public class AIPlayer
     {
-        private readonly Difficulty difficulty;
+        private readonly AiProfile profile;
         private readonly Random random = new Random();
 
-        public AIPlayer(Difficulty difficulty)
+        public AIPlayer(Difficulty difficulty) : this(AiProfile.FromDifficulty(difficulty))
         {
-            this.difficulty = difficulty;
+        }
+
+        public AIPlayer(AiProfile profile)
+        {
+            this.profile = profile;
         }
 
         /// <summary>Devuelve la jugada que hace la maquina en el estado actual.</summary>
@@ -59,17 +64,7 @@ namespace Chopsticks.AI
 
         private int PickDepth()
         {
-            double r = random.NextDouble();
-            switch (difficulty)
-            {
-                case Difficulty.Easy:
-                    return r < 0.30 ? 0 : 1;
-                case Difficulty.Medium:
-                    if (r < 0.15) return 1;
-                    return r < 0.85 ? 2 : 3;
-                default:
-                    return r < 0.20 ? 2 : 3;
-            }
+            return profile.PickDepth(random);
         }
 
         /// <summary>

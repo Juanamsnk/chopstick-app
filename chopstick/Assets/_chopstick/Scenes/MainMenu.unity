@@ -278,13 +278,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chopsticks.Audio.SoundManager
   buttonClip: {fileID: 8300000, guid: 64b1ea2479068914cab42f5eb881a643, type: 3}
-  buttonVolume: 0.8
+  buttonVolume: 0.7
   attackClip: {fileID: 8300000, guid: e114a90a810564d4d8e5bd8b74c3fa11, type: 3}
   attackVolume: 0.5
   hitClip: {fileID: 8300000, guid: e21d556765011f7409ba83f4f6d52703, type: 3}
   hitVolume: 0.5
   handLostClip: {fileID: 8300000, guid: 8d283a9fed675ac409db86ba0acadaa0, type: 3}
-  handLostVolume: 0.5
+  handLostVolume: 0.8
   splitClip: {fileID: 8300000, guid: 173e7c2a81935b64dbcf0927e9b1415e, type: 3}
   splitVolume: 0.3
   winClip: {fileID: 8300000, guid: d082d500930086c4f94088268da88ce2, type: 3}
@@ -292,7 +292,7 @@ MonoBehaviour:
   loseClip: {fileID: 8300000, guid: de30ccfe61ee677448eca112ae6d9a47, type: 3}
   loseVolume: 1
   musicClip: {fileID: 8300000, guid: 732aced930d2fad4b85c40c1c3fe2ad1, type: 3}
-  musicVolume: 0.5
+  musicVolume: 0.45
   playMusicOnStart: 1
   musicFadeInSeconds: 1.5
   musicMuted: 0

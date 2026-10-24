@@ -32,6 +32,7 @@ namespace Chopsticks.UI
             var main = root.Q("mainmenu");
 
             // Los MenuButton son plantillas: el boton real se llama "button" dentro de la plantilla.
+            OnClick(MenuButton(main, "btn-career"), () => navigator.Show(ScreenId.Career));
             OnClick(MenuButton(main, "btn-offline"), () => navigator.Show(ScreenId.OfflineSetup));
             OnClick(MenuButton(main, "btn-ai"), () => navigator.Show(ScreenId.AiSetup));
             OnClick(MenuButton(main, "btn-online"), () => navigator.Show(ScreenId.OnlineMenu));
@@ -51,6 +52,7 @@ namespace Chopsticks.UI
             // En estas pantallas el boton "Volver" o "Salir" es el secundario de la fila de acciones.
             BackFromActionRow("offlinesetup");
             BackFromActionRow("aisetup");
+            BackFromActionRow("career");
             BackFromActionRow("onlinemenu");
             BackFromActionRow("lobby");
 

@@ -130,6 +130,7 @@ namespace Chopsticks.UI
             gameOverTitle.EnableInClassList("gameover__title--lose", !won);
             gameOverText.text = d.State.Players[d.State.Winner].Name + " ha ganado la partida";
             againButton.style.display = d.CanRestart ? DisplayStyle.Flex : DisplayStyle.None;
+            againButton.text = d.RestartLabel;
         }
 
         private void RenderCard(int slot, int player, GameViewData d)
@@ -253,7 +254,7 @@ namespace Chopsticks.UI
             if (d.State.Status == GameStatus.Over)
             {
                 splitButton.style.display = d.CanRestart ? DisplayStyle.Flex : DisplayStyle.None;
-                splitButton.text = "Jugar otra vez";
+                splitButton.text = d.RestartLabel;
                 splitButton.SetEnabled(true);
                 return;
             }

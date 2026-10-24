@@ -15,5 +15,8 @@ namespace Chopsticks.Game
         // Solo para el modo contra la maquina (la maquina es siempre el jugador 2)
         public bool VsAI;
         public Difficulty Difficulty = Difficulty.Medium;
+
+        // Si no es null, manda sobre Difficulty (lo usa el modo carrera para cada nivel)
+        public AiProfile AiProfile;
     }
 }

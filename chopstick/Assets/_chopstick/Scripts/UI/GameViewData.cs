@@ -14,6 +14,7 @@ namespace Chopsticks.UI
         public bool Thinking;               // la maquina esta pensando
         public bool CanSplit;               // repartir esta permitido ahora (no al inicio de la partida)
         public bool CanRestart;             // se puede pedir "Jugar otra vez"
+        public string RestartLabel = "Jugar otra vez";   // texto de ese boton
         public List<int[]> SplitOptions;    // repartos posibles (solo si Splitting)
     }
 }

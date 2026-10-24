@@ -1,3 +1,4 @@
+using Chopsticks.Career;
 using Chopsticks.Core;
 using Chopsticks.UI;
 
@@ -13,16 +14,18 @@ namespace Chopsticks.Game
         private readonly GameScreenView view;
         private readonly ScreenNavigator navigator;
         private readonly MoveSounds moveSounds;
+        private readonly CareerProgress career;
 
         private IMatch match;
         private int selectedHand = -1;   // mano propia elegida para atacar (-1 = ninguna)
         private bool splitting;          // panel de repartir abierto
 
-        public GameController(GameScreenView view, ScreenNavigator navigator, MoveSounds moveSounds)
+        public GameController(GameScreenView view, ScreenNavigator navigator, MoveSounds moveSounds, CareerProgress career)
         {
             this.view = view;
             this.navigator = navigator;
             this.moveSounds = moveSounds;
+            this.career = career;
 
             view.HandClicked += OnHandClicked;
             view.SplitButtonClicked += OnSplitButton;
@@ -37,6 +40,12 @@ namespace Chopsticks.Game
         public void StartGame(GameSetup setup)
         {
             StartMatch(new LocalMatch(setup, view.Schedule));
+        }
+
+        /// <summary>Empieza un nivel del modo carrera (1 a 100).</summary>
+        public void StartCareerLevel(int level)
+        {
+            StartMatch(new CareerMatch(level, view.Schedule, career));
         }
 
         /// <summary>Empieza cualquier partida (la usa tambien el modo online).</summary>
@@ -58,8 +67,10 @@ namespace Chopsticks.Game
         /// <summary>Salir de la partida (boton Salir o el de la caja de fin de partida).</summary>
         private void OnExit()
         {
+            // En la carrera se vuelve a la lista de niveles; en el resto, al menu
+            ScreenId back = match is CareerMatch ? ScreenId.Career : ScreenId.MainMenu;
             LeaveMatch();
-            navigator.Show(ScreenId.MainMenu);
+            navigator.Show(back);
         }
 
         private void LeaveMatch()
@@ -147,6 +158,7 @@ namespace Chopsticks.Game
                 CanAct = match.CanLocalAct,
                 Thinking = match.Thinking,
                 CanRestart = match.CanRestart,
+                RestartLabel = match.RestartLabel,
                 CanSplit = GameRules.CanSplit(match.State),
                 SplitOptions = splitting ? match.GetSplitOptions() : null
             };

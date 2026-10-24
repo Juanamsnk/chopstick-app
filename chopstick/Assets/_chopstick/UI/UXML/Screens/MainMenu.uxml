@@ -11,8 +11,12 @@
         <ui:Label text="El duelo de dedos" class="subtitle"/>
         <ui:VisualElement class="spacer"/>
         <ui:Instance template="MenuButton" name="btn-ai">
-            <AttributeOverrides element-name="title" text="Contra la máquina"/>
-            <AttributeOverrides element-name="subtitle" text="Tres niveles de dificultad"/>
+            <AttributeOverrides element-name="title" text="Modo entrenamiento"/>
+            <AttributeOverrides element-name="subtitle" text="Contra la máquina, tres dificultades"/>
+        </ui:Instance>
+        <ui:Instance template="MenuButton" name="btn-career">
+            <AttributeOverrides element-name="title" text="Modo carrera"/>
+            <AttributeOverrides element-name="subtitle" text="100 niveles contra la máquina"/>
         </ui:Instance>
         <ui:Instance template="MenuButton" name="btn-offline">
             <AttributeOverrides element-name="title" text="Modo offline"/>

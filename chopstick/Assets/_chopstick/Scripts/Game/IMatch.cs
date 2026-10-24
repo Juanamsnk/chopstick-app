@@ -15,6 +15,7 @@ namespace Chopsticks.Game
         bool CanLocalAct { get; }       // este dispositivo puede jugar ahora mismo
         bool Thinking { get; }          // la maquina esta pensando
         bool CanRestart { get; }        // este dispositivo puede pedir "Jugar otra vez"
+        string RestartLabel { get { return "Jugar otra vez"; } }   // texto del boton al terminar (el modo carrera lo cambia)
 
         event Action Changed;           // el estado cambio: hay que redibujar
 

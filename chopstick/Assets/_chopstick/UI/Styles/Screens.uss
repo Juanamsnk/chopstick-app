@@ -2,7 +2,45 @@
 
 /* Menu principal: cada boton con su color */
 #btn-offline .btn { background-color: var(--blue); color: var(--on-color); border-color: var(--blue-depth); }
+#btn-career .btn { background-color: var(--player-0); color: var(--on-color); border-color: #c75a14; }
 #btn-online .btn { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }
+
+/* Modo carrera: lista de 100 niveles (5 por fila, agrupados por rango) */
+.career__title { font-size: 30px; -unity-font-style: bold; color: var(--ink); -unity-text-align: middle-center; margin-top: 8px; }
+.career__progress { font-size: 15px; color: var(--mute); -unity-text-align: middle-center; margin: 4px 0 8px 0; }
+.career__levels {
+    flex-grow: 1; flex-basis: 0; margin-bottom: 12px;
+    background-color: var(--card); border-width: 2px; border-color: var(--line); border-radius: 22px;
+}
+.career__levels .unity-scroll-view__content-container { padding: 6px 8px 14px 12px; }
+.career__tier {
+    font-size: 15px; -unity-font-style: bold; color: var(--ink);
+    margin: 14px 0 8px 2px; padding-left: 8px;
+    border-left-width: 4px; border-color: var(--accent);
+}
+
+/* Barra de scroll fina y redondeada, sin flechas */
+.career__levels .unity-scroll-view__vertical-scroller { width: 12px; margin: 10px 6px 10px 0; }
+.career__levels .unity-scroller__low-button,
+.career__levels .unity-scroller__high-button { display: none; }
+.career__levels .unity-scroller__slider { margin: 0; }
+.career__levels .unity-base-slider__drag-container { margin: 0; padding: 0; }
+.career__levels .unity-base-slider__tracker {
+    background-color: var(--card-2-depth); border-width: 0; border-radius: 6px; width: 6px; margin-left: 3px;
+}
+.career__levels .unity-base-slider__dragger {
+    background-color: var(--accent); border-width: 0; border-radius: 6px; width: 6px; min-height: 40px; margin-left: 3px;
+}
+.level-row { flex-direction: row; flex-wrap: wrap; }
+.level-btn {
+    width: 18%; height: 54px; margin: 1%; padding: 0;
+    background-color: var(--card-2); color: var(--ink);
+    border-width: 3px; border-bottom-width: 5px; border-color: var(--line); border-radius: 14px;
+    font-size: 18px; -unity-font-style: bold; -unity-text-align: middle-center;
+}
+.level-btn--done { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }
+.level-btn--current { background-color: var(--accent); color: var(--on-accent); border-color: var(--accent-depth); }
+.level-btn--locked { opacity: 0.35; }
 
 /* Online */
 #btn-create { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }

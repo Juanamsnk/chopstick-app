@@ -26,7 +26,7 @@ namespace Chopsticks.Game
         {
             this.schedule = schedule;
             engine = new GameEngine(setup.Names, setup.SplitAllowed);
-            ai = setup.VsAI ? new AIPlayer(setup.Difficulty) : null;
+            ai = setup.VsAI ? new AIPlayer(setup.AiProfile ?? AiProfile.FromDifficulty(setup.Difficulty)) : null;
         }
 
         public GameState State { get { return engine.State; } }

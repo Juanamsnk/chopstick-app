@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
+    <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
+    <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+    <ui:VisualElement name="screen-career" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:Label text="Modo carrera" class="career__title"/>
+        <ui:Label name="career-progress" text="" class="career__progress"/>
+        <ui:ScrollView name="levels" horizontal-scroller-visibility="Hidden" class="career__levels"/>
+        <ui:Instance template="ActionRow" name="action-row">
+            <AttributeOverrides element-name="btn-primary" text="Continuar"/>
+            <AttributeOverrides element-name="btn-secondary" text="Volver"/>
+        </ui:Instance>
+    </ui:VisualElement>
+</ui:UXML>
