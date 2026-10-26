@@ -21,6 +21,7 @@ namespace Chopsticks.Social
     ///   friends/{uid}/{amigo}            true                 lista de amigos (en las dos direcciones)
     ///   friendRequests/{para}/{de}       { name }             peticiones pendientes
     ///   challenges/{para}/{de}           { name, code }       retos pendientes (code = codigo de la sala online)
+    ///   saves/{uid}                      { completed, coins, owned, equipped, tone, updated }   progreso de la cuenta
     /// Las reglas de seguridad estan en Firebase/database.rules.json.
     /// </summary>
     public class SocialBackend
@@ -37,6 +38,7 @@ namespace Chopsticks.Social
         private DatabaseReference friendsRef;
         private DatabaseReference requestsRef;
         private DatabaseReference challengesRef;
+        private DatabaseReference saveRef;
         private int friendsVersion;
 
         /// <summary>Firebase esta listo (dependencias comprobadas).</summary>
@@ -50,6 +52,7 @@ namespace Chopsticks.Social
         public event Action<List<FriendInfo>> FriendsChanged;
         public event Action<List<FriendRequestInfo>> RequestsChanged;
         public event Action<ChallengeInfo> ChallengeReceived;
+        public event Action<SaveData> SaveChanged;
 
         // ------------------------------------------------------------
         // Inicio y sesion
@@ -245,6 +248,76 @@ namespace Chopsticks.Social
         }
 
         // ------------------------------------------------------------
+        // Progreso de la cuenta
+        // ------------------------------------------------------------
+        /// <summary>Lee el progreso guardado en la cuenta. Devuelve null si todavia no hay nada.</summary>
+        public async Task<SaveData> LoadSaveAsync()
+        {
+            DataSnapshot snap = await WithTimeout(root.Child("saves").Child(Uid).GetValueAsync());
+            return snap.Exists ? ParseSave(snap) : null;
+        }
+
+        /// <summary>Guarda el progreso completo en la cuenta.</summary>
+        public Task WriteSaveAsync(SaveData data)
+        {
+            var map = new Dictionary<string, object>
+            {
+                { "completed", (long)data.Completed },
+                { "coins", (long)data.Coins },
+                { "owned", data.Owned ?? "" },
+                { "equipped", data.Equipped ?? "" },
+                { "tone", (long)data.Tone },
+                { "updated", data.Updated }
+            };
+            return WithTimeout(root.Child("saves").Child(Uid).SetValueAsync(map));
+        }
+
+        /// <summary>Avisa (SaveChanged) cada vez que el progreso de la cuenta cambia, tambien desde otro movil.</summary>
+        public void ListenSave()
+        {
+            StopListenSave();
+            saveRef = root.Child("saves").Child(Uid);
+            saveRef.ValueChanged += OnSaveValue;
+        }
+
+        private void StopListenSave()
+        {
+            if (saveRef != null) saveRef.ValueChanged -= OnSaveValue;
+            saveRef = null;
+        }
+
+        private void OnSaveValue(object sender, ValueChangedEventArgs args)
+        {
+            if (args.DatabaseError != null)
+            {
+                Debug.LogWarning("[Social] Progreso: " + args.DatabaseError.Message);
+                return;
+            }
+            if (!args.Snapshot.Exists) return;
+            if (SaveChanged != null) SaveChanged(ParseSave(args.Snapshot));
+        }
+
+        private static SaveData ParseSave(DataSnapshot s)
+        {
+            return new SaveData
+            {
+                Completed = (int)ToLong(s.Child("completed").Value),
+                Coins = (int)ToLong(s.Child("coins").Value),
+                Owned = s.Child("owned").Value != null ? s.Child("owned").Value.ToString() : "",
+                Equipped = s.Child("equipped").Value != null ? s.Child("equipped").Value.ToString() : "",
+                Tone = (int)ToLong(s.Child("tone").Value),
+                Updated = ToLong(s.Child("updated").Value)
+            };
+        }
+
+        private static long ToLong(object value)
+        {
+            if (value == null) return 0;
+            try { return Convert.ToInt64(value); }
+            catch (Exception) { return 0; }
+        }
+
+        // ------------------------------------------------------------
         // Escuchar cambios en tiempo real
         // ------------------------------------------------------------
         private void StartListening()
@@ -261,6 +334,7 @@ namespace Chopsticks.Social
 
         public void StopListening()
         {
+            StopListenSave();
             if (friendsRef != null) friendsRef.ValueChanged -= OnFriendsValue;
             if (requestsRef != null) requestsRef.ValueChanged -= OnRequestsValue;
             if (challengesRef != null) challengesRef.ChildAdded -= OnChallengeAdded;
@@ -365,6 +439,7 @@ namespace Chopsticks.Social
         public event Action<List<FriendInfo>> FriendsChanged;
         public event Action<List<FriendRequestInfo>> RequestsChanged;
         public event Action<ChallengeInfo> ChallengeReceived;
+        public event Action<SaveData> SaveChanged;
 #pragma warning restore 0067
 
         public bool Ready { get { return false; } }
@@ -384,6 +459,9 @@ namespace Chopsticks.Social
         public Task SendChallengeAsync(string toUid, string joinCode) { return Task.FromException(new SocialException(Unsupported)); }
         public Task CancelChallengeAsync(string toUid) { return Task.FromException(new SocialException(Unsupported)); }
         public Task DismissChallengeAsync(string fromUid) { return Task.FromException(new SocialException(Unsupported)); }
+        public Task<SaveData> LoadSaveAsync() { return Task.FromException<SaveData>(new SocialException(Unsupported)); }
+        public Task WriteSaveAsync(SaveData data) { return Task.FromException(new SocialException(Unsupported)); }
+        public void ListenSave() { }
     }
 #endif
 }

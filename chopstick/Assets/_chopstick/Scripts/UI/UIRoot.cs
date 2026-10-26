@@ -89,10 +89,12 @@ namespace Chopsticks.UI
             careerView = new CareerView(root.Q("career"), careerProgress);
             careerView.LevelChosen += gameController.StartCareerLevel;
             navigator.Shown += id => { if (id == ScreenId.Career) careerView.Refresh(); };
+            careerProgress.Changed += careerView.Refresh;   // por si llegan datos de la cuenta con la pantalla abierta
 
             // Tienda: estilos de mano que se compran con las monedas del modo carrera
             shopView = new ShopView(root.Q("shop"), shopInventory);
             navigator.Shown += id => { if (id == ScreenId.Shop) shopView.Refresh(); };
+            shopInventory.Changed += shopView.Refresh;
 
             // Online (crear, unirse con codigo y buscar partida)
             onlineMenu = new OnlineMenuView(root.Q("onlinemenu"));
@@ -114,7 +116,7 @@ namespace Chopsticks.UI
             // Amigos (Firebase): iniciar sesion con Google, anadir amigos y retarlos
             friendsView = new FriendsView(root.Q("friends"));
             challengePopup = new ChallengePopupView(root.Q("challenge"));
-            socialController = new SocialController(navigator, friendsView, challengePopup, onlineController, profile, settingsView);
+            socialController = new SocialController(navigator, friendsView, challengePopup, onlineController, profile, settingsView, careerProgress, shopInventory);
             socialController.Start();
 
             navigator.Show(ScreenId.MainMenu);

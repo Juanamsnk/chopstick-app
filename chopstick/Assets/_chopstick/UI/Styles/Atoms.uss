@@ -18,9 +18,11 @@
 .btn--blue { background-color: var(--blue); color: var(--on-color); border-color: var(--blue-depth); }
 .btn--green { background-color: var(--green); color: var(--on-green); border-color: var(--green-depth); }
 .btn--ghost { background-color: var(--card-2); color: var(--ink); border-color: var(--card-2-depth); }
+.btn--danger { background-color: var(--danger); color: var(--on-color); border-color: var(--danger-depth); }
 .btn--blue:hover, .btn--blue:focus { background-color: var(--blue); border-color: var(--blue-depth); }
 .btn--green:hover, .btn--green:focus { background-color: var(--green); border-color: var(--green-depth); }
 .btn--ghost:hover, .btn--ghost:focus { background-color: var(--card-2); border-color: var(--card-2-depth); }
+.btn--danger:hover, .btn--danger:focus { background-color: var(--danger); border-color: var(--danger-depth); }
 .btn--half { flex-grow: 1; flex-basis: 0; }
 .btn--gap { margin-right: 10px; }
 

@@ -131,7 +131,7 @@ namespace Chopsticks.UI
             googleButton.SetEnabled(firebaseReady);
 
             hintLabel.text = signedIn
-                ? "Con tu cuenta tu nombre se rellena solo al jugar y puedes jugar con amigos."
+                ? "Tu progreso, tus monedas y tus compras se guardan en tu cuenta: los verás en cualquier móvil donde inicies sesión."
                 : (string.IsNullOrEmpty(signedOutHint) ? "Inicia sesión para usar tu nombre y jugar con amigos." : signedOutHint);
         }
     }

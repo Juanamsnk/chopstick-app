@@ -4,20 +4,26 @@ using UnityEngine;
 namespace Chopsticks.Career
 {
     /// <summary>
-    /// El progreso del modo carrera, guardado en el dispositivo (PlayerPrefs).
-    /// Solo se guarda un numero: cuantos niveles seguidos has superado.
+    /// El progreso del modo carrera. Solo se guarda un numero: cuantos niveles seguidos has superado.
     /// El siguiente nivel se desbloquea al ganar el anterior.
+    /// Se guarda en el dispositivo (PlayerPrefs). Invitado y cuenta usan "huecos" distintos (prefijo de la clave);
+    /// ProgressSync cambia de hueco al iniciar o cerrar sesion y sube el progreso a Firebase.
     /// </summary>
     public class CareerProgress
     {
-        private const string Key = "chopsticks.career.completed";
+        public const string Key = "chopsticks.career.completed";
+
+        private string prefix = "";
 
         /// <summary>Niveles superados (0 a 100). Se han superado todos los niveles hasta este.</summary>
         public int Completed { get; private set; }
 
+        /// <summary>Cambio el progreso (nivel superado, reinicio o datos de la cuenta).</summary>
+        public event Action Changed;
+
         public CareerProgress()
         {
-            Completed = Math.Max(0, Math.Min(CareerLevels.Count, PlayerPrefs.GetInt(Key, 0)));
+            Load();
         }
 
         public bool IsCompleted(int level) { return level <= Completed; }
@@ -30,18 +36,39 @@ namespace Chopsticks.Career
         public bool Complete(int level)
         {
             if (level <= Completed || level > CareerLevels.Count) return false;
-            Completed = level;
-            PlayerPrefs.SetInt(Key, Completed);
-            PlayerPrefs.Save();
+            SetCompleted(level);
             return true;
+        }
+
+        /// <summary>Pone el progreso directamente (lo usa la sincronizacion con la cuenta).</summary>
+        public void SetCompleted(int value)
+        {
+            Completed = Math.Max(0, Math.Min(CareerLevels.Count, value));
+            PlayerPrefs.SetInt(prefix + Key, Completed);
+            PlayerPrefs.Save();
+            if (Changed != null) Changed();
+        }
+
+        /// <summary>Cambia de hueco de guardado ("" = invitado) y carga lo que haya en el.</summary>
+        public void UseSlot(string slotPrefix)
+        {
+            prefix = slotPrefix ?? "";
+            Load();
+            if (Changed != null) Changed();
         }
 
         /// <summary>Borra el progreso (por si mas adelante quieres un boton de reiniciar).</summary>
         public void Reset()
         {
             Completed = 0;
-            PlayerPrefs.DeleteKey(Key);
+            PlayerPrefs.DeleteKey(prefix + Key);
             PlayerPrefs.Save();
+            if (Changed != null) Changed();
+        }
+
+        private void Load()
+        {
+            Completed = Math.Max(0, Math.Min(CareerLevels.Count, PlayerPrefs.GetInt(prefix + Key, 0)));
         }
     }
 }

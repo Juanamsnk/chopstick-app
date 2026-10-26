@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Chopsticks.Career;
+using Chopsticks.Shop;
 using Chopsticks.Social;
 using Chopsticks.UI;
 using UnityEngine;
@@ -23,13 +25,14 @@ namespace Chopsticks.Game
         private readonly PlayerProfile profile;
         private readonly SettingsView settings;
         private readonly SocialBackend backend = new SocialBackend();
+        private readonly ProgressSync progressSync;   // guarda el progreso en la cuenta (o en el dispositivo si eres invitado)
 
         private ChallengeInfo pending;   // reto recibido que se esta mostrando
         private string initError;
         private bool busy;
 
         public SocialController(ScreenNavigator navigator, FriendsView view, ChallengePopupView popup, OnlineController online,
-            PlayerProfile profile, SettingsView settings)
+            PlayerProfile profile, SettingsView settings, CareerProgress career, ShopInventory shop)
         {
             this.profile = profile;
             this.settings = settings;
@@ -37,6 +40,7 @@ namespace Chopsticks.Game
             this.view = view;
             this.popup = popup;
             this.online = online;
+            progressSync = new ProgressSync(backend, career, shop);
 
             navigator.Shown += id => { if (id == ScreenId.Friends) Refresh(); };
 
@@ -107,7 +111,7 @@ namespace Chopsticks.Game
             else { hint = "Inicia sesión para añadir amigos y retarlos a una partida online."; ready = true; }
 
             view.ShowSignedOut(ready, hint);
-            settings.ShowSignedOut(ready, hint);
+            settings.ShowSignedOut(ready, ready ? "Inicia sesión para guardar tu progreso y tus compras en tu cuenta, y jugar con amigos." : hint);
         }
 
         /// <summary>Muestra un mensaje en Amigos y en Ajustes.</summary>

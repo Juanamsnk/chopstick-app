@@ -22,7 +22,7 @@
                 <ui:Label name="s-hint" text="" class="friends__hint"/>
                 <ui:Label name="s-msg" text="" class="friends__msg"/>
                 <ui:Button name="btn-s-google" text="Iniciar sesión con Google" class="btn"/>
-                <ui:Button name="btn-s-signout" text="Cerrar sesión" class="btn btn--ghost"/>
+                <ui:Button name="btn-s-signout" text="Cerrar sesión" class="btn btn--danger"/>
             </ui:VisualElement>
             <ui:VisualElement class="card">
                 <ui:Label text="Juego" class="label-bold"/>
