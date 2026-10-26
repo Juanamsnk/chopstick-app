@@ -151,9 +151,9 @@ namespace Chopsticks.UI
             card.SetTurn(isCurrent, color);
             card.SetDead(!p.IsAlive);
 
-            // Tu estilo de mano solo se ve en tu dispositivo; las manos rivales son las clasicas
+            // Tu mano es la que llevas puesta; la del rival es la suya (online), la de su rango (carrera) o la clasica
             if (slot == MySlot) card.SetSkin(shop.EquippedId, shop.Tone);
-            else card.SetSkin(HandSkinCatalog.DefaultId, 0);
+            else card.SetSkin(string.IsNullOrEmpty(d.OpponentSkinId) ? HandSkinCatalog.DefaultId : d.OpponentSkinId, d.OpponentTone);
 
             for (int h = 0; h < 2; h++)
             {

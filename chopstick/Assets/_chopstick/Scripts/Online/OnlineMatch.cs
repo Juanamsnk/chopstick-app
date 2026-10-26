@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Chopsticks.Core;
 using Chopsticks.Game;
+using Chopsticks.Shop;
 using UnityEngine;
 
 namespace Chopsticks.Online
@@ -25,10 +26,14 @@ namespace Chopsticks.Online
         private readonly string myName;
         private readonly bool splitAllowed;
         private readonly bool autoStart;   // empieza sola al entrar el rival (busqueda rapida)
+        private readonly string mySkin;
+        private readonly int myTone;
 
         // Sala
         private readonly List<string> names = new List<string>();
         private readonly List<ulong> clientIds = new List<ulong>();   // solo la usa el anfitrion
+        private readonly List<string> skinIds = new List<string>();   // mano de cada jugador (mismo orden que names)
+        private readonly List<int> tones = new List<int>();
         private int localSeat;
 
         // Partida
@@ -44,9 +49,12 @@ namespace Chopsticks.Online
         public event Action Closed;
         public event Action<string> Disconnected;
 
-        public OnlineMatch(NetMessenger net, bool isHost, string playerName, bool splitAllowed, bool autoStart = false)
+        public OnlineMatch(NetMessenger net, bool isHost, string playerName, bool splitAllowed, bool autoStart = false,
+                           string skinId = null, int tone = 0)
         {
             this.autoStart = autoStart;
+            this.mySkin = string.IsNullOrEmpty(skinId) ? HandSkinCatalog.DefaultId : skinId;
+            this.myTone = tone;
             this.net = net;
             this.isHost = isHost;
             this.myName = playerName;
@@ -57,6 +65,8 @@ namespace Chopsticks.Online
             if (isHost)
             {
                 names.Add(myName);
+                skinIds.Add(mySkin);
+                tones.Add(myTone);
                 clientIds.Add(net.LocalClientId);
                 localSeat = 0;
                 net.Register(MsgJoin, OnJoin);
@@ -76,6 +86,34 @@ namespace Chopsticks.Online
         public bool IsHost { get { return isHost; } }
         public IList<string> Names { get { return names; } }
         public int LocalSeat { get { return localSeat; } }
+
+        // La mano del rival tal como la lleva puesta en su dispositivo
+        public string OpponentSkinId
+        {
+            get
+            {
+                int seat = OtherSeat();
+                return seat >= 0 && seat < skinIds.Count ? skinIds[seat] : null;
+            }
+        }
+
+        public int OpponentTone
+        {
+            get
+            {
+                int seat = OtherSeat();
+                return seat >= 0 && seat < tones.Count ? tones[seat] : 0;
+            }
+        }
+
+        private int OtherSeat()
+        {
+            for (int i = 0; i < names.Count; i++)
+            {
+                if (i != localSeat) return i;
+            }
+            return -1;
+        }
 
         // ------------------------------------------------------------
         // IMatch
@@ -178,6 +216,8 @@ namespace Chopsticks.Online
             var dto = JsonUtility.FromJson<JoinDto>(json);
             string playerName = string.IsNullOrEmpty(dto.name) ? "Jugador " + (names.Count + 1) : dto.name;
             names.Add(playerName);
+            skinIds.Add(string.IsNullOrEmpty(dto.skin) ? HandSkinCatalog.DefaultId : dto.skin);
+            tones.Add(dto.tone);
             clientIds.Add(sender);
 
             BroadcastLobby();
@@ -208,7 +248,7 @@ namespace Chopsticks.Online
             // Cada jugador recibe la lista y su propio puesto (seat)
             for (int i = 1; i < clientIds.Count; i++)
             {
-                var dto = new LobbyDto { names = names.ToArray(), seat = i };
+                var dto = new LobbyDto { names = names.ToArray(), skins = skinIds.ToArray(), tones = tones.ToArray(), seat = i };
                 net.Send(MsgLobby, clientIds[i], JsonUtility.ToJson(dto));
             }
         }
@@ -223,7 +263,7 @@ namespace Chopsticks.Online
         // ------------------------------------------------------------
         private void SendJoin()
         {
-            net.SendToHost(MsgJoin, JsonUtility.ToJson(new JoinDto { name = myName }));
+            net.SendToHost(MsgJoin, JsonUtility.ToJson(new JoinDto { name = myName, skin = mySkin, tone = myTone }));
         }
 
         private void OnLobby(ulong sender, string json)
@@ -232,6 +272,16 @@ namespace Chopsticks.Online
             names.Clear();
             names.AddRange(dto.names);
             localSeat = dto.seat;
+
+            // Las manos de todos (si el anfitrion no las manda, se usan las clasicas)
+            skinIds.Clear();
+            tones.Clear();
+            for (int i = 0; i < names.Count; i++)
+            {
+                bool hasSkin = dto.skins != null && i < dto.skins.Length && !string.IsNullOrEmpty(dto.skins[i]);
+                skinIds.Add(hasSkin ? dto.skins[i] : HandSkinCatalog.DefaultId);
+                tones.Add(dto.tones != null && i < dto.tones.Length ? dto.tones[i] : 0);
+            }
             if (LobbyChanged != null) LobbyChanged();
         }
 
@@ -268,6 +318,8 @@ namespace Chopsticks.Online
             if (!started)
             {
                 names.RemoveAt(seat);
+                skinIds.RemoveAt(seat);
+                tones.RemoveAt(seat);
                 clientIds.RemoveAt(seat);
                 BroadcastLobby();
                 if (LobbyChanged != null) LobbyChanged();

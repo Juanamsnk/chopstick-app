@@ -42,6 +42,10 @@ namespace Chopsticks.Game
         public bool Thinking { get { return inner.Thinking; } }
         public bool CanRestart { get { return true; } }
 
+        // El rival lleva la mano de su rango durante todo el nivel
+        public string OpponentSkinId { get { return CareerOpponentSkins.SkinId(level); } }
+        public int OpponentTone { get { return CareerOpponentSkins.Tone(level); } }
+
         private bool Won
         {
             get { return State.Status == GameStatus.Over && State.Winner == BottomPlayer; }

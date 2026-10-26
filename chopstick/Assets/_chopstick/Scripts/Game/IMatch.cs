@@ -19,6 +19,10 @@ namespace Chopsticks.Game
 
         string ResultNote { get { return null; } }   // linea extra en la caja de fin de partida (monedas ganadas)
 
+        // Mano del rival. null = la clasica de siempre (offline y contra la maquina normal)
+        string OpponentSkinId { get { return null; } }
+        int OpponentTone { get { return 0; } }
+
         event Action Changed;           // el estado cambio: hay que redibujar
 
         void Begin();                   // se llama cuando la pantalla ya esta lista

@@ -1,5 +1,6 @@
 using System;
 using Chopsticks.Online;
+using Chopsticks.Shop;
 using Chopsticks.UI;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace Chopsticks.Game
     {
         private const long ShowMachineAfterMs = 20000;
 
+        private readonly ShopInventory shop;
         private readonly ScreenNavigator navigator;
         private readonly OnlineMenuView menu;
         private readonly LobbyView lobby;
@@ -27,8 +29,9 @@ namespace Chopsticks.Game
         private int searchId;       // cada busqueda tiene su numero; si cambia, la busqueda se cancelo
 
         public OnlineController(ScreenNavigator navigator, OnlineMenuView menu, LobbyView lobby,
-                                SearchView search, GameController game)
+                                SearchView search, GameController game, ShopInventory shop)
         {
+            this.shop = shop;
             this.navigator = navigator;
             this.menu = menu;
             this.lobby = lobby;
@@ -67,7 +70,7 @@ namespace Chopsticks.Game
             try
             {
                 string code = await service.CreateAsync(2);
-                match = new OnlineMatch(new NetMessenger(), true, playerName, splitAllowed);
+                match = new OnlineMatch(new NetMessenger(), true, playerName, splitAllowed, false, shop.EquippedId, shop.Tone);
                 Hook(match);
                 lobby.SetCode(code);
                 RefreshLobby();
@@ -109,7 +112,7 @@ namespace Chopsticks.Game
             try
             {
                 await service.JoinAsync(code);
-                match = new OnlineMatch(new NetMessenger(), false, playerName, true);
+                match = new OnlineMatch(new NetMessenger(), false, playerName, true, false, shop.EquippedId, shop.Tone);
                 Hook(match);
                 lobby.SetCode(code);
                 RefreshLobby();
@@ -155,7 +158,7 @@ namespace Chopsticks.Game
                 }
 
                 bool isHost = service.IsHost;
-                match = new OnlineMatch(new NetMessenger(), isHost, playerName, true, true);
+                match = new OnlineMatch(new NetMessenger(), isHost, playerName, true, true, shop.EquippedId, shop.Tone);
                 Hook(match);
 
                 if (isHost)

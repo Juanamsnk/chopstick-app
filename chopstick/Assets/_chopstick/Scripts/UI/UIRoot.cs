@@ -98,7 +98,7 @@ namespace Chopsticks.UI
             onlineMenu = new OnlineMenuView(root.Q("onlinemenu"));
             lobbyView = new LobbyView(root.Q("lobby"));
             searchView = new SearchView(root.Q("searching"));
-            onlineController = new OnlineController(navigator, onlineMenu, lobbyView, searchView, gameController);
+            onlineController = new OnlineController(navigator, onlineMenu, lobbyView, searchView, gameController, shopInventory);
 
             // Menu principal y ajustes (usuario, monedas, sonido, tema)
             mainMenuView = new MainMenuView(root.Q("mainmenu"), shopInventory, profile);

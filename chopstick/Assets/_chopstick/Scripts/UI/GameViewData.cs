@@ -16,6 +16,8 @@ namespace Chopsticks.UI
         public bool CanRestart;             // se puede pedir "Jugar otra vez"
         public string RestartLabel = "Jugar otra vez";   // texto de ese boton
         public string ResultNote;           // linea extra al terminar (por ejemplo "+33 monedas")
+        public string OpponentSkinId;       // estilo de mano del rival (null = clasica)
+        public int OpponentTone;
         public List<int[]> SplitOptions;    // repartos posibles (solo si Splitting)
     }
 }

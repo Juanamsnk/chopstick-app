@@ -163,6 +163,8 @@ namespace Chopsticks.Game
                 CanRestart = match.CanRestart,
                 RestartLabel = match.RestartLabel,
                 ResultNote = match.ResultNote,
+                OpponentSkinId = match.OpponentSkinId,
+                OpponentTone = match.OpponentTone,
                 CanSplit = GameRules.CanSplit(match.State),
                 SplitOptions = splitting ? match.GetSplitOptions() : null
             };
