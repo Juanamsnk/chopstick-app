@@ -5,3 +5,4 @@
 @import url("/Assets/_chopstick/UI/Styles/Organisms.uss");
 @import url("/Assets/_chopstick/UI/Styles/Screens.uss");
 @import url("/Assets/_chopstick/UI/Styles/Shop.uss");
+@import url("/Assets/_chopstick/UI/Styles/Menus.uss");

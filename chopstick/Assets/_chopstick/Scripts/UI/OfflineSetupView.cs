@@ -12,6 +12,7 @@ namespace Chopsticks.UI
     {
         private readonly TextField[] nameFields = new TextField[2];
         private readonly CheckOptionView splitOption;
+        private readonly NameAutofill autoName;
 
         public event Action<GameSetup> StartClicked;
 
@@ -22,8 +23,15 @@ namespace Chopsticks.UI
                 nameFields[i] = screen.Q("name-" + i).Q<TextField>("input");
             }
             splitOption = new CheckOptionView(screen.Q("opt-split"));
+            autoName = new NameAutofill(nameFields[0], "Jugador 1");   // el jugador 1 eres tu
 
             screen.Q("action-row").Q<Button>("btn-primary").clicked += OnStart;
+        }
+
+        /// <summary>Pone tu nombre de cuenta en el jugador 1 ("" = sin sesion).</summary>
+        public void SetProfileName(string name)
+        {
+            autoName.Apply(name);
         }
 
         private void OnStart()

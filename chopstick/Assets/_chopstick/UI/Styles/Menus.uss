@@ -1,0 +1,71 @@
+/* Menu principal, pantalla Jugar y Ajustes */
+
+/* Barra superior: perfil a la izquierda y Ajustes a la derecha */
+.topbar { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.topbar__btn {
+    background-color: var(--card-2); color: var(--ink); border-width: 2px; border-bottom-width: 4px; border-color: var(--card-2-depth);
+    border-radius: 16px; padding: 6px 14px; margin: 0; font-size: 14px; -unity-font-style: bold; min-height: 40px;
+}
+.topbar__btn:hover, .topbar__btn:focus { background-color: var(--card-2); border-color: var(--card-2-depth); }
+.topbar__btn:active { translate: 0 2px; border-bottom-width: 2px; }
+
+.profile-pill {
+    flex-direction: row; align-items: center; margin: 0;
+    background-color: var(--card); border-width: 2px; border-bottom-width: 4px; border-color: var(--line);
+    border-radius: 24px; padding: 4px 16px 4px 4px;
+}
+.profile-pill:hover, .profile-pill:focus { background-color: var(--card); border-color: var(--line); }
+.profile-pill:active { translate: 0 2px; border-bottom-width: 2px; }
+.profile-pill__info { margin-left: 8px; }
+.profile-pill__name { font-size: 14px; -unity-font-style: bold; color: var(--ink); margin: 0; padding: 0; -unity-text-align: middle-left; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-pill__coins { flex-direction: row; align-items: center; }
+.profile-pill__coins-text { font-size: 13px; -unity-font-style: bold; color: var(--accent); margin: 0; padding: 0; }
+.coin--small { width: 12px; height: 12px; border-radius: 6px; margin-right: 5px; border-width: 2px; }
+
+.avatar {
+    width: 36px; height: 36px; border-radius: 18px; flex-shrink: 0; margin: 0; padding: 0;
+    background-color: var(--player-1); color: #ffffff; font-size: 18px; -unity-font-style: bold; -unity-text-align: middle-center;
+}
+.avatar--big { width: 64px; height: 64px; border-radius: 32px; font-size: 30px; }
+
+/* Menu principal */
+.btn--play { min-height: 80px; font-size: 30px; border-radius: 26px; margin-bottom: 14px; border-bottom-width: 8px; }
+.main__row { flex-direction: row; }
+
+/* Pantalla Jugar */
+.play__group { font-size: 15px; -unity-font-style: bold; color: var(--mute); margin: 6px 0 8px 4px; }
+.play__row { flex-direction: row; margin-bottom: 10px; }
+
+.mode-card {
+    flex-grow: 1; flex-basis: 0; height: 150px; margin: 0 5px; padding: 12px 12px 12px 14px;
+    flex-direction: column; align-items: stretch; justify-content: flex-end;
+    border-width: 0; border-bottom-width: 6px; border-radius: 22px; overflow: hidden;
+}
+.mode-card:active { translate: 0 4px; border-bottom-width: 2px; }
+.mode-card__deco { position: absolute; right: -26px; top: -26px; width: 100px; height: 100px; border-radius: 50px; background-color: rgba(255,255,255,0.22); }
+.mode-card__tag {
+    position: absolute; left: 10px; top: 10px; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; -unity-font-style: bold; background-color: rgba(0,0,0,0.28); color: #ffffff;
+}
+.mode-card__title { font-size: 20px; -unity-font-style: bold; margin: 0; padding: 0; -unity-text-align: middle-left; white-space: nowrap; }
+.mode-card__subtitle { font-size: 12px; margin: 2px 0 0 0; padding: 0; opacity: 0.85; -unity-text-align: middle-left; white-space: normal; }
+
+.mode-card--yellow { background-color: var(--accent); border-color: var(--accent-depth); color: var(--on-accent); }
+.mode-card--yellow:hover, .mode-card--yellow:focus { background-color: var(--accent); border-color: var(--accent-depth); }
+.mode-card--orange { background-color: #ff7a2f; border-color: #c4561a; color: #ffffff; }
+.mode-card--orange:hover, .mode-card--orange:focus { background-color: #ff7a2f; border-color: #c4561a; }
+.mode-card--blue { background-color: var(--blue); border-color: var(--blue-depth); color: #ffffff; }
+.mode-card--blue:hover, .mode-card--blue:focus { background-color: var(--blue); border-color: var(--blue-depth); }
+.mode-card--green { background-color: var(--green); border-color: var(--green-depth); color: var(--on-green); }
+.mode-card--green:hover, .mode-card--green:focus { background-color: var(--green); border-color: var(--green-depth); }
+
+/* Ajustes */
+/* Las tarjetas van dentro del panel con scroll: un tono mas claro para distinguirlas */
+.settings__scroll .card { background-color: var(--card-2); border-color: var(--card-2-depth); }
+.settings__scroll .unity-scroll-view__content-container { padding-right: 6px; }
+.settings__profile { flex-direction: row; align-items: center; }
+.settings__profile-info { margin-left: 14px; flex-shrink: 1; }
+.settings__name { font-size: 22px; -unity-font-style: bold; color: var(--ink); margin: 0; padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.settings__status { font-size: 12px; color: var(--mute); margin: 0 0 6px 0; padding: 0; }
+.settings__coins { flex-direction: row; align-items: center; }
+.settings__hand { font-size: 17px; -unity-font-style: bold; color: var(--ink); margin: 0 0 10px 0; }

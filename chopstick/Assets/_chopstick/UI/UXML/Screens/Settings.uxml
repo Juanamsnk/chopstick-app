@@ -1,0 +1,47 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
+    <ui:Template name="CheckOption" src="/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml" />
+    <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+    <ui:VisualElement name="screen-settings" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:Label text="Ajustes" class="career__title"/>
+        <ui:ScrollView name="settings-scroll" horizontal-scroller-visibility="Hidden" class="career__levels settings__scroll">
+            <ui:VisualElement class="card settings__profile">
+                <ui:Label name="s-avatar" text="?" class="avatar avatar--big"/>
+                <ui:VisualElement class="settings__profile-info">
+                    <ui:Label name="s-name" text="Invitado" class="settings__name"/>
+                    <ui:Label name="s-status" text="Sin sesión iniciada" class="settings__status"/>
+                    <ui:VisualElement class="settings__coins">
+                        <ui:VisualElement class="coin" picking-mode="Ignore"/>
+                        <ui:Label name="s-coins" text="0" class="shop__coins-text"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="card">
+                <ui:Label text="Cuenta" class="label-bold"/>
+                <ui:Label name="s-hint" text="" class="friends__hint"/>
+                <ui:Label name="s-msg" text="" class="friends__msg"/>
+                <ui:Button name="btn-s-google" text="Iniciar sesión con Google" class="btn"/>
+                <ui:Button name="btn-s-signout" text="Cerrar sesión" class="btn btn--ghost"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="card">
+                <ui:Label text="Juego" class="label-bold"/>
+                <ui:Instance template="CheckOption" name="opt-sound">
+                    <AttributeOverrides element-name="label" text="Efectos de sonido"/>
+                </ui:Instance>
+                <ui:Instance template="CheckOption" name="opt-music">
+                    <AttributeOverrides element-name="label" text="Música"/>
+                </ui:Instance>
+                <ui:Instance template="CheckOption" name="opt-dark">
+                    <AttributeOverrides element-name="label" text="Tema oscuro"/>
+                </ui:Instance>
+            </ui:VisualElement>
+            <ui:VisualElement class="card">
+                <ui:Label text="Tu mano" class="label-bold"/>
+                <ui:Label name="s-hand" text="Clásica" class="settings__hand"/>
+                <ui:Button name="btn-s-shop" text="Ir a la tienda" class="btn btn--blue"/>
+            </ui:VisualElement>
+        </ui:ScrollView>
+        <ui:Button name="btn-back" text="Volver" class="btn btn--ghost"/>
+    </ui:VisualElement>
+</ui:UXML>

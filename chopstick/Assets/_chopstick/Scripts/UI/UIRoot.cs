@@ -37,6 +37,9 @@ namespace Chopsticks.UI
         private FriendsView friendsView;
         private ChallengePopupView challengePopup;
         private SocialController socialController;
+        private PlayerProfile profile;
+        private MainMenuView mainMenuView;
+        private SettingsView settingsView;
 
         private void OnEnable()
         {
@@ -56,6 +59,8 @@ namespace Chopsticks.UI
             navigator = new ScreenNavigator();
             navigator.Shown += id => keyboard.Dismiss();   // al cambiar de pantalla se cierra el teclado
             navigator.Register(ScreenId.MainMenu, root.Q("mainmenu"));
+            navigator.Register(ScreenId.Play, root.Q("playmenu"));
+            navigator.Register(ScreenId.Settings, root.Q("settings"));
             navigator.Register(ScreenId.OfflineSetup, root.Q("offlinesetup"));
             navigator.Register(ScreenId.AiSetup, root.Q("aisetup"));
             navigator.Register(ScreenId.Career, root.Q("career"));
@@ -69,6 +74,7 @@ namespace Chopsticks.UI
 
             // Partida (sirve para offline, contra la maquina y online)
             shopInventory = new ShopInventory();
+            profile = new PlayerProfile();
             gameView = new GameScreenView(root.Q("game"), shopInventory);
             careerProgress = new CareerProgress();
             gameController = new GameController(gameView, navigator, new MoveSounds(soundManager), careerProgress, shopInventory);
@@ -94,13 +100,32 @@ namespace Chopsticks.UI
             searchView = new SearchView(root.Q("searching"));
             onlineController = new OnlineController(navigator, onlineMenu, lobbyView, searchView, gameController);
 
+            // Menu principal y ajustes (usuario, monedas, sonido, tema)
+            mainMenuView = new MainMenuView(root.Q("mainmenu"), shopInventory, profile);
+            navigator.Shown += id => { if (id == ScreenId.MainMenu) mainMenuView.Refresh(); };
+            settingsView = new SettingsView(root.Q("settings"), shopInventory, profile, soundManager, theme);
+            settingsView.ShopClicked += () => navigator.Show(ScreenId.Shop);
+            navigator.Shown += id => { if (id == ScreenId.Settings) settingsView.Refresh(); };
+
+            // Si has iniciado sesion, tu nombre se rellena solo en las pantallas de partida
+            profile.Changed += ApplyProfileName;
+            ApplyProfileName();
+
             // Amigos (Firebase): iniciar sesion con Google, anadir amigos y retarlos
             friendsView = new FriendsView(root.Q("friends"));
             challengePopup = new ChallengePopupView(root.Q("challenge"));
-            socialController = new SocialController(navigator, friendsView, challengePopup, onlineController);
+            socialController = new SocialController(navigator, friendsView, challengePopup, onlineController, profile, settingsView);
             socialController.Start();
 
             navigator.Show(ScreenId.MainMenu);
+        }
+
+        private void ApplyProfileName()
+        {
+            string name = profile.IsSignedIn ? profile.Name : "";
+            offlineSetup.SetProfileName(name);
+            aiSetup.SetProfileName(name);
+            onlineMenu.SetProfileName(name);
         }
 
         private void OnDisable()

@@ -20,14 +20,19 @@ namespace Chopsticks.Game
         private readonly FriendsView view;
         private readonly ChallengePopupView popup;
         private readonly OnlineController online;
+        private readonly PlayerProfile profile;
+        private readonly SettingsView settings;
         private readonly SocialBackend backend = new SocialBackend();
 
         private ChallengeInfo pending;   // reto recibido que se esta mostrando
         private string initError;
         private bool busy;
 
-        public SocialController(ScreenNavigator navigator, FriendsView view, ChallengePopupView popup, OnlineController online)
+        public SocialController(ScreenNavigator navigator, FriendsView view, ChallengePopupView popup, OnlineController online,
+            PlayerProfile profile, SettingsView settings)
         {
+            this.profile = profile;
+            this.settings = settings;
             this.navigator = navigator;
             this.view = view;
             this.popup = popup;
@@ -37,6 +42,8 @@ namespace Chopsticks.Game
 
             view.GoogleClicked += OnGoogle;
             view.SignOutClicked += OnSignOut;
+            settings.GoogleClicked += OnGoogle;      // los mismos botones, desde Ajustes
+            settings.SignOutClicked += OnSignOut;
             view.AddClicked += OnAdd;
             view.AcceptClicked += r => Run(() => backend.AcceptRequestAsync(r.Uid), r.Name + " ahora es tu amigo.");
             view.DeclineClicked += r => Run(() => backend.DeclineRequestAsync(r.Uid), "");
@@ -87,30 +94,51 @@ namespace Chopsticks.Game
             if (backend.IsSignedIn)
             {
                 view.ShowSignedIn(backend.MyName, backend.MyCode);
+                settings.ShowSignedIn();
+                profile.Set(backend.MyName);   // el nombre se rellena solo en las partidas
                 return;
             }
 
-            if (initError != null) view.ShowSignedOut(false, initError);
-            else if (!backend.Ready) view.ShowSignedOut(false, "Conectando...");
-            else view.ShowSignedOut(true, "Inicia sesión para añadir amigos y retarlos a una partida online.");
+            profile.Set("");
+            string hint;
+            bool ready = false;
+            if (initError != null) hint = initError;
+            else if (!backend.Ready) hint = "Conectando...";
+            else { hint = "Inicia sesión para añadir amigos y retarlos a una partida online."; ready = true; }
+
+            view.ShowSignedOut(ready, hint);
+            settings.ShowSignedOut(ready, hint);
+        }
+
+        /// <summary>Muestra un mensaje en Amigos y en Ajustes.</summary>
+        private void Say(string text, bool isError)
+        {
+            view.ShowMessage(text, isError);
+            settings.ShowMessage(text, isError);
+        }
+
+        private void SetBusyAll(bool value)
+        {
+            view.SetBusy(value);
+            settings.SetBusy(value);
         }
 
         private async void OnGoogle()
         {
             if (busy) return;
             busy = true;
-            view.SetBusy(true);
-            view.ShowMessage("Iniciando sesión...", false);
+            SetBusyAll(true);
+            Say("Iniciando sesión...", false);
             try
             {
                 await backend.SignInWithGoogleAsync();
-                view.ShowMessage("", false);
+                Say("", false);
             }
             catch (Exception e)
             {
-                view.ShowMessage(MessageOf(e), true);
+                Say(MessageOf(e), true);
             }
-            view.SetBusy(false);
+            SetBusyAll(false);
             busy = false;
             Refresh();
         }
@@ -120,7 +148,7 @@ namespace Chopsticks.Game
             backend.SignOut();
             view.SetFriends(new List<FriendInfo>());
             view.SetRequests(new List<FriendRequestInfo>());
-            view.ShowMessage("", false);
+            Say("", false);
             Refresh();
         }
 

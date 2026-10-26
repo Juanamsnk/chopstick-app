@@ -25,6 +25,11 @@ namespace Chopsticks.UI
             Apply(PlayerPrefs.GetInt(SaveKey, 1) == 1);
         }
 
+        public void SetDark(bool dark)
+        {
+            Apply(dark);
+        }
+
         public void Toggle()
         {
             Apply(!IsDark);

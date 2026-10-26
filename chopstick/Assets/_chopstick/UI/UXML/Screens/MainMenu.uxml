@@ -1,38 +1,31 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:Template name="BgDecor" src="project://database/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml?fileID=9197481963319205126&amp;guid=e7d4d788b246677499e0bb0c2d55fa53&amp;type=3#BgDecor"/>
-    <ui:Template name="MenuButton" src="project://database/Assets/_chopstick/UI/UXML/Molecules/MenuButton.uxml?fileID=9197481963319205126&amp;guid=88370be381a8efa4b8e4de378d4ae28a&amp;type=3#MenuButton"/>
-    <Style src="project://database/Assets/_chopstick/UI/Styles/Main.uss?fileID=7433441132597879392&amp;guid=815dab59b3928334790fa7ef335b965f&amp;type=3#Main"/>
+    <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
+    <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
     <ui:VisualElement name="screen-main" class="screen">
         <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:VisualElement class="topbar">
+            <ui:Button name="btn-profile" class="profile-pill">
+                <ui:Label name="avatar" text="?" class="avatar" picking-mode="Ignore"/>
+                <ui:VisualElement class="profile-pill__info" picking-mode="Ignore">
+                    <ui:Label name="profile-name" text="Invitado" class="profile-pill__name" picking-mode="Ignore"/>
+                    <ui:VisualElement class="profile-pill__coins" picking-mode="Ignore">
+                        <ui:VisualElement class="coin coin--small" picking-mode="Ignore"/>
+                        <ui:Label name="profile-coins" text="0" class="profile-pill__coins-text" picking-mode="Ignore"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Button name="btn-settings" text="Ajustes" class="topbar__btn"/>
+        </ui:VisualElement>
         <ui:VisualElement class="logo">
             <ui:Label text="Chop" name="Label" class="logo__a"/>
             <ui:Label text="5ticks" class="logo__b"/>
         </ui:VisualElement>
         <ui:Label text="El duelo de dedos" class="subtitle"/>
         <ui:VisualElement class="spacer"/>
-        <ui:Instance template="MenuButton" name="btn-ai">
-            <AttributeOverrides element-name="title" text="Modo entrenamiento"/>
-            <AttributeOverrides element-name="subtitle" text="Contra la máquina, tres dificultades"/>
-        </ui:Instance>
-        <ui:Instance template="MenuButton" name="btn-career">
-            <AttributeOverrides element-name="title" text="Modo carrera"/>
-            <AttributeOverrides element-name="subtitle" text="100 niveles contra la máquina"/>
-        </ui:Instance>
-        <ui:Instance template="MenuButton" name="btn-offline">
-            <AttributeOverrides element-name="title" text="Modo offline"/>
-            <AttributeOverrides element-name="subtitle" text="Dos jugadores en el mismo móvil"/>
-        </ui:Instance>
-        <ui:Instance template="MenuButton" name="btn-friends">
-            <AttributeOverrides element-name="title" text="Amigos"/>
-            <AttributeOverrides element-name="subtitle" text="Inicia sesión y rétalos a una partida"/>
-        </ui:Instance>
-        <ui:Instance template="MenuButton" name="btn-online">
-            <AttributeOverrides element-name="title" text="Modo online"/>
-            <AttributeOverrides element-name="subtitle" text="Cada uno en su dispositivo"/>
-        </ui:Instance>
-        <ui:Instance template="MenuButton" name="btn-shop">
-            <AttributeOverrides element-name="title" text="Tienda"/>
-            <AttributeOverrides element-name="subtitle" text="Estilos de mano con tus monedas"/>
-        </ui:Instance>
+        <ui:Button name="btn-play" text="Jugar" class="btn btn--play"/>
+        <ui:VisualElement class="main__row">
+            <ui:Button name="btn-shop" text="Tienda" class="btn btn--blue btn--half btn--gap"/>
+            <ui:Button name="btn-friends" text="Amigos" class="btn btn--green btn--half"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

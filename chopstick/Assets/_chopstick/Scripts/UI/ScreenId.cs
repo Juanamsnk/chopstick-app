@@ -7,6 +7,8 @@ namespace Chopsticks.UI
     public enum ScreenId
     {
         MainMenu,
+        Play,
+        Settings,
         OfflineSetup,
         AiSetup,
         Career,

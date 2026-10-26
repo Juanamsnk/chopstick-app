@@ -14,7 +14,6 @@ namespace Chopsticks.UI
         private readonly VisualElement root;
         private readonly ScreenNavigator navigator;
         private readonly ThemeManager theme;
-        private Button themeButton;
 
         public MenuWiring(VisualElement root, ScreenNavigator navigator, ThemeManager theme)
         {
@@ -26,56 +25,52 @@ namespace Chopsticks.UI
             WireBackButtons();
         }
 
-        // ---- Menu principal ----
+        // ---- Menu principal, Jugar y Ajustes ----
         private void WireMainMenu()
         {
             var main = root.Q("mainmenu");
+            OnClick(main.Q<Button>("btn-play"), () => navigator.Show(ScreenId.Play));
+            OnClick(main.Q<Button>("btn-shop"), () => navigator.Show(ScreenId.Shop));
+            OnClick(main.Q<Button>("btn-friends"), () => navigator.Show(ScreenId.Friends));
+            OnClick(main.Q<Button>("btn-profile"), () => navigator.Show(ScreenId.Settings));
+            OnClick(main.Q<Button>("btn-settings"), () => navigator.Show(ScreenId.Settings));
 
-            // Los MenuButton son plantillas: el boton real se llama "button" dentro de la plantilla.
-            OnClick(MenuButton(main, "btn-career"), () => navigator.Show(ScreenId.Career));
-            OnClick(MenuButton(main, "btn-offline"), () => navigator.Show(ScreenId.OfflineSetup));
-            OnClick(MenuButton(main, "btn-ai"), () => navigator.Show(ScreenId.AiSetup));
-            OnClick(MenuButton(main, "btn-shop"), () => navigator.Show(ScreenId.Shop));
-            OnClick(MenuButton(main, "btn-friends"), () => navigator.Show(ScreenId.Friends));
-            OnClick(MenuButton(main, "btn-online"), () => navigator.Show(ScreenId.OnlineMenu));
+            // Pantalla Jugar: los modos de juego agrupados
+            var play = root.Q("playmenu");
+            OnClick(play.Q<Button>("btn-ai"), () => navigator.Show(ScreenId.AiSetup));
+            OnClick(play.Q<Button>("btn-career"), () => navigator.Show(ScreenId.Career));
+            OnClick(play.Q<Button>("btn-offline"), () => navigator.Show(ScreenId.OfflineSetup));
+            OnClick(play.Q<Button>("btn-online"), () => navigator.Show(ScreenId.OnlineMenu));
+            OnClick(play.Q<Button>("btn-back"), () => navigator.Show(ScreenId.MainMenu));
 
-            //themeButton = main.Q<Button>("btn-theme");
-            //OnClick(themeButton, () =>
-            //{
-            //    theme.Toggle();
-            //    RefreshThemeText();
-            //});
-            //RefreshThemeText();
+            OnClick(root.Q("settings").Q<Button>("btn-back"), () => navigator.Show(ScreenId.MainMenu));
         }
 
         // ---- Botones de volver / salir ----
         private void WireBackButtons()
         {
-            // En estas pantallas el boton "Volver" o "Salir" es el secundario de la fila de acciones.
-            BackFromActionRow("offlinesetup");
-            BackFromActionRow("aisetup");
-            BackFromActionRow("career");
-            BackFromActionRow("shop");
-            BackFromActionRow("friends");
-            BackFromActionRow("onlinemenu");
-            BackFromActionRow("lobby");
+            // Las pantallas de un modo vuelven a "Jugar"
+            BackFromActionRow("offlinesetup", ScreenId.Play);
+            BackFromActionRow("aisetup", ScreenId.Play);
+            BackFromActionRow("career", ScreenId.Play);
+            BackFromActionRow("onlinemenu", ScreenId.Play);
+
+            // El resto vuelven al menu principal
+            BackFromActionRow("shop", ScreenId.MainMenu);
+            BackFromActionRow("friends", ScreenId.MainMenu);
+            BackFromActionRow("lobby", ScreenId.MainMenu);
 
             // En la partida el boton se llama btn-exit.
             OnClick(root.Q("game").Q<Button>("btn-exit"), () => navigator.Show(ScreenId.MainMenu));
         }
 
-        private void BackFromActionRow(string screenName)
+        private void BackFromActionRow(string screenName, ScreenId target)
         {
             var button = root.Q(screenName).Q("action-row").Q<Button>("btn-secondary");
-            OnClick(button, () => navigator.Show(ScreenId.MainMenu));
+            OnClick(button, () => navigator.Show(target));
         }
 
         // ---- Ayudas ----
-        private static Button MenuButton(VisualElement screen, string instanceName)
-        {
-            return screen.Q(instanceName).Q<Button>("button");
-        }
-
         private static void OnClick(Button button, Action action)
         {
             if (button == null)
@@ -84,11 +79,6 @@ namespace Chopsticks.UI
                 return;
             }
             button.clicked += action;
-        }
-
-        private void RefreshThemeText()
-        {
-            themeButton.text = theme.IsDark ? "Tema: oscuro" : "Tema: claro";
         }
     }
 }

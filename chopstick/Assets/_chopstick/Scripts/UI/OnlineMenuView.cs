@@ -13,6 +13,7 @@ namespace Chopsticks.UI
         private readonly TextField codeField;
         private readonly CheckOptionView splitOption;
         private readonly Label message;
+        private readonly NameAutofill autoName;
 
         public event Action<string, bool> CreateClicked;   // (nombre, permitir repartir)
         public event Action<string, string> JoinClicked;   // (nombre, codigo)
@@ -24,12 +25,19 @@ namespace Chopsticks.UI
             codeField = screen.Q("join-code").Q<TextField>("input");
             splitOption = new CheckOptionView(screen.Q("opt-split"));
             message = screen.Q<Label>("error");
+            autoName = new NameAutofill(nameField, "Jugador 1");
 
             screen.Q<Button>("btn-create").clicked += OnCreate;
 
             Button quick = screen.Q<Button>("btn-quick");
             if (quick != null) quick.clicked += () => { if (QuickClicked != null) QuickClicked(PlayerName()); };
             screen.Q("action-row").Q<Button>("btn-primary").clicked += OnJoin;
+        }
+
+        /// <summary>Pone tu nombre de cuenta ("" = sin sesion).</summary>
+        public void SetProfileName(string name)
+        {
+            autoName.Apply(name);
         }
 
         /// <summary>Muestra un aviso o un error debajo del boton (texto vacio = nada).</summary>

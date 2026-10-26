@@ -1,0 +1,41 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
+    <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+    <ui:VisualElement name="screen-play" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:Label text="Jugar" class="career__title"/>
+        <ui:Label text="Contra la máquina" class="play__group"/>
+        <ui:VisualElement class="play__row">
+            <ui:Button name="btn-ai" class="mode-card mode-card--yellow">
+                <ui:VisualElement class="mode-card__deco" picking-mode="Ignore"/>
+                <ui:VisualElement class="spacer" picking-mode="Ignore"/>
+                <ui:Label text="Entrenamiento" class="mode-card__title" picking-mode="Ignore"/>
+                <ui:Label text="Tres dificultades" class="mode-card__subtitle" picking-mode="Ignore"/>
+            </ui:Button>
+            <ui:Button name="btn-career" class="mode-card mode-card--orange">
+                <ui:VisualElement class="mode-card__deco" picking-mode="Ignore"/>
+                <ui:Label text="Gana monedas" class="mode-card__tag" picking-mode="Ignore"/>
+                <ui:VisualElement class="spacer" picking-mode="Ignore"/>
+                <ui:Label text="Carrera" class="mode-card__title" picking-mode="Ignore"/>
+                <ui:Label text="100 niveles" class="mode-card__subtitle" picking-mode="Ignore"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:Label text="Con otra persona" class="play__group"/>
+        <ui:VisualElement class="play__row">
+            <ui:Button name="btn-offline" class="mode-card mode-card--blue">
+                <ui:VisualElement class="mode-card__deco" picking-mode="Ignore"/>
+                <ui:VisualElement class="spacer" picking-mode="Ignore"/>
+                <ui:Label text="Offline" class="mode-card__title" picking-mode="Ignore"/>
+                <ui:Label text="Mismo móvil" class="mode-card__subtitle" picking-mode="Ignore"/>
+            </ui:Button>
+            <ui:Button name="btn-online" class="mode-card mode-card--green">
+                <ui:VisualElement class="mode-card__deco" picking-mode="Ignore"/>
+                <ui:VisualElement class="spacer" picking-mode="Ignore"/>
+                <ui:Label text="Online" class="mode-card__title" picking-mode="Ignore"/>
+                <ui:Label text="Cada uno en su móvil" class="mode-card__subtitle" picking-mode="Ignore"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:VisualElement class="spacer"/>
+        <ui:Button name="btn-back" text="Volver" class="btn btn--ghost"/>
+    </ui:VisualElement>
+</ui:UXML>
