@@ -17,6 +17,10 @@
 .player-card__header { flex-direction: row; align-items: center; margin-bottom: 14px; padding: 0 4px; }
 .player-card__name { flex-grow: 1; font-size: 16px; -unity-font-style: bold; color: var(--ink); }
 .player-card__hands { flex-direction: row; }
+.rank-tag {
+    font-size: 11px; -unity-font-style: bold; color: var(--accent); background-color: var(--field);
+    border-radius: 9px; padding: 2px 8px; margin: 0 6px 0 0; flex-shrink: 0;
+}
 .player-card__hands > TemplateContainer { flex-grow: 1; flex-basis: 0; }
 /* Rival: manos giradas, con los dedos hacia abajo */
 .player-card--opponent .hand { flex-direction: column-reverse; }

@@ -38,7 +38,7 @@ namespace Chopsticks.UI
             challengeStatus = text;
         }
 
-        public void SetPlayers(IList<string> names, int localSeat)
+        public void SetPlayers(IList<string> names, int localSeat, IList<string> ranks = null)
         {
             otherName = names.Count > 1 ? names[1] : null;
             playerList.Clear();
@@ -47,6 +47,7 @@ namespace Chopsticks.UI
                 string text = names[i];
                 if (i == 0) text += " (anfitrión)";
                 if (i == localSeat) text += " (tú)";
+                if (ranks != null && i < ranks.Count && !string.IsNullOrEmpty(ranks[i])) text += "  ·  " + ranks[i];
 
                 var row = new VisualElement();
                 row.AddToClassList("player-row");

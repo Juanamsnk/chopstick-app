@@ -150,6 +150,7 @@ namespace Chopsticks.UI
             card.SetPlayer(p.Name, color);
             card.SetTurn(isCurrent, color);
             card.SetDead(!p.IsAlive);
+            card.SetRank(slot == MySlot ? d.BottomRank : d.OpponentRank);
 
             // Tu mano es la que llevas puesta; la del rival es la suya (online), la de su rango (carrera) o la clasica
             if (slot == MySlot) card.SetSkin(shop.EquippedId, shop.Tone);

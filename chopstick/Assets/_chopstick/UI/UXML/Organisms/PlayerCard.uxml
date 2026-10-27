@@ -5,6 +5,7 @@
     <ui:VisualElement name="header" class="player-card__header">
       <ui:VisualElement name="dot" class="dot" />
       <ui:Label name="player-name" text="Jugador" class="player-card__name" />
+      <ui:Label name="player-rank" text="" class="rank-tag" style="display:none;" />
       <ui:Label name="badge" text="TURNO" class="badge" />
     </ui:VisualElement>
     <ui:VisualElement name="hands" class="player-card__hands">

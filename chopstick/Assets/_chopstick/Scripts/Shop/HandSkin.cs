@@ -15,6 +15,9 @@ namespace Chopsticks.Shop
         public bool UsesSkinTone;    // true: es una mano con piel y cambia con el tono elegido
 
         public int Price { get { return Id == HandSkinCatalog.DefaultId ? 0 : HandSkinCatalog.PriceOf(Rarity); } }
+
+        /// <summary>Niveles del Modo carrera que hay que haber superado para poder comprarlo (0 = desde el principio).</summary>
+        public int UnlockLevel { get { return HandSkinCatalog.UnlockLevelOf(Rarity); } }
     }
 
     /// <summary>Los 6 tonos de piel. Solo los usan los estilos con piel.</summary>
@@ -51,6 +54,20 @@ namespace Chopsticks.Shop
                 case SkinRarity.Rara: return 400;
                 case SkinRarity.Epica: return 900;
                 default: return 2000;
+            }
+        }
+
+        // Nivel de la carrera que hay que superar para poder comprar cada rareza. Coinciden con el final de un rango:
+        // raras al acabar Novato (10), epicas al acabar Competidor (30) y legendarias al acabar Maestro (60).
+        // Asi no se puede ahorrar para comprar un legendario nada mas empezar.
+        public static int UnlockLevelOf(SkinRarity rarity)
+        {
+            switch (rarity)
+            {
+                case SkinRarity.Comun: return 0;
+                case SkinRarity.Rara: return 10;
+                case SkinRarity.Epica: return 30;
+                default: return 60;
             }
         }
 

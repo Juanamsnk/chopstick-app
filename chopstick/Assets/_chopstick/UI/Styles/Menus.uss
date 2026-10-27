@@ -18,6 +18,7 @@
 .profile-pill:active { translate: 0 2px; border-bottom-width: 2px; }
 .profile-pill__info { margin-left: 8px; }
 .profile-pill__name { font-size: 14px; -unity-font-style: bold; color: var(--ink); margin: 0; padding: 0; -unity-text-align: middle-left; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-pill__rank { font-size: 11px; -unity-font-style: bold; color: var(--mute); margin: 0; padding: 0; -unity-text-align: middle-left; }
 .profile-pill__coins { flex-direction: row; align-items: center; }
 .profile-pill__coins-text { font-size: 13px; -unity-font-style: bold; color: var(--accent); margin: 0; padding: 0; }
 .coin--small { width: 12px; height: 12px; border-radius: 6px; margin-right: 5px; border-width: 2px; }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Chopsticks.Career;
 using UnityEngine;
 
 namespace Chopsticks.Shop
@@ -18,6 +19,7 @@ namespace Chopsticks.Shop
 
         private readonly HashSet<string> owned = new HashSet<string>();
         private string prefix = "";
+        private CareerProgress career;
 
         public int Coins { get; private set; }
         public string EquippedId { get; private set; }
@@ -36,6 +38,21 @@ namespace Chopsticks.Shop
 
         public bool Owns(string id) { return owned.Contains(id); }
 
+        /// <summary>Conecta el progreso de la carrera: algunos estilos solo se pueden comprar al avanzar en ella.</summary>
+        public void BindCareer(CareerProgress progress) { career = progress; }
+
+        /// <summary>Niveles de la carrera superados (si no hay carrera conectada, no se bloquea nada).</summary>
+        public int CareerLevel { get { return career != null ? career.Completed : int.MaxValue; } }
+
+        /// <summary>Tu rango segun el Modo carrera (Novato, Aprendiz...). null si no hay carrera conectada.</summary>
+        public string RankName { get { return career != null ? CareerLevels.RankNameFor(career.Completed) : null; } }
+
+        /// <summary>Tu rango para enviarlo por la red: posicion + 1 (0 = no se sabe).</summary>
+        public int OnlineRank { get { return career != null ? CareerLevels.RankIndexFor(career.Completed) + 1 : 0; } }
+
+        /// <summary>true si ya has avanzado lo suficiente en la carrera para poder comprar este estilo.</summary>
+        public bool MeetsLevel(HandSkin skin) { return skin != null && CareerLevel >= skin.UnlockLevel; }
+
         public HandSkin Equipped { get { return HandSkinCatalog.Find(EquippedId); } }
 
         public void AddCoins(int amount)
@@ -47,7 +64,7 @@ namespace Chopsticks.Shop
 
         public bool CanBuy(HandSkin skin)
         {
-            return skin != null && !Owns(skin.Id) && Coins >= skin.Price;
+            return skin != null && !Owns(skin.Id) && MeetsLevel(skin) && Coins >= skin.Price;
         }
 
         /// <summary>Compra un estilo y lo pone al momento.</summary>

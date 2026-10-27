@@ -165,6 +165,8 @@ namespace Chopsticks.Game
                 ResultNote = match.ResultNote,
                 OpponentSkinId = match.OpponentSkinId,
                 OpponentTone = match.OpponentTone,
+                BottomRank = shop.RankName,
+                OpponentRank = match.OpponentRank,
                 CanSplit = GameRules.CanSplit(match.State),
                 SplitOptions = splitting ? match.GetSplitOptions() : null
             };

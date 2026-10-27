@@ -75,7 +75,7 @@ namespace Chopsticks.Game
             try
             {
                 string code = await service.CreateAsync(2);
-                match = new OnlineMatch(new NetMessenger(), true, playerName, splitAllowed, false, shop.EquippedId, shop.Tone);
+                match = new OnlineMatch(new NetMessenger(), true, playerName, splitAllowed, false, shop.EquippedId, shop.Tone, shop.OnlineRank);
                 Hook(match);
                 LobbyId++;
                 lobby.SetCode(code);
@@ -130,7 +130,7 @@ namespace Chopsticks.Game
                     return;
                 }
 
-                match = new OnlineMatch(new NetMessenger(), false, playerName, true, false, shop.EquippedId, shop.Tone);
+                match = new OnlineMatch(new NetMessenger(), false, playerName, true, false, shop.EquippedId, shop.Tone, shop.OnlineRank);
                 Hook(match);
                 LobbyId++;
                 lobby.SetCode(code);
@@ -196,7 +196,7 @@ namespace Chopsticks.Game
                 }
 
                 bool isHost = service.IsHost;
-                match = new OnlineMatch(new NetMessenger(), isHost, playerName, true, true, shop.EquippedId, shop.Tone);
+                match = new OnlineMatch(new NetMessenger(), isHost, playerName, true, true, shop.EquippedId, shop.Tone, shop.OnlineRank);
                 Hook(match);
 
                 if (isHost)
@@ -277,7 +277,7 @@ namespace Chopsticks.Game
         private void RefreshLobby()
         {
             if (match == null) return;
-            lobby.SetPlayers(match.Names, match.LocalSeat);
+            lobby.SetPlayers(match.Names, match.LocalSeat, match.RankNames);
             lobby.SetHostControls(match.IsHost, match.Names.Count);
         }
 

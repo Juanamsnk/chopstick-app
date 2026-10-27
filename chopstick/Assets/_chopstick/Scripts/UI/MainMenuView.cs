@@ -15,6 +15,7 @@ namespace Chopsticks.UI
         private readonly Label avatar;
         private readonly Label nameLabel;
         private readonly Label coinsLabel;
+        private readonly Label rankLabel;   // puede no existir en el UXML
 
         public MainMenuView(VisualElement screen, ShopInventory inventory, PlayerProfile profile)
         {
@@ -24,6 +25,7 @@ namespace Chopsticks.UI
             avatar = screen.Q<Label>("avatar");
             nameLabel = screen.Q<Label>("profile-name");
             coinsLabel = screen.Q<Label>("profile-coins");
+            rankLabel = screen.Q<Label>("profile-rank");
 
             profile.Changed += Refresh;
             inventory.Changed += Refresh;
@@ -35,6 +37,7 @@ namespace Chopsticks.UI
             avatar.text = profile.Initial;
             nameLabel.text = profile.DisplayName;
             coinsLabel.text = inventory.Coins.ToString();
+            if (rankLabel != null) rankLabel.text = inventory.RankName ?? "";
         }
     }
 }

@@ -46,6 +46,7 @@
 .skin-card:hover { border-color: var(--line); }
 .skin-card--equipped { border-color: var(--ok); }
 .skin-card--locked { opacity: 0.6; }
+.skin-card--levellocked { opacity: 0.4; }
 .skin-card__preview {
     width: 100%; height: 80px; flex-shrink: 0; align-items: center; justify-content: center;
     background-color: var(--field); border-radius: 12px;

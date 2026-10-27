@@ -23,6 +23,9 @@ namespace Chopsticks.Game
         string OpponentSkinId { get { return null; } }
         int OpponentTone { get { return 0; } }
 
+        // Rango del rival en el modo carrera (online: el que tiene en su dispositivo). null = no se muestra
+        string OpponentRank { get { return null; } }
+
         event Action Changed;           // el estado cambio: hay que redibujar
 
         void Begin();                   // se llama cuando la pantalla ya esta lista

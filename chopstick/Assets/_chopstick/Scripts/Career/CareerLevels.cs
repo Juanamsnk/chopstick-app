@@ -28,6 +28,21 @@ namespace Chopsticks.Career
             return (level - 1) / LevelsPerTier;
         }
 
+        /// <summary>
+        /// Rango de un jugador (0 a 9) segun los niveles que lleva superados: el rango del nivel que le toca jugar.
+        /// Con 0 niveles es Novato; al superar el 10 pasa a Aprendiz; con los 100 superados es Rey 5ticks.
+        /// </summary>
+        public static int RankIndexFor(int completed)
+        {
+            int next = System.Math.Min(System.Math.Max(completed, 0) + 1, Count);
+            return TierIndex(next);
+        }
+
+        public static string RankNameFor(int completed)
+        {
+            return Tiers[RankIndexFor(completed)];
+        }
+
         /// <summary>Rango por posicion (0 a 9), para los titulos de la lista de niveles.</summary>
         public static string TierNameByIndex(int tierIndex)
         {

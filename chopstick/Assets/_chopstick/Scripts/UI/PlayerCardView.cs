@@ -11,6 +11,7 @@ namespace Chopsticks.UI
         private readonly VisualElement dot;
         private readonly Label nameLabel;
         private readonly Label badge;
+        private readonly Label rankLabel;   // puede no existir en el UXML
 
         public HandView[] Hands { get; private set; }
 
@@ -21,6 +22,7 @@ namespace Chopsticks.UI
             dot = container.Q("dot");
             nameLabel = container.Q<Label>("player-name");
             badge = container.Q<Label>("badge");
+            rankLabel = container.Q<Label>("player-rank");
             Hands = new[]
             {
                 new HandView(container.Q("hand-0")),
@@ -37,6 +39,15 @@ namespace Chopsticks.UI
         {
             nameLabel.text = playerName;
             dot.style.backgroundColor = color;
+        }
+
+        /// <summary>Rango del jugador (Novato, Aprendiz...). Vacio o null = se oculta.</summary>
+        public void SetRank(string rank)
+        {
+            if (rankLabel == null) return;
+            bool has = !string.IsNullOrEmpty(rank);
+            rankLabel.text = has ? rank : "";
+            rankLabel.style.display = has ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         /// <summary>El rival tiene las manos giradas con los dedos hacia abajo.</summary>

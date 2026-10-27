@@ -18,6 +18,8 @@ namespace Chopsticks.UI
         public string ResultNote;           // linea extra al terminar (por ejemplo "+33 monedas")
         public string OpponentSkinId;       // estilo de mano del rival (null = clasica)
         public int OpponentTone;
+        public string BottomRank;           // rango de quien juega abajo (null = no se muestra)
+        public string OpponentRank;         // rango del rival (null = no se muestra)
         public List<int[]> SplitOptions;    // repartos posibles (solo si Splitting)
     }
 }

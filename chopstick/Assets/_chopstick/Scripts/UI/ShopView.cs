@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Chopsticks.Career;
 using Chopsticks.Shop;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -66,6 +67,16 @@ namespace Chopsticks.UI
             // Esta pantalla solo necesita el boton de volver
             Button primary = screen.Q("action-row").Q<Button>("btn-primary");
             if (primary != null) primary.style.display = DisplayStyle.None;
+
+            // El texto de ayuda sale de los niveles reales, asi no hay que cambiarlo a mano
+            Label hint = screen.Q<Label>(className: "shop__hint");
+            if (hint != null)
+            {
+                hint.text = "Las monedas se consiguen en el Modo carrera, que también desbloquea estilos: raras en el nivel " +
+                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Rara) + ", épicas en el " +
+                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Epica) + " y legendarias en el " +
+                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Legendaria) + ".";
+            }
 
             BuildLegend();
             BuildTones();
@@ -323,6 +334,14 @@ namespace Chopsticks.UI
                 detailBuy.SetEnabled(true);
                 detailBuy.style.display = DisplayStyle.Flex;
             }
+            else if (!inventory.MeetsLevel(skin))
+            {
+                // Bloqueado por la carrera: se explica que nivel hace falta y cuanto llevas
+                detailNote.text = "Supera el nivel " + skin.UnlockLevel + " del Modo carrera (rango " +
+                                  CareerLevels.TierName(skin.UnlockLevel) + ") para poder comprarlo. Llevas " +
+                                  inventory.CareerLevel + " niveles superados.";
+                detailBuy.style.display = DisplayStyle.None;
+            }
             else if (canBuy)
             {
                 detailNote.text = "Tienes " + inventory.Coins + " monedas.";
@@ -364,19 +383,22 @@ namespace Chopsticks.UI
             bool owned = inventory.Owns(skin.Id);
             bool equipped = inventory.EquippedId == skin.Id;
             bool canBuy = inventory.CanBuy(skin);
+            bool levelLocked = !owned && !inventory.MeetsLevel(skin);
 
             ApplyPreview(card, skin);
 
             card.Root.EnableInClassList("skin-card--equipped", equipped);
             card.Root.EnableInClassList("skin-card--locked", !owned && !canBuy);
+            card.Root.EnableInClassList("skin-card--levellocked", levelLocked);
 
             card.Status.EnableInClassList("skin-card__status--equipped", equipped);
             card.Status.EnableInClassList("skin-card__status--owned", owned && !equipped);
             card.Status.EnableInClassList("skin-card__status--locked", !owned && !canBuy);
-            card.StatusCoin.style.display = owned ? DisplayStyle.None : DisplayStyle.Flex;
+            card.StatusCoin.style.display = owned || levelLocked ? DisplayStyle.None : DisplayStyle.Flex;
 
             if (equipped) card.StatusText.text = "Equipada";
             else if (owned) card.StatusText.text = "Equipar";
+            else if (levelLocked) card.StatusText.text = "Nivel " + skin.UnlockLevel;
             else card.StatusText.text = skin.Price.ToString();
         }
 
