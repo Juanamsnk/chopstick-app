@@ -43,6 +43,18 @@ namespace Chopsticks.UI
         private readonly Button[] toneButtons = new Button[SkinTones.Count];
         private readonly List<Card> cards = new List<Card>();
 
+        // Ventana de detalle (se abre al tocar una tarjeta)
+        private readonly VisualElement detailOverlay;
+        private readonly VisualElement detailBox;
+        private readonly Label detailRarity;
+        private readonly Label detailName;
+        private readonly Label detailDesc;
+        private readonly Label detailNote;
+        private readonly Button detailBuy;
+        private readonly Card detailCard = new Card();
+        private HandSkin detailSkin;
+        private bool detailJustBought;
+
         public ShopView(VisualElement screen, ShopInventory inventory)
         {
             this.inventory = inventory;
@@ -58,6 +70,16 @@ namespace Chopsticks.UI
             BuildLegend();
             BuildTones();
             BuildCards();
+
+            detailOverlay = screen.Q("skin-detail");
+            detailBox = screen.Q("detail-box");
+            detailRarity = screen.Q<Label>("detail-rarity");
+            detailName = screen.Q<Label>("detail-name");
+            detailDesc = screen.Q<Label>("detail-desc");
+            detailNote = screen.Q<Label>("detail-note");
+            detailBuy = screen.Q<Button>("btn-detail-buy");
+            BuildDetail(screen);
+
             Refresh();
         }
 
@@ -128,7 +150,7 @@ namespace Chopsticks.UI
 
             card.Root = new VisualElement();
             card.Root.AddToClassList("skin-card");
-            card.Root.RegisterCallback<ClickEvent>(evt => OnAction(skin));
+            card.Root.RegisterCallback<ClickEvent>(evt => ShowDetail(skin));
 
             // Zona de la mano: siempre cuadrada
             card.Preview = new VisualElement();
@@ -208,11 +230,112 @@ namespace Chopsticks.UI
         // ------------------------------------------------------------
         // Acciones y repintado
         // ------------------------------------------------------------
-        private void OnAction(HandSkin skin)
+        // ------------------------------------------------------------
+        // Ventana de detalle
+        // ------------------------------------------------------------
+        private void BuildDetail(VisualElement screen)
         {
-            if (!inventory.Owns(skin.Id)) inventory.TryBuy(skin);   // comprar tambien lo equipa
-            else inventory.Equip(skin.Id);
+            // El dibujo grande: PNG si existe, mano de respaldo si no (igual que en las tarjetas)
+            detailCard.Preview = screen.Q("detail-preview");
+            detailCard.Sprite = new Image { scaleMode = ScaleMode.ScaleToFit };
+            detailCard.Sprite.AddToClassList("skin-detail__sprite");
+            detailCard.Sprite.pickingMode = PickingMode.Ignore;
+            detailCard.Preview.Add(detailCard.Sprite);
+            BuildFallback(detailCard);
+
+            detailBuy.clicked += OnDetailAction;
+            screen.Q<Button>("btn-detail-close").clicked += CloseDetail;
+
+            // Tocar fuera de la caja (en lo oscuro) tambien cierra
+            detailOverlay.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.target == detailOverlay) CloseDetail();
+            });
+        }
+
+        private void ShowDetail(HandSkin skin)
+        {
+            detailSkin = skin;
+            detailJustBought = false;
+            detailOverlay.style.display = DisplayStyle.Flex;
+            RefreshDetail();
+        }
+
+        /// <summary>Cierra la ventana de detalle (si estaba abierta).</summary>
+        public void CloseDetail()
+        {
+            detailSkin = null;
+            detailOverlay.style.display = DisplayStyle.None;
+        }
+
+        private void OnDetailAction()
+        {
+            HandSkin skin = detailSkin;
+            if (skin == null) return;
+
+            if (!inventory.Owns(skin.Id))
+            {
+                if (inventory.TryBuy(skin)) detailJustBought = true;   // comprar tambien lo equipa
+            }
+            else
+            {
+                inventory.Equip(skin.Id);
+            }
             Refresh();
+        }
+
+        private void RefreshDetail()
+        {
+            HandSkin skin = detailSkin;
+            if (skin == null) return;
+
+            bool owned = inventory.Owns(skin.Id);
+            bool equipped = inventory.EquippedId == skin.Id;
+            bool canBuy = inventory.CanBuy(skin);
+
+            detailCard.Skin = skin;
+            ApplyPreview(detailCard, skin);
+
+            Color rarityColor = RarityColors[(int)skin.Rarity];
+            detailBox.style.borderTopColor = rarityColor;
+            detailBox.style.borderBottomColor = rarityColor;
+            detailBox.style.borderLeftColor = rarityColor;
+            detailBox.style.borderRightColor = rarityColor;
+            detailRarity.style.color = rarityColor;
+            detailRarity.text = skin.Id == HandSkinCatalog.DefaultId
+                ? "Gratis"
+                : HandSkinCatalog.RarityName(skin.Rarity) + " · " + skin.Price + " monedas";
+
+            detailName.text = skin.Name;
+            detailDesc.text = skin.Description;
+
+            if (equipped)
+            {
+                detailNote.text = detailJustBought ? "¡Comprada! Ya la llevas puesta." : "La llevas puesta ahora.";
+                detailBuy.text = "Equipada";
+                detailBuy.SetEnabled(false);
+                detailBuy.style.display = DisplayStyle.Flex;
+            }
+            else if (owned)
+            {
+                detailNote.text = "Ya es tuya.";
+                detailBuy.text = "Equipar";
+                detailBuy.SetEnabled(true);
+                detailBuy.style.display = DisplayStyle.Flex;
+            }
+            else if (canBuy)
+            {
+                detailNote.text = "Tienes " + inventory.Coins + " monedas.";
+                detailBuy.text = "Confirmar compra (" + skin.Price + ")";
+                detailBuy.SetEnabled(true);
+                detailBuy.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                // Sin monedas suficientes: no hay boton de compra, solo se explica cuanto falta
+                detailNote.text = "Te faltan " + (skin.Price - inventory.Coins) + " monedas. Las consigues superando niveles del Modo carrera.";
+                detailBuy.style.display = DisplayStyle.None;
+            }
         }
 
         /// <summary>Repinta monedas, tonos, dibujos y estados. No reconstruye la lista, asi el scroll no salta.</summary>
@@ -232,6 +355,7 @@ namespace Chopsticks.UI
             }
 
             foreach (Card card in cards) RefreshCard(card);
+            RefreshDetail();
         }
 
         private void RefreshCard(Card card)
@@ -241,7 +365,24 @@ namespace Chopsticks.UI
             bool equipped = inventory.EquippedId == skin.Id;
             bool canBuy = inventory.CanBuy(skin);
 
-            // Dibujo: PNG si existe, mano de respaldo si no
+            ApplyPreview(card, skin);
+
+            card.Root.EnableInClassList("skin-card--equipped", equipped);
+            card.Root.EnableInClassList("skin-card--locked", !owned && !canBuy);
+
+            card.Status.EnableInClassList("skin-card__status--equipped", equipped);
+            card.Status.EnableInClassList("skin-card__status--owned", owned && !equipped);
+            card.Status.EnableInClassList("skin-card__status--locked", !owned && !canBuy);
+            card.StatusCoin.style.display = owned ? DisplayStyle.None : DisplayStyle.Flex;
+
+            if (equipped) card.StatusText.text = "Equipada";
+            else if (owned) card.StatusText.text = "Equipar";
+            else card.StatusText.text = skin.Price.ToString();
+        }
+
+        /// <summary>Pone el dibujo de la mano: PNG si existe, mano de respaldo si no.</summary>
+        private void ApplyPreview(Card card, HandSkin skin)
+        {
             Texture2D texture = HandSkinSprites.Get(skin.Id, inventory.Tone, 4);
             if (texture != null)
             {
@@ -261,18 +402,6 @@ namespace Chopsticks.UI
                                      "(ej: Resources/HandSkins/clasica_t0_4.png, Resources/HandSkins/zombi_4.png).");
                 }
             }
-
-            card.Root.EnableInClassList("skin-card--equipped", equipped);
-            card.Root.EnableInClassList("skin-card--locked", !owned && !canBuy);
-
-            card.Status.EnableInClassList("skin-card__status--equipped", equipped);
-            card.Status.EnableInClassList("skin-card__status--owned", owned && !equipped);
-            card.Status.EnableInClassList("skin-card__status--locked", !owned && !canBuy);
-            card.StatusCoin.style.display = owned ? DisplayStyle.None : DisplayStyle.Flex;
-
-            if (equipped) card.StatusText.text = "Equipada";
-            else if (owned) card.StatusText.text = "Equipar";
-            else card.StatusText.text = skin.Price.ToString();
         }
 
         private void PaintFallback(Card card)

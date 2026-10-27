@@ -27,6 +27,10 @@ namespace Chopsticks.Game
         private bool busy;
         private bool searching;
         private int searchId;       // cada busqueda tiene su numero; si cambia, la busqueda se cancelo
+        private int joinId;         // cada intento de unirse tiene el suyo; si cambia, se cancelo
+
+        /// <summary>Numero de la sala de espera actual. Cambia con cada sala nueva, para no mezclar avisos de salas viejas.</summary>
+        public int LobbyId { get; private set; }
 
         public OnlineController(ScreenNavigator navigator, OnlineMenuView menu, LobbyView lobby,
                                 SearchView search, GameController game, ShopInventory shop)
@@ -58,7 +62,8 @@ namespace Chopsticks.Game
         /// Crea una sala con codigo y va a la sala de espera. Tambien la usa la pantalla de amigos para retar:
         /// onCreated recibe el codigo y onError un mensaje si falla (si es null, el error sale en el menu online).
         /// </summary>
-        public async void CreateRoom(string playerName, bool splitAllowed, Action<string> onCreated, Action<string> onError)
+        public async void CreateRoom(string playerName, bool splitAllowed, Action<string> onCreated, Action<string> onError,
+                                     string challengedName = null)
         {
             if (busy)
             {
@@ -72,7 +77,10 @@ namespace Chopsticks.Game
                 string code = await service.CreateAsync(2);
                 match = new OnlineMatch(new NetMessenger(), true, playerName, splitAllowed, false, shop.EquippedId, shop.Tone);
                 Hook(match);
+                LobbyId++;
                 lobby.SetCode(code);
+                // Si es un reto, la sala de espera explica a quien se esta esperando
+                lobby.SetChallengeStatus(challengedName != null ? "Enviando reto a " + challengedName + "..." : null);
                 RefreshLobby();
                 menu.ShowMessage("");
                 navigator.Show(ScreenId.Lobby);
@@ -100,7 +108,7 @@ namespace Chopsticks.Game
         /// Se une a una sala con su codigo y va a la sala de espera. Tambien la usa la pantalla de amigos
         /// al aceptar un reto: onError recibe un mensaje si falla (si es null, el error sale en el menu online).
         /// </summary>
-        public async void JoinRoom(string playerName, string code, Action<string> onError)
+        public async void JoinRoom(string playerName, string code, Action<string> onError, Action onJoined = null)
         {
             if (busy)
             {
@@ -108,25 +116,55 @@ namespace Chopsticks.Game
                 return;
             }
             busy = true;
+            int id = ++joinId;
             menu.ShowMessage("Uniéndose a la partida...");
             try
             {
                 await service.JoinAsync(code);
+
+                // Si se cancelo mientras se esperaba, se sale de la sala sin ensenar nada
+                if (id != joinId)
+                {
+                    CleanUp();
+                    busy = false;
+                    return;
+                }
+
                 match = new OnlineMatch(new NetMessenger(), false, playerName, true, false, shop.EquippedId, shop.Tone);
                 Hook(match);
+                LobbyId++;
                 lobby.SetCode(code);
+                lobby.SetChallengeStatus(null);
                 RefreshLobby();
                 menu.ShowMessage("");
                 navigator.Show(ScreenId.Lobby);
+                if (onJoined != null) onJoined();
             }
             catch (Exception e)
             {
                 Debug.LogWarning("No se pudo unir a la partida: " + e);
-                string message = "No se encontró esa partida o no se pudo unir.";
-                if (onError != null) onError(message); else menu.ShowMessage(message);
                 CleanUp();
+                if (id == joinId)
+                {
+                    string message = "No se encontró esa partida o no se pudo unir.";
+                    if (onError != null) onError(message); else menu.ShowMessage(message);
+                }
             }
             busy = false;
+        }
+
+        /// <summary>Cancela el intento de unirse que esta en marcha (si ya entro en la sala, no hace nada).</summary>
+        public void CancelJoin()
+        {
+            joinId++;
+        }
+
+        /// <summary>Cambia el aviso de la sala de espera del anfitrion (por ejemplo, el estado de un reto). Se ignora si la sala ya no es esa.</summary>
+        public void SetLobbyStatus(int lobbyId, string text)
+        {
+            if (lobbyId != LobbyId || match == null) return;
+            lobby.SetChallengeStatus(text);
+            RefreshLobby();
         }
 
         // ------------------------------------------------------------

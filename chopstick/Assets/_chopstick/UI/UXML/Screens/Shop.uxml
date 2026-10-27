@@ -21,5 +21,16 @@
         <ui:Instance template="ActionRow" name="action-row">
             <AttributeOverrides element-name="btn-secondary" text="Volver"/>
         </ui:Instance>
+        <ui:VisualElement name="skin-detail" class="overlay overlay--center" style="display:none;">
+            <ui:VisualElement name="detail-box" class="skin-detail__box">
+                <ui:Label name="detail-rarity" text="" class="skin-detail__rarity"/>
+                <ui:VisualElement name="detail-preview" class="skin-detail__preview"/>
+                <ui:Label name="detail-name" text="" class="skin-detail__name"/>
+                <ui:Label name="detail-desc" text="" class="skin-detail__desc"/>
+                <ui:Label name="detail-note" text="" class="skin-detail__note"/>
+                <ui:Button name="btn-detail-buy" text="Confirmar compra" class="btn"/>
+                <ui:Button name="btn-detail-close" text="Cerrar" class="btn btn--ghost"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

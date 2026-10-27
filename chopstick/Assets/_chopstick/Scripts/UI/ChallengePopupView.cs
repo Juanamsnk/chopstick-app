@@ -8,6 +8,8 @@ namespace Chopsticks.UI
     {
         private readonly VisualElement root;
         private readonly Label text;
+        private readonly Button acceptButton;
+        private readonly Button declineButton;
 
         public event Action AcceptClicked;
         public event Action DeclineClicked;
@@ -16,8 +18,10 @@ namespace Chopsticks.UI
         {
             root = popup;
             text = root.Q<Label>("challenge-text");
-            root.Q<Button>("btn-challenge-accept").clicked += () => { if (AcceptClicked != null) AcceptClicked(); };
-            root.Q<Button>("btn-challenge-decline").clicked += () => { if (DeclineClicked != null) DeclineClicked(); };
+            acceptButton = root.Q<Button>("btn-challenge-accept");
+            declineButton = root.Q<Button>("btn-challenge-decline");
+            acceptButton.clicked += () => { if (AcceptClicked != null) AcceptClicked(); };
+            declineButton.clicked += () => { if (DeclineClicked != null) DeclineClicked(); };
         }
 
         public bool IsVisible { get { return root.style.display.value != DisplayStyle.None; } }
@@ -25,6 +29,17 @@ namespace Chopsticks.UI
         public void Show(string fromName)
         {
             text.text = fromName + " te reta a una partida";
+            acceptButton.style.display = DisplayStyle.Flex;
+            declineButton.text = "Rechazar";
+            root.style.display = DisplayStyle.Flex;
+        }
+
+        /// <summary>Tras aceptar: avisa de que se esta entrando en la partida. El boton pasa a "Cancelar".</summary>
+        public void ShowJoining(string fromName)
+        {
+            text.text = "Uniéndote a la partida de " + fromName + "...";
+            acceptButton.style.display = DisplayStyle.None;
+            declineButton.text = "Cancelar";
             root.style.display = DisplayStyle.Flex;
         }
 

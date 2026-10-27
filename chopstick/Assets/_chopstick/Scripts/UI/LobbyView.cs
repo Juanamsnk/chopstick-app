@@ -12,6 +12,9 @@ namespace Chopsticks.UI
         private readonly VisualElement playerList;
         private readonly Button startButton;
 
+        private string challengeStatus;   // aviso del reto enviado a un amigo (null = sala normal con codigo)
+        private string otherName;         // nombre del segundo jugador, cuando ya ha entrado
+
         public event Action StartClicked;
 
         public LobbyView(VisualElement screen)
@@ -29,8 +32,15 @@ namespace Chopsticks.UI
             codeLabel.text = code;
         }
 
+        /// <summary>Texto de espera cuando la sala es de un reto a un amigo. Pon null para una sala normal.</summary>
+        public void SetChallengeStatus(string text)
+        {
+            challengeStatus = text;
+        }
+
         public void SetPlayers(IList<string> names, int localSeat)
         {
+            otherName = names.Count > 1 ? names[1] : null;
             playerList.Clear();
             for (int i = 0; i < names.Count; i++)
             {
@@ -60,6 +70,14 @@ namespace Chopsticks.UI
             startButton.style.display = isHost ? DisplayStyle.Flex : DisplayStyle.None;
             startButton.text = "Empezar (" + playerCount + "/2)";
             startButton.SetEnabled(playerCount >= 2);
+
+            if (isHost && challengeStatus != null)
+            {
+                infoLabel.text = playerCount >= 2
+                    ? (string.IsNullOrEmpty(otherName) ? "Tu amigo" : otherName) + " se ha unido. ¡Pulsa Empezar!"
+                    : challengeStatus;
+                return;
+            }
 
             infoLabel.text = isHost
                 ? "Comparte este código con tu rival para que se una a la partida."

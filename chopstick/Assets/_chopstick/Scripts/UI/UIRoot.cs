@@ -93,7 +93,7 @@ namespace Chopsticks.UI
 
             // Tienda: estilos de mano que se compran con las monedas del modo carrera
             shopView = new ShopView(root.Q("shop"), shopInventory);
-            navigator.Shown += id => { if (id == ScreenId.Shop) shopView.Refresh(); };
+            navigator.Shown += id => { if (id == ScreenId.Shop) { shopView.CloseDetail(); shopView.Refresh(); } };
             shopInventory.Changed += shopView.Refresh;
 
             // Online (crear, unirse con codigo y buscar partida)

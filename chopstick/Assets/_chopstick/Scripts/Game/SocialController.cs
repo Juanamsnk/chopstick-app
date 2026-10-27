@@ -28,6 +28,7 @@ namespace Chopsticks.Game
         private readonly ProgressSync progressSync;   // guarda el progreso en la cuenta (o en el dispositivo si eres invitado)
 
         private ChallengeInfo pending;   // reto recibido que se esta mostrando
+        private bool joining;            // se esta entrando en la partida de un reto aceptado
         private string initError;
         private bool busy;
 
@@ -198,23 +199,29 @@ namespace Chopsticks.Game
         /// <summary>Retar: se crea una sala online (como "Crear partida") y se le manda el codigo al amigo.</summary>
         private void OnChallenge(FriendInfo friend)
         {
-            view.ShowMessage("", false);
+            view.ShowMessage("Preparando la partida para retar a " + friend.Name + "...", false);
             online.CreateRoom(backend.MyName, true,
                 code => SendChallenge(friend, code),
-                message => view.ShowMessage(message, true));
+                message => view.ShowMessage(message, true),
+                friend.Name);
         }
 
         private async void SendChallenge(FriendInfo friend, string joinCode)
         {
+            view.ShowMessage("", false);
+            int lobbyId = online.LobbyId;   // los avisos solo valen para esta sala
             try
             {
                 await backend.SendChallengeAsync(friend.Uid, joinCode);
+                online.SetLobbyStatus(lobbyId, "Reto enviado a " + friend.Name + ". Esperando a que acepte...");
                 await Task.Delay(ChallengeLifetimeMs);   // si no lo acepta en un rato, se retira
                 await backend.CancelChallengeAsync(friend.Uid);
+                online.SetLobbyStatus(lobbyId, friend.Name + " no ha respondido al reto. Puedes seguir esperando o pasarle el código.");
             }
             catch (Exception e)
             {
                 Debug.LogWarning("[Social] Reto: " + e.Message);
+                online.SetLobbyStatus(lobbyId, "No se pudo enviar el reto a " + friend.Name + ". Puedes pasarle el código tú mismo.");
             }
         }
 
@@ -222,7 +229,7 @@ namespace Chopsticks.Game
         {
             // En plena partida, sala o busqueda no se molesta: el reto se descarta
             ScreenId now = navigator.Current;
-            if (now == ScreenId.Game || now == ScreenId.Lobby || now == ScreenId.Search)
+            if (joining || now == ScreenId.Game || now == ScreenId.Lobby || now == ScreenId.Search)
             {
                 Run(() => backend.DismissChallengeAsync(challenge.FromUid), "");
                 return;
@@ -234,21 +241,46 @@ namespace Chopsticks.Game
 
         private void OnAcceptChallenge()
         {
-            popup.Hide();
             ChallengeInfo challenge = pending;
             pending = null;
-            if (challenge == null) return;
-
-            Run(() => backend.DismissChallengeAsync(challenge.FromUid), "");
-            online.JoinRoom(backend.MyName, challenge.JoinCode, message =>
+            if (challenge == null)
             {
-                navigator.Show(ScreenId.Friends);
-                view.ShowMessage(message, true);
-            });
+                popup.Hide();
+                return;
+            }
+
+            // La ventana se queda abierta con "Uniéndote..." hasta que se entra en la sala o falla
+            joining = true;
+            popup.ShowJoining(challenge.FromName);
+            Run(() => backend.DismissChallengeAsync(challenge.FromUid), "");
+            online.JoinRoom(backend.MyName, challenge.JoinCode,
+                message =>
+                {
+                    joining = false;
+                    popup.Hide();
+                    navigator.Show(ScreenId.Friends);
+                    view.ShowMessage(message == "Espera un momento..."
+                        ? message
+                        : "No se pudo entrar en la partida de " + challenge.FromName + ". Puede que la haya cerrado.", true);
+                },
+                () =>
+                {
+                    joining = false;
+                    popup.Hide();
+                });
         }
 
         private void OnDeclineChallenge()
         {
+            // Mientras se entra en la partida, este boton es "Cancelar"
+            if (joining)
+            {
+                joining = false;
+                online.CancelJoin();
+                popup.Hide();
+                return;
+            }
+
             popup.Hide();
             ChallengeInfo challenge = pending;
             pending = null;
