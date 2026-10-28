@@ -304,7 +304,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 101958967afaee943bd69919bc632053, type: 3}
+      m_Icon: {fileID: 2800000, guid: 64654302be49a614f8cc98b78f15c080, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
@@ -312,8 +312,8 @@ PlayerSettings:
   - m_BuildTarget: Android
     m_Icons:
     - m_Textures:
-      - {fileID: 2800000, guid: 101958967afaee943bd69919bc632053, type: 3}
-      - {fileID: 2800000, guid: 101958967afaee943bd69919bc632053, type: 3}
+      - {fileID: 2800000, guid: 64654302be49a614f8cc98b78f15c080, type: 3}
+      - {fileID: 2800000, guid: 64654302be49a614f8cc98b78f15c080, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
@@ -635,7 +635,8 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   webProgressiveAssetLoading: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: UNITY_EDM_DISABLED
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

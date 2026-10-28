@@ -16,6 +16,7 @@ namespace Chopsticks.Game
         private readonly Action<long, Action> schedule;
         private readonly CareerProgress progress;
         private readonly ShopInventory shop;
+        private readonly string playerName;   // tu nombre en la partida (null = "Jugador")
 
         private LocalMatch inner;
         private int level;
@@ -25,9 +26,11 @@ namespace Chopsticks.Game
 
         public event Action Changed;
 
-        public CareerMatch(int level, Action<long, Action> schedule, CareerProgress progress, ShopInventory shop)
+        public CareerMatch(int level, Action<long, Action> schedule, CareerProgress progress, ShopInventory shop,
+                           string playerName = null)
         {
             this.level = level;
+            this.playerName = playerName;
             this.schedule = schedule;
             this.progress = progress;
             this.shop = shop;
@@ -103,7 +106,7 @@ namespace Chopsticks.Game
         private void CreateInner()
         {
             DisposeInner();
-            inner = new LocalMatch(CareerLevels.CreateSetup(level), schedule);
+            inner = new LocalMatch(CareerLevels.CreateSetup(level, playerName), schedule);
             inner.Changed += OnInnerChanged;
             recorded = false;
             reward = 0;

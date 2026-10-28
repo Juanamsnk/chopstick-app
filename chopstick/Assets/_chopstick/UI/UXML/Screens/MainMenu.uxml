@@ -17,16 +17,45 @@
             </ui:Button>
             <ui:Button name="btn-settings" text="Ajustes" class="topbar__btn"/>
         </ui:VisualElement>
+        <ui:VisualElement class="main__gap main__gap--top"/>
         <ui:VisualElement class="logo">
             <ui:Label text="Chop" name="Label" class="logo__a"/>
             <ui:Label text="5ticks" class="logo__b"/>
         </ui:VisualElement>
         <ui:Label text="El duelo de dedos" class="subtitle"/>
-        <ui:VisualElement class="spacer"/>
+        <ui:VisualElement class="main__gap main__gap--logo"/>
+        <ui:VisualElement class="main__center">
+            <ui:VisualElement name="career-card" class="career-card">
+                <ui:Button name="btn-career-card" class="career-card__top">
+                    <ui:VisualElement class="career-card__head" picking-mode="Ignore">
+                        <ui:Label text="Modo carrera" class="career-card__kicker" picking-mode="Ignore"/>
+                        <ui:Label name="cc-tier" text="Novato" class="career-card__tier" picking-mode="Ignore"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="career-card__body" picking-mode="Ignore">
+                        <ui:Label name="cc-badge" text="1" class="career-card__badge" picking-mode="Ignore"/>
+                        <ui:VisualElement class="career-card__info" picking-mode="Ignore">
+                            <ui:Label text="Próximo rival" class="career-card__caption" picking-mode="Ignore"/>
+                            <ui:Label name="cc-opponent" text="Novato Nv.1" class="career-card__opponent" picking-mode="Ignore"/>
+                            <ui:VisualElement class="career-card__reward" picking-mode="Ignore">
+                                <ui:VisualElement class="coin coin--small" picking-mode="Ignore"/>
+                                <ui:Label name="cc-reward" text="+33" class="career-card__reward-text" picking-mode="Ignore"/>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="career-card__track" picking-mode="Ignore">
+                        <ui:VisualElement name="cc-fill" class="career-card__fill" picking-mode="Ignore"/>
+                    </ui:VisualElement>
+                    <ui:Label name="cc-progress" text="0 de 100 niveles" class="career-card__progress" picking-mode="Ignore"/>
+                </ui:Button>
+                <ui:Button name="btn-career-play" text="Siguiente duelo" class="btn btn--orange career-card__play"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="main__gap main__gap--play"/>
         <ui:Button name="btn-play" text="Jugar" class="btn btn--play"/>
         <ui:VisualElement class="main__row">
             <ui:Button name="btn-shop" text="Tienda" class="btn btn--blue btn--half btn--gap"/>
             <ui:Button name="btn-friends" text="Amigos" class="btn btn--green btn--half"/>
         </ui:VisualElement>
+        <ui:VisualElement class="main__gap main__gap--bottom"/>
     </ui:VisualElement>
 </ui:UXML>

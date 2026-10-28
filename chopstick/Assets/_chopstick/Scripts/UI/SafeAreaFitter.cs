@@ -6,6 +6,7 @@ namespace Chopsticks.UI
     /// <summary>
     /// Respeta la zona segura del movil (muesca de la camara, esquinas redondeadas y barras del sistema).
     /// Mueve hacia dentro los bordes de cada pantalla para que ningun boton quede tapado.
+    /// Tambien deja libre arriba el hueco del banner de anuncios (AdsManager) para que no tape la interfaz.
     /// El fondo sigue ocupando toda la pantalla porque lo pinta el elemento "app".
     /// </summary>
     public class SafeAreaFitter
@@ -18,6 +19,10 @@ namespace Chopsticks.UI
 
             // Se recalcula cada vez que cambia el tamano (al arrancar, girar el movil, etc.)
             app.RegisterCallback<GeometryChangedEvent>(evt => Apply());
+
+            // Cuando el banner carga, falla o se oculta, se recalcula el hueco de arriba
+            AdsManager.OnReservedHeightChanged += Apply;
+            app.RegisterCallback<DetachFromPanelEvent>(evt => AdsManager.OnReservedHeightChanged -= Apply);
             Apply();
         }
 
@@ -36,6 +41,9 @@ namespace Chopsticks.UI
             float right = (Screen.width - safe.xMax) * scale;
             float bottom = safe.yMin * scale;                       // el origen de Screen es abajo
             float top = (Screen.height - safe.yMax) * scale;
+
+            // El banner va pegado arriba (AdPosition.Top): la interfaz empieza justo debajo de el
+            top += AdsManager.ReservedHeightPx * scale;
 
             // Cada hijo de "app" es una pantalla (ocupa todo el espacio).
             foreach (VisualElement screen in app.Children())

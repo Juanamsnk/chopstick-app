@@ -18,6 +18,19 @@ namespace Chopsticks.Social
         /// <summary>Nombre para mostrar: el de la cuenta o "Invitado".</summary>
         public string DisplayName { get { return IsSignedIn ? Name : GuestName; } }
 
+        /// <summary>
+        /// Nombre con el que juegas las partidas: el de la cuenta (con el mismo limite que los campos de nombre)
+        /// o "Jugador" si eres invitado. Es el mismo que se rellena solo en las partidas online.
+        /// </summary>
+        public string PlayName
+        {
+            get
+            {
+                if (!IsSignedIn) return "Jugador";
+                return Name.Length > 14 ? Name.Substring(0, 14) : Name;
+            }
+        }
+
         /// <summary>Letra del circulo de perfil.</summary>
         public string Initial { get { return IsSignedIn ? Name.Substring(0, 1).ToUpperInvariant() : "?"; } }
 

@@ -48,6 +48,7 @@ namespace Chopsticks.UI
             meLabel = screen.Q<Label>("me-name");
             codeLabel = screen.Q<Label>("my-code");
             friendCodeField = screen.Q("friend-code").Q<TextField>("input");
+            UppercaseField.Apply(friendCodeField);   // los codigos siempre son en mayusculas
             signOutButton = screen.Q("action-row").Q<Button>("btn-primary");
 
             ScrollView list = screen.Q<ScrollView>("friends-list");

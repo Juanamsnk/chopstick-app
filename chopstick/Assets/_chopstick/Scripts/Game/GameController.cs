@@ -1,3 +1,4 @@
+using System;
 using Chopsticks.Career;
 using Chopsticks.Core;
 using Chopsticks.Shop;
@@ -39,6 +40,9 @@ namespace Chopsticks.Game
         // ------------------------------------------------------------
         // Empezar y salir
         // ------------------------------------------------------------
+        /// <summary>Da el nombre con el que juegas (el de tu cuenta, o "Jugador"). Lo usa el modo carrera.</summary>
+        public Func<string> PlayerNameProvider;
+
         /// <summary>Empieza una partida local (offline o contra la maquina).</summary>
         public void StartGame(GameSetup setup)
         {
@@ -48,7 +52,8 @@ namespace Chopsticks.Game
         /// <summary>Empieza un nivel del modo carrera (1 a 100).</summary>
         public void StartCareerLevel(int level)
         {
-            StartMatch(new CareerMatch(level, view.Schedule, career, shop));
+            string name = PlayerNameProvider != null ? PlayerNameProvider() : null;
+            StartMatch(new CareerMatch(level, view.Schedule, career, shop, name));
         }
 
         /// <summary>Empieza cualquier partida (la usa tambien el modo online).</summary>

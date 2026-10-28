@@ -79,6 +79,7 @@ namespace Chopsticks.UI
             careerProgress = new CareerProgress();
             shopInventory.BindCareer(careerProgress);   // algunos estilos se desbloquean al avanzar en la carrera
             gameController = new GameController(gameView, navigator, new MoveSounds(soundManager), careerProgress, shopInventory);
+            gameController.PlayerNameProvider = () => profile.PlayName;   // en la carrera sales con el nombre de tu cuenta
 
             // Ajustes offline y contra la maquina
             offlineSetup = new OfflineSetupView(root.Q("offlinesetup"));
@@ -105,7 +106,8 @@ namespace Chopsticks.UI
             onlineController = new OnlineController(navigator, onlineMenu, lobbyView, searchView, gameController, shopInventory);
 
             // Menu principal y ajustes (usuario, monedas, sonido, tema)
-            mainMenuView = new MainMenuView(root.Q("mainmenu"), shopInventory, profile);
+            mainMenuView = new MainMenuView(root.Q("mainmenu"), shopInventory, profile, careerProgress);
+            mainMenuView.CareerPlayClicked += gameController.StartCareerLevel;   // "Siguiente duelo": entra directo al nivel que toca
             careerProgress.Changed += mainMenuView.Refresh;   // el rango cambia al superar niveles
             navigator.Shown += id => { if (id == ScreenId.MainMenu) mainMenuView.Refresh(); };
             settingsView = new SettingsView(root.Q("settings"), shopInventory, profile, soundManager, theme);

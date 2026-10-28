@@ -34,6 +34,7 @@ namespace Chopsticks.UI
             OnClick(main.Q<Button>("btn-friends"), () => navigator.Show(ScreenId.Friends));
             OnClick(main.Q<Button>("btn-profile"), () => navigator.Show(ScreenId.Settings));
             OnClick(main.Q<Button>("btn-settings"), () => navigator.Show(ScreenId.Settings));
+            OnClick(main.Q<Button>("btn-career-card"), () => navigator.Show(ScreenId.Career));   // tarjeta de Carrera: abre la lista de niveles
 
             // Pantalla Jugar: los modos de juego agrupados
             var play = root.Q("playmenu");

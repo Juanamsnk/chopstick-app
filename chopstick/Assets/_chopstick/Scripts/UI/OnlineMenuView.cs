@@ -23,6 +23,7 @@ namespace Chopsticks.UI
         {
             nameField = screen.Q("my-name").Q<TextField>("input");
             codeField = screen.Q("join-code").Q<TextField>("input");
+            UppercaseField.Apply(codeField);   // los codigos siempre son en mayusculas
             splitOption = new CheckOptionView(screen.Q("opt-split"));
             message = screen.Q<Label>("error");
             autoName = new NameAutofill(nameField, "Jugador 1");

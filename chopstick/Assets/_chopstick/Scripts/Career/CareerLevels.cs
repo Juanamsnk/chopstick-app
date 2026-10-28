@@ -56,7 +56,7 @@ namespace Chopsticks.Career
         }
 
         /// <summary>Ajustes de la partida de un nivel: tu contra la maquina de ese nivel.</summary>
-        public static GameSetup CreateSetup(int level)
+        public static GameSetup CreateSetup(int level, string playerName = null)
         {
             var setup = new GameSetup
             {
@@ -64,7 +64,7 @@ namespace Chopsticks.Career
                 VsAI = true,
                 AiProfile = AiProfile.FromCareerLevel(level)
             };
-            setup.Names.Add("Jugador");
+            setup.Names.Add(string.IsNullOrEmpty(playerName) ? "Jugador" : playerName);
             setup.Names.Add(OpponentName(level));
             return setup;
         }

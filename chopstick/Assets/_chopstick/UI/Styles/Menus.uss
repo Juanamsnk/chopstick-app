@@ -62,6 +62,7 @@
 
 /* Ajustes */
 /* Las tarjetas van dentro del panel con scroll: un tono mas claro para distinguirlas */
+.settings__scroll { margin-top: 12px; }
 .settings__scroll .card { background-color: var(--card-2); border-color: var(--card-2-depth); }
 .settings__scroll .unity-scroll-view__content-container { padding-right: 6px; }
 .settings__profile { flex-direction: row; align-items: center; }
@@ -70,3 +71,54 @@
 .settings__status { font-size: 12px; color: var(--mute); margin: 0 0 6px 0; padding: 0; }
 .settings__coins { flex-direction: row; align-items: center; }
 .settings__hand { font-size: 17px; -unity-font-style: bold; color: var(--ink); margin: 0 0 10px 0; }
+
+/* Tarjeta de Carrera del menu principal (acceso directo) */
+.btn--orange { background-color: var(--player-0); color: var(--on-color); border-color: #c4561a; }
+.btn--orange:hover, .btn--orange:focus { background-color: var(--player-0); border-color: #c4561a; }
+
+/* Reparto vertical del menu: el espacio libre se reparte 2 : 3 : 4 : 3 entre
+   barra-logo, logo-tarjeta, tarjeta-Jugar y el hueco de abajo (el grow de cada hueco es su "peso") */
+.main__gap { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 6px; }
+.main__gap--top { flex-grow: 2; }
+.main__gap--logo { flex-grow: 3; min-height: 12px; }
+.main__gap--play { flex-grow: 4; min-height: 12px; }
+.main__gap--bottom { flex-grow: 3; min-height: 0; }
+.main__center { flex-shrink: 0; }
+#screen-main .subtitle { margin-bottom: 0; }
+.career-card {
+    background-color: var(--card); border-width: 2px; border-bottom-width: 6px; border-color: var(--player-0);
+    border-radius: 26px; margin: 0 2px; overflow: hidden;
+}
+.career-card__top {
+    flex-direction: column; align-items: stretch; margin: 0; padding: 20px 18px 8px 18px;
+    background-color: rgba(0,0,0,0); border-width: 0; border-radius: 0;
+}
+.career-card__top:hover, .career-card__top:focus { background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,0); }
+.career-card__top:active { opacity: 0.8; }
+
+.career-card__head { flex-direction: row; align-items: center; justify-content: space-between; }
+.career-card__kicker { font-size: 14px; -unity-font-style: bold; color: var(--mute); margin: 0; padding: 0; }
+.career-card__tier {
+    font-size: 12px; -unity-font-style: bold; color: #ffffff; background-color: var(--player-0);
+    padding: 3px 10px; border-radius: 10px; margin: 0;
+}
+
+.career-card__body { flex-direction: row; align-items: center; margin: 18px 0; }
+.career-card__badge {
+    width: 76px; height: 76px; border-radius: 38px; flex-shrink: 0; margin: 0 16px 0 0; padding: 0;
+    background-color: var(--player-0); color: #ffffff; font-size: 30px; -unity-font-style: bold; -unity-text-align: middle-center;
+}
+.career-card__info { flex-grow: 1; flex-shrink: 1; }
+.career-card__caption { font-size: 12px; color: var(--mute); margin: 0; padding: 0; -unity-text-align: middle-left; }
+.career-card__opponent {
+    font-size: 25px; -unity-font-style: bold; color: var(--ink); margin: 0; padding: 0; -unity-text-align: middle-left;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.career-card__reward { flex-direction: row; align-items: center; margin-top: 2px; }
+.career-card__reward-text { font-size: 13px; -unity-font-style: bold; color: var(--accent); margin: 0; padding: 0; }
+
+.career-card__track { height: 16px; border-radius: 8px; background-color: var(--field); }
+.career-card__fill { height: 16px; border-radius: 8px; background-color: var(--green); width: 0; }
+.career-card__progress { font-size: 12px; color: var(--mute); margin: 6px 0 0 0; padding: 0; -unity-text-align: middle-right; }
+
+.btn.career-card__play { margin: 12px 18px 18px 18px; min-height: 64px; font-size: 22px; }
