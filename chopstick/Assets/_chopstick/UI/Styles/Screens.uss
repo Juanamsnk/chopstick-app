@@ -13,7 +13,7 @@
     flex-grow: 1; flex-basis: 0; margin-bottom: 12px;
     background-color: var(--card); border-width: 2px; border-color: var(--line); border-radius: 22px;
 }
-.career__levels .unity-scroll-view__content-container { padding: 6px 8px 14px 12px; }
+.career__levels .unity-scroll-view__content-container { padding: 14px 8px 14px 12px; }
 .career__tier {
     font-size: 15px; -unity-font-style: bold; color: var(--ink);
     margin: 14px 0 8px 2px; padding-left: 8px;

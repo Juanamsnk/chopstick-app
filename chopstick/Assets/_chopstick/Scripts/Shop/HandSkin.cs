@@ -102,12 +102,20 @@ namespace Chopsticks.Shop
             Make("henna", "Henna", "Dibujos de boda", SkinRarity.Comun, true),
             Make("tatuajes", "Tatuajes", "Tinta tribal", SkinRarity.Comun, true),
             Make("golf", "Guante de golf", "Cuero blanco y velcro", SkinRarity.Comun, false),
+            Make("queso", "Queso", "Lleno de agujeros", SkinRarity.Comun, false),
+            Make("sandia", "Sandía", "Fresca y con pepitas", SkinRarity.Comun, false),
+            Make("chocolate", "Chocolate", "Onzas para morder", SkinRarity.Comun, false),
             // Raras
             Make("anillos", "Anillos de oro", "Oro y gemas", SkinRarity.Rara, true),
             Make("zombi", "Zombi", "Puntos y hueso", SkinRarity.Rara, false),
             Make("esqueleto", "Esqueleto", "Hasta los huesos", SkinRarity.Rara, false),
             Make("pixel", "Pixel", "Estilo 8 bits", SkinRarity.Rara, true),
             Make("golem", "Golem", "Piedra y musgo", SkinRarity.Rara, false),
+            Make("gato", "Gato", "Pelo naranja y patita", SkinRarity.Rara, false),
+            Make("cactus", "Cactus", "Verde y espinoso", SkinRarity.Rara, false),
+            Make("futbol", "Balón de fútbol", "Pentágonos de gol", SkinRarity.Rara, false),
+            Make("baloncesto", "Baloncesto", "Bote y canasta", SkinRarity.Rara, false),
+            Make("boxeo", "Guante de boxeo", "Golpe de campeón", SkinRarity.Rara, false),
             // Epicas
             Make("vampiro", "Vampiro", "Uñas afiladas", SkinRarity.Epica, false),
             Make("robot", "Robot", "Metal con LED", SkinRarity.Epica, false),
@@ -116,6 +124,7 @@ namespace Chopsticks.Shop
             Make("lentejuelas", "Lentejuelas", "Un solo guante brillante", SkinRarity.Epica, false),
             Make("princesa", "Princesa", "Satén, lazo y perlas", SkinRarity.Epica, false),
             Make("rayo", "Guante de rayo", "Héroe eléctrico", SkinRarity.Epica, false),
+            Make("dragon", "Dragón", "Escamas y garras", SkinRarity.Epica, false),
             // Legendarias
             Make("neon", "Neón", "Brilla en la noche", SkinRarity.Legendaria, false),
             Make("oro", "Oro macizo", "Dorado brillante", SkinRarity.Legendaria, false),
