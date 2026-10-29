@@ -218,14 +218,18 @@ namespace Chopsticks.UI
                 toneButtons[i].style.borderRightColor = line;
             }
 
-            // Orden: las que tienes (en el orden del catalogo) y despues las de carrera que faltan.
-            // Las de la tienda que no tienes no salen.
+            // Orden: las que tienes (por rareza y, dentro de cada rareza, las de tienda y luego las de carrera por nivel)
+            // y despues las de carrera que faltan, de menor a mayor nivel. Las de la tienda que no tienes no salen.
             var shown = new List<Card>();
-            foreach (Card card in cards) if (inventory.Owns(card.Skin.Id)) shown.Add(card);
+            var missing = new List<Card>();
             foreach (Card card in cards)
             {
-                if (!inventory.Owns(card.Skin.Id) && card.Skin.Source == HandSkinSource.Career) shown.Add(card);
+                if (inventory.Owns(card.Skin.Id)) shown.Add(card);
+                else if (card.Skin.Source == HandSkinSource.Career) missing.Add(card);
             }
+            shown.Sort(CompareOwned);
+            missing.Sort(CompareMissing);
+            shown.AddRange(missing);
 
             string key = "";
             foreach (Card card in shown) key += card.Skin.Id + ",";
@@ -257,6 +261,31 @@ namespace Chopsticks.UI
             }
 
             countLabel.text = have + " de " + total + " manos";
+        }
+
+        private static int CatalogIndex(HandSkin skin)
+        {
+            for (int i = 0; i < HandSkinCatalog.All.Count; i++)
+            {
+                if (HandSkinCatalog.All[i].Id == skin.Id) return i;
+            }
+            return int.MaxValue;
+        }
+
+        private static int CompareOwned(Card a, Card b)
+        {
+            int result = ((int)a.Skin.Rarity).CompareTo((int)b.Skin.Rarity);
+            if (result != 0) return result;
+            result = a.Skin.CareerRewardLevel.CompareTo(b.Skin.CareerRewardLevel);   // las de tienda (0) van antes que las de carrera
+            if (result != 0) return result;
+            return CatalogIndex(a.Skin).CompareTo(CatalogIndex(b.Skin));
+        }
+
+        private static int CompareMissing(Card a, Card b)
+        {
+            int result = a.Skin.CareerRewardLevel.CompareTo(b.Skin.CareerRewardLevel);
+            if (result != 0) return result;
+            return CatalogIndex(a.Skin).CompareTo(CatalogIndex(b.Skin));
         }
 
         private void ApplyPreview(Card card, HandSkin skin)
