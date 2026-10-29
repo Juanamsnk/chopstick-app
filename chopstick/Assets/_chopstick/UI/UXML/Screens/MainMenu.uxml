@@ -54,6 +54,7 @@
         <ui:Button name="btn-play" text="Jugar" class="btn btn--play"/>
         <ui:VisualElement class="main__row">
             <ui:Button name="btn-shop" text="Tienda" class="btn btn--blue btn--half btn--gap"/>
+            <ui:Button name="btn-inventory" text="Inventario" class="btn btn--purple btn--half btn--gap"/>
             <ui:Button name="btn-friends" text="Amigos" class="btn btn--green btn--half"/>
         </ui:VisualElement>
         <ui:VisualElement class="main__gap main__gap--bottom"/>

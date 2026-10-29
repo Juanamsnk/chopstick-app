@@ -23,6 +23,7 @@ namespace Chopsticks.Game
         private bool recorded;   // la victoria de esta partida ya se guardo
         private bool closed;
         private int reward;      // monedas ganadas en esta partida
+        private List<HandSkin> newHands = new List<HandSkin>();   // manos ganadas en esta partida
 
         public event Action Changed;
 
@@ -68,6 +69,10 @@ namespace Chopsticks.Game
             get { return Won && reward > 0 ? "+" + reward + " monedas" : null; }
         }
 
+        // La mano que te llevas al vencer el ultimo nivel de un rango (el cuadro de victoria la ensena aparte)
+        public string NewHandSkinId { get { return Won && newHands.Count > 0 ? newHands[0].Id : null; } }
+        public string NewHandName { get { return Won && newHands.Count > 0 ? newHands[0].Name : null; } }
+
         public void Begin()
         {
             inner.Begin();
@@ -110,6 +115,7 @@ namespace Chopsticks.Game
             inner.Changed += OnInnerChanged;
             recorded = false;
             reward = 0;
+            newHands = new List<HandSkin>();
         }
 
         private void DisposeInner()
@@ -126,6 +132,7 @@ namespace Chopsticks.Game
                 recorded = true;
                 // Primera vez: premio completo. Repetir un nivel ya superado: premio pequeno.
                 bool firstTime = progress.Complete(level);
+                newHands = shop.GrantCareerRewards();   // al vencer el ultimo nivel de un rango te llevas su mano
                 reward = firstTime ? CareerRewards.FirstClear(level) : CareerRewards.ReplayReward;
                 shop.AddCoins(reward);
             }

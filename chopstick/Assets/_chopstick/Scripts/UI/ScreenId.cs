@@ -13,6 +13,7 @@ namespace Chopsticks.UI
         AiSetup,
         Career,
         Shop,
+        Inventory,
         Friends,
         OnlineMenu,
         Lobby,

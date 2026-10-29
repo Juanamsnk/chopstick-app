@@ -31,6 +31,10 @@ namespace Chopsticks.Game
         private bool joining;            // se esta entrando en la partida de un reto aceptado
         private string initError;
         private bool busy;
+        private bool settled;
+
+        /// <summary>Firebase ya arranco y, si habia sesion, ya se cargo el progreso de la cuenta (la pantalla de carga espera esto).</summary>
+        public event Action Settled;
 
         public SocialController(ScreenNavigator navigator, FriendsView view, ChallengePopupView popup, OnlineController online,
             PlayerProfile profile, SettingsView settings, CareerProgress career, ShopInventory shop)
@@ -71,6 +75,7 @@ namespace Chopsticks.Game
             {
                 initError = "Los amigos no están disponibles en la versión web.";
                 Refresh();
+                MarkSettled();
                 return;
             }
             try
@@ -83,6 +88,23 @@ namespace Chopsticks.Game
                 initError = e is SocialException ? e.Message : "No se pudo conectar con Firebase.";
             }
             Refresh();
+
+            // Con sesion iniciada, se espera a que lleguen tu progreso y tus compras antes de dar todo por listo
+            if (progressSync.IsSigningIn) progressSync.SignInFinished += OnSignInFinished;
+            else MarkSettled();
+        }
+
+        private void OnSignInFinished()
+        {
+            progressSync.SignInFinished -= OnSignInFinished;
+            MarkSettled();
+        }
+
+        private void MarkSettled()
+        {
+            if (settled) return;
+            settled = true;
+            if (Settled != null) Settled();
         }
 
         /// <summary>Deja de escuchar a Firebase (al cerrar la interfaz).</summary>

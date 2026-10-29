@@ -168,6 +168,8 @@ namespace Chopsticks.Game
                 CanRestart = match.CanRestart,
                 RestartLabel = match.RestartLabel,
                 ResultNote = match.ResultNote,
+                NewHandSkinId = match.NewHandSkinId,
+                NewHandName = match.NewHandName,
                 OpponentSkinId = match.OpponentSkinId,
                 OpponentTone = match.OpponentTone,
                 BottomRank = shop.RankName,

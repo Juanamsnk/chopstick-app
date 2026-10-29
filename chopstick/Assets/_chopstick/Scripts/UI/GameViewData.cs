@@ -16,6 +16,8 @@ namespace Chopsticks.UI
         public bool CanRestart;             // se puede pedir "Jugar otra vez"
         public string RestartLabel = "Jugar otra vez";   // texto de ese boton
         public string ResultNote;           // linea extra al terminar (por ejemplo "+33 monedas")
+        public string NewHandSkinId;        // mano ganada en esta partida (null = ninguna)
+        public string NewHandName;
         public string OpponentSkinId;       // estilo de mano del rival (null = clasica)
         public int OpponentTone;
         public string BottomRank;           // rango de quien juega abajo (null = no se muestra)

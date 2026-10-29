@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Chopsticks.Career;
 using Chopsticks.Shop;
@@ -75,7 +76,8 @@ namespace Chopsticks.UI
                 hint.text = "Las monedas se consiguen en el Modo carrera, que también desbloquea estilos: raras en el nivel " +
                             HandSkinCatalog.UnlockLevelOf(SkinRarity.Rara) + ", épicas en el " +
                             HandSkinCatalog.UnlockLevelOf(SkinRarity.Epica) + " y legendarias en el " +
-                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Legendaria) + ".";
+                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Legendaria) + ". Lo que compras va a tu inventario. " +
+                            "Las manos de los rivales no se venden: se ganan venciéndolos.";
             }
 
             BuildLegend();
@@ -148,6 +150,7 @@ namespace Chopsticks.UI
                 foreach (HandSkin skin in HandSkinCatalog.All)
                 {
                     if ((int)skin.Rarity != r) continue;
+                    if (skin.Source != HandSkinSource.Shop) continue;   // las de carrera no se venden: se ganan
                     Card card = BuildCard(skin);
                     grid.Add(card.Root);
                     cards.Add(card);
@@ -284,14 +287,9 @@ namespace Chopsticks.UI
             HandSkin skin = detailSkin;
             if (skin == null) return;
 
-            if (!inventory.Owns(skin.Id))
-            {
-                if (inventory.TryBuy(skin)) detailJustBought = true;   // comprar tambien lo equipa
-            }
-            else
-            {
-                inventory.Equip(skin.Id);
-            }
+            if (inventory.Owns(skin.Id)) return;
+
+            if (inventory.TryBuy(skin)) detailJustBought = true;   // se guarda en el inventario, no se equipa
             Refresh();
         }
 
@@ -320,19 +318,12 @@ namespace Chopsticks.UI
             detailName.text = skin.Name;
             detailDesc.text = skin.Description;
 
-            if (equipped)
+            if (owned)
             {
-                detailNote.text = detailJustBought ? "¡Comprada! Ya la llevas puesta." : "La llevas puesta ahora.";
-                detailBuy.text = "Equipada";
-                detailBuy.SetEnabled(false);
-                detailBuy.style.display = DisplayStyle.Flex;
-            }
-            else if (owned)
-            {
-                detailNote.text = "Ya es tuya.";
-                detailBuy.text = "Equipar";
-                detailBuy.SetEnabled(true);
-                detailBuy.style.display = DisplayStyle.Flex;
+                if (detailJustBought) detailNote.text = "¡Comprada! Está en tu inventario (menú principal): equípala desde allí cuando quieras.";
+                else if (equipped) detailNote.text = "La llevas puesta ahora.";
+                else detailNote.text = "Ya la tienes en tu inventario (menú principal).";
+                detailBuy.style.display = DisplayStyle.None;
             }
             else if (!inventory.MeetsLevel(skin))
             {
@@ -397,7 +388,7 @@ namespace Chopsticks.UI
             card.StatusCoin.style.display = owned || levelLocked ? DisplayStyle.None : DisplayStyle.Flex;
 
             if (equipped) card.StatusText.text = "Equipada";
-            else if (owned) card.StatusText.text = "Equipar";
+            else if (owned) card.StatusText.text = "En inventario";
             else if (levelLocked) card.StatusText.text = "Nivel " + skin.UnlockLevel;
             else card.StatusText.text = skin.Price.ToString();
         }

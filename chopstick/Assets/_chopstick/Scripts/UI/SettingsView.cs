@@ -35,6 +35,7 @@ namespace Chopsticks.UI
         public event Action GoogleClicked;
         public event Action SignOutClicked;
         public event Action ShopClicked;
+        public event Action InventoryClicked;
 
         public SettingsView(VisualElement screen, ShopInventory inventory, PlayerProfile profile, SoundManager sounds, ThemeManager theme)
         {
@@ -54,6 +55,7 @@ namespace Chopsticks.UI
             googleButton.clicked += () => { if (GoogleClicked != null) GoogleClicked(); };
             signOutButton.clicked += () => { if (SignOutClicked != null) SignOutClicked(); };
             screen.Q<Button>("btn-s-shop").clicked += () => { if (ShopClicked != null) ShopClicked(); };
+            screen.Q<Button>("btn-s-inventory").clicked += () => { if (InventoryClicked != null) InventoryClicked(); };
 
             // Sonido y musica: se recuerdan entre partidas
             var soundOption = new CheckOptionView(screen.Q("opt-sound"), PlayerPrefs.GetInt(SoundKey, 1) == 1);

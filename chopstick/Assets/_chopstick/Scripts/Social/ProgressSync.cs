@@ -39,6 +39,12 @@ namespace Chopsticks.Social
         private bool pushWaiting;
         private long localUpdated;
 
+        /// <summary>Se esta cargando el progreso de la cuenta (al abrir la app con sesion iniciada).</summary>
+        public bool IsSigningIn { get { return signingIn; } }
+
+        /// <summary>Termino de cargar el progreso de la cuenta (bien o mal).</summary>
+        public event Action SignInFinished;
+
         public ProgressSync(SocialBackend backend, CareerProgress career, ShopInventory shop)
         {
             this.backend = backend;
@@ -87,6 +93,7 @@ namespace Chopsticks.Social
                 }
             }
             signingIn = false;
+            if (SignInFinished != null) SignInFinished();
         }
 
         /// <summary>Decide con que datos se queda esta cuenta en este dispositivo y los carga.</summary>

@@ -32,6 +32,12 @@
       <ui:VisualElement class="gameover__box">
         <ui:Label name="gameover-title" text="Victoria" class="gameover__title" />
         <ui:Label name="gameover-text" text="" class="gameover__text" />
+        <ui:VisualElement name="gameover-hand" class="gameover__hand" style="display:none;">
+          <ui:Label text="¡Mano nueva!" class="gameover__hand-kicker" />
+          <ui:Image name="gameover-hand-img" scale-mode="ScaleToFit" class="gameover__hand-img" />
+          <ui:Label name="gameover-hand-name" text="" class="gameover__hand-name" />
+          <ui:Label text="Ya está en tu inventario" class="gameover__hand-note" />
+        </ui:VisualElement>
         <ui:Button name="btn-again" text="Jugar otra vez" class="btn" />
         <ui:Button name="btn-exit-over" text="Salir" class="btn btn--ghost" />
       </ui:VisualElement>

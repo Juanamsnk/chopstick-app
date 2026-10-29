@@ -27,7 +27,7 @@ namespace Chopsticks.Career
             new Look("hielo", 0),       // Campeon
             new Look("oro", 0),         // Leyenda
             new Look("neon", 0),        // Gran maestro
-            new Look("cosmico", 0)      // Rey 5ticks
+            new Look("superheroe", 0)   // Rey 5ticks: la mano final de la carrera
         };
 
         public static string SkinId(int level)
@@ -38,6 +38,30 @@ namespace Chopsticks.Career
         public static int Tone(int level)
         {
             return Pick(level).Tone;
+        }
+
+        /// <summary>
+        /// Rango (0 a 9) cuyo rival lleva esta mano, o -1 si ningun rival la lleva.
+        /// La mano por defecto no cuenta: ya es tuya desde el principio.
+        /// </summary>
+        public static int TierOf(string skinId)
+        {
+            if (skinId == HandSkinCatalog.DefaultId) return -1;
+            for (int tier = 0; tier < Looks.Length; tier++)
+            {
+                if (Looks[tier].Id == skinId) return tier;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Nivel que hay que superar para ganar esta mano: el ultimo del rango de quien la lleva
+        /// (Aprendiz lleva "golf" -> nivel 20, Veterano lleva "zombi" -> nivel 40...). 0 = no se gana en la carrera.
+        /// </summary>
+        public static int RewardLevelFor(string skinId)
+        {
+            int tier = TierOf(skinId);
+            return tier < 0 ? 0 : (tier + 1) * CareerLevels.LevelsPerTier;
         }
 
         private static Look Pick(int level)

@@ -1,9 +1,13 @@
 using System.Collections.Generic;
+using Chopsticks.Career;
 using UnityEngine;
 
 namespace Chopsticks.Shop
 {
     public enum SkinRarity { Comun = 0, Rara = 1, Epica = 2, Legendaria = 3 }
+
+    /// <summary>De donde sale una mano: se compra en la tienda o se gana venciendo a un rango de la carrera.</summary>
+    public enum HandSkinSource { Shop, Career }
 
     /// <summary>Un estilo de mano de la tienda.</summary>
     public class HandSkin
@@ -15,6 +19,14 @@ namespace Chopsticks.Shop
         public bool UsesSkinTone;    // true: es una mano con piel y cambia con el tono elegido
 
         public int Price { get { return Id == HandSkinCatalog.DefaultId ? 0 : HandSkinCatalog.PriceOf(Rarity); } }
+
+        /// <summary>
+        /// Nivel del Modo carrera que hay que superar para GANAR esta mano (0 = no es de carrera).
+        /// Salen de CareerOpponentSkins: la mano que lleva un rango se gana al superar su ultimo nivel.
+        /// </summary>
+        public int CareerRewardLevel { get { return CareerOpponentSkins.RewardLevelFor(Id); } }
+
+        public HandSkinSource Source { get { return CareerRewardLevel > 0 ? HandSkinSource.Career : HandSkinSource.Shop; } }
 
         /// <summary>Niveles del Modo carrera que hay que haber superado para poder comprarlo (0 = desde el principio).</summary>
         public int UnlockLevel { get { return HandSkinCatalog.UnlockLevelOf(Rarity); } }

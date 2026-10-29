@@ -39,7 +39,14 @@ namespace Chopsticks.Shop
         public bool Owns(string id) { return owned.Contains(id); }
 
         /// <summary>Conecta el progreso de la carrera: algunos estilos solo se pueden comprar al avanzar en ella.</summary>
-        public void BindCareer(CareerProgress progress) { career = progress; }
+        public void BindCareer(CareerProgress progress)
+        {
+            career = progress;
+            if (AddCareerRewards().Count > 0) Save();   // manos de carrera que ya te habias ganado antes de existir el inventario
+        }
+
+        /// <summary>Niveles superados de verdad (0 si no hay carrera conectada). No confundir con CareerLevel.</summary>
+        public int CompletedLevels { get { return career != null ? career.Completed : 0; } }
 
         /// <summary>Niveles de la carrera superados (si no hay carrera conectada, no se bloquea nada).</summary>
         public int CareerLevel { get { return career != null ? career.Completed : int.MaxValue; } }
@@ -62,20 +69,44 @@ namespace Chopsticks.Shop
             Save();
         }
 
+        /// <summary>Solo se compran las manos de la tienda; las de carrera se ganan venciendo a un rango.</summary>
         public bool CanBuy(HandSkin skin)
         {
-            return skin != null && !Owns(skin.Id) && MeetsLevel(skin) && Coins >= skin.Price;
+            return skin != null && skin.Source == HandSkinSource.Shop && !Owns(skin.Id) && MeetsLevel(skin) && Coins >= skin.Price;
         }
 
-        /// <summary>Compra un estilo y lo pone al momento.</summary>
+        /// <summary>Compra un estilo y lo guarda en el inventario. NO lo equipa: eso se hace desde el inventario.</summary>
         public bool TryBuy(HandSkin skin)
         {
             if (!CanBuy(skin)) return false;
             Coins -= skin.Price;
             owned.Add(skin.Id);
-            EquippedId = skin.Id;
             Save();
             return true;
+        }
+
+        /// <summary>
+        /// Mete en el inventario las manos de carrera que ya te has ganado segun los niveles superados.
+        /// Devuelve solo las nuevas (para avisar: "¡Mano nueva!"). Es seguro llamarlo las veces que haga falta.
+        /// </summary>
+        public List<HandSkin> GrantCareerRewards()
+        {
+            List<HandSkin> added = AddCareerRewards();
+            if (added.Count > 0) Save();
+            return added;
+        }
+
+        /// <summary>Lo mismo pero sin guardar (para usarlo mientras se carga).</summary>
+        private List<HandSkin> AddCareerRewards()
+        {
+            var added = new List<HandSkin>();
+            int done = CompletedLevels;
+            foreach (HandSkin skin in HandSkinCatalog.All)
+            {
+                int level = skin.CareerRewardLevel;
+                if (level > 0 && done >= level && owned.Add(skin.Id)) added.Add(skin);
+            }
+            return added;
         }
 
         public bool Equip(string id)
@@ -98,6 +129,7 @@ namespace Chopsticks.Shop
             Coins = Math.Max(0, coins);
             Tone = SkinTones.Clamp(tone);
             ParseOwned(ownedCsv);
+            AddCareerRewards();
             EquippedId = !string.IsNullOrEmpty(equippedId) && owned.Contains(equippedId) ? equippedId : HandSkinCatalog.DefaultId;
             Save();
         }
@@ -115,6 +147,7 @@ namespace Chopsticks.Shop
             Coins = Math.Max(0, PlayerPrefs.GetInt(prefix + CoinsKey, 0));
             Tone = SkinTones.Clamp(PlayerPrefs.GetInt(prefix + ToneKey, 0));
             ParseOwned(PlayerPrefs.GetString(prefix + OwnedKey, ""));
+            AddCareerRewards();
 
             EquippedId = PlayerPrefs.GetString(prefix + EquippedKey, HandSkinCatalog.DefaultId);
             if (!owned.Contains(EquippedId)) EquippedId = HandSkinCatalog.DefaultId;

@@ -28,6 +28,10 @@ namespace Chopsticks.UI
         private readonly Label gameOverTitle;
         private readonly Label gameOverText;
         private readonly Button againButton;
+        private readonly VisualElement newHandPanel;   // "¡Mano nueva!" (puede no existir en el UXML)
+        private readonly Image newHandImage;
+        private readonly Label newHandName;
+        private bool newHandShown;
         private readonly VisualElement hitFlash;     // destello rojo cuando te atacan (puede no existir en el UXML)
         private MoveResult lastAnimated;             // ultima jugada ya animada, para no repetir los efectos
 
@@ -76,6 +80,9 @@ namespace Chopsticks.UI
             hitFlash = root.Q("hit-flash");
             gameOverTitle = root.Q<Label>("gameover-title");
             gameOverText = root.Q<Label>("gameover-text");
+            newHandPanel = root.Q("gameover-hand");
+            newHandImage = root.Q<Image>("gameover-hand-img");
+            newHandName = root.Q<Label>("gameover-hand-name");
             againButton = root.Q<Button>("btn-again");
             if (againButton != null) againButton.clicked += () => { if (SplitButtonClicked != null) SplitButtonClicked(); };
             Button exitOver = root.Q<Button>("btn-exit-over");
@@ -126,7 +133,12 @@ namespace Chopsticks.UI
 
             bool over = d.State.Status == GameStatus.Over;
             gameOverPanel.style.display = over ? DisplayStyle.Flex : DisplayStyle.None;
-            if (!over) return;
+            if (!over)
+            {
+                newHandShown = false;
+                if (newHandPanel != null) newHandPanel.style.display = DisplayStyle.None;
+                return;
+            }
 
             bool won = d.State.Winner == d.BottomPlayer;
             gameOverTitle.text = won ? "Victoria" : "Derrota";
@@ -135,6 +147,28 @@ namespace Chopsticks.UI
             if (!string.IsNullOrEmpty(d.ResultNote)) gameOverText.text += "\n" + d.ResultNote;
             againButton.style.display = d.CanRestart ? DisplayStyle.Flex : DisplayStyle.None;
             againButton.text = d.RestartLabel;
+            RenderNewHand(won && !string.IsNullOrEmpty(d.NewHandSkinId) ? d : null);
+        }
+
+        /// <summary>El aviso "¡Mano nueva!" dentro del cuadro de victoria: sale con un pequeno rebote.</summary>
+        private void RenderNewHand(GameViewData d)
+        {
+            if (newHandPanel == null) return;
+            if (d == null)
+            {
+                newHandShown = false;
+                newHandPanel.style.display = DisplayStyle.None;
+                return;
+            }
+
+            newHandImage.image = HandSkinSprites.Get(d.NewHandSkinId, shop.Tone, 4);
+            newHandName.text = d.NewHandName;
+            newHandPanel.style.display = DisplayStyle.Flex;
+
+            if (newHandShown) return;   // ya esta puesto: solo se anima la primera vez
+            newHandShown = true;
+            newHandPanel.RemoveFromClassList("gameover__hand--in");
+            newHandPanel.schedule.Execute(() => newHandPanel.AddToClassList("gameover__hand--in")).StartingIn(80);
         }
 
         private void RenderCard(int slot, int player, GameViewData d)

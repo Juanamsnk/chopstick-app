@@ -39,6 +39,7 @@
             <ui:VisualElement class="card">
                 <ui:Label text="Tu mano" class="label-bold"/>
                 <ui:Label name="s-hand" text="Clásica" class="settings__hand"/>
+                <ui:Button name="btn-s-inventory" text="Mi inventario" class="btn btn--green"/>
                 <ui:Button name="btn-s-shop" text="Ir a la tienda" class="btn btn--blue"/>
             </ui:VisualElement>
         </ui:ScrollView>

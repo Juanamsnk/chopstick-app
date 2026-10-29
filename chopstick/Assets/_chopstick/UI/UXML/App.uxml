@@ -7,6 +7,7 @@
   <ui:Template name="AiSetup" src="/Assets/_chopstick/UI/UXML/Screens/AiSetup.uxml" />
   <ui:Template name="Career" src="/Assets/_chopstick/UI/UXML/Screens/Career.uxml" />
   <ui:Template name="Shop" src="/Assets/_chopstick/UI/UXML/Screens/Shop.uxml" />
+  <ui:Template name="Inventory" src="/Assets/_chopstick/UI/UXML/Screens/Inventory.uxml" />
   <ui:Template name="Friends" src="/Assets/_chopstick/UI/UXML/Screens/Friends.uxml" />
   <ui:Template name="OnlineMenu" src="/Assets/_chopstick/UI/UXML/Screens/OnlineMenu.uxml" />
   <ui:Template name="Lobby" src="/Assets/_chopstick/UI/UXML/Screens/Lobby.uxml" />
@@ -20,6 +21,7 @@
     <ui:Instance template="AiSetup" name="aisetup" style="display:none;" />
     <ui:Instance template="Career" name="career" style="display:none;" />
     <ui:Instance template="Shop" name="shop" style="display:none;" />
+    <ui:Instance template="Inventory" name="inventory" style="display:none;" />
     <ui:Instance template="Friends" name="friends" style="display:none;" />
     <ui:Instance template="OnlineMenu" name="onlinemenu" style="display:none;" />
     <ui:Instance template="Lobby" name="lobby" style="display:none;" />
@@ -33,5 +35,18 @@
         <ui:Button name="btn-challenge-decline" text="Rechazar" class="btn btn--ghost" />
       </ui:VisualElement>
     </ui:VisualElement>
+  </ui:VisualElement>
+  <ui:VisualElement name="loading" class="loading">
+    <ui:VisualElement class="loading__c1" picking-mode="Ignore" />
+    <ui:VisualElement class="loading__c2" picking-mode="Ignore" />
+    <ui:VisualElement class="loading__logo" picking-mode="Ignore">
+      <ui:Label text="Chop" class="loading__a" />
+      <ui:Label text="5ticks" class="loading__b" />
+    </ui:VisualElement>
+    <ui:Label text="El duelo de dedos" class="loading__sub" />
+    <ui:VisualElement class="loading__track">
+      <ui:VisualElement name="loading-fill" class="loading__fill" />
+    </ui:VisualElement>
+    <ui:Label name="loading-text" text="Cargando" class="loading__text" />
   </ui:VisualElement>
 </ui:UXML>

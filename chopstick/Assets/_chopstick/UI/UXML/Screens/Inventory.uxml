@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
+    <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
+    <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+    <ui:VisualElement name="screen-inventory" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:VisualElement class="shop__header">
+            <ui:Label text="Mi inventario" class="shop__title"/>
+            <ui:Label name="inv-count" text="1 de 22 manos" class="inv__count"/>
+        </ui:VisualElement>
+        <ui:Label name="inv-msg" text="Toca una mano para equiparla." class="shop__hint"/>
+        <ui:VisualElement class="shop__skinrow">
+            <ui:Label text="Piel" class="shop__skinrow-label"/>
+            <ui:VisualElement name="inv-tones" class="shop__tones"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="inv-scroll" horizontal-scroller-visibility="Hidden" class="career__levels shop__scroll"/>
+        <ui:Instance template="ActionRow" name="action-row">
+            <AttributeOverrides element-name="btn-secondary" text="Volver"/>
+        </ui:Instance>
+    </ui:VisualElement>
+</ui:UXML>

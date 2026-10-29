@@ -30,6 +30,8 @@ namespace Chopsticks.UI
         private CareerView careerView;
         private ShopInventory shopInventory;
         private ShopView shopView;
+        private InventoryView inventoryView;
+        private ScreenId inventoryFrom = ScreenId.MainMenu;   // a donde vuelve "Volver" en el inventario
         private OnlineMenuView onlineMenu;
         private LobbyView lobbyView;
         private SearchView searchView;
@@ -40,11 +42,15 @@ namespace Chopsticks.UI
         private PlayerProfile profile;
         private MainMenuView mainMenuView;
         private SettingsView settingsView;
+        private LoadingScreen loadingScreen;
 
         private void OnEnable()
         {
             VisualElement root = GetComponent<UIDocument>().rootVisualElement;
             VisualElement app = root.Q("app");
+
+            // Pantalla de carga: tapa la interfaz como minimo 2 segundos y hasta que todo este listo
+            loadingScreen = new LoadingScreen(root.Q("loading"));
 
             // Sonidos: el SoundManager se anade como componente y los clips se arrastran en el Inspector
             soundManager = GetComponent<SoundManager>();
@@ -65,6 +71,7 @@ namespace Chopsticks.UI
             navigator.Register(ScreenId.AiSetup, root.Q("aisetup"));
             navigator.Register(ScreenId.Career, root.Q("career"));
             navigator.Register(ScreenId.Shop, root.Q("shop"));
+            navigator.Register(ScreenId.Inventory, root.Q("inventory"));
             navigator.Register(ScreenId.Friends, root.Q("friends"));
             navigator.Register(ScreenId.OnlineMenu, root.Q("onlinemenu"));
             navigator.Register(ScreenId.Lobby, root.Q("lobby"));
@@ -99,6 +106,15 @@ namespace Chopsticks.UI
             shopInventory.Changed += shopView.Refresh;
             careerProgress.Changed += shopView.Refresh;   // al avanzar de nivel se desbloquean estilos
 
+            // Inventario: las manos que tienes (compradas y ganadas en la carrera) y cual llevas puesta
+            inventoryView = new InventoryView(root.Q("inventory"), shopInventory);
+            navigator.Shown += id => { if (id == ScreenId.Inventory) inventoryView.Refresh(); };
+            shopInventory.Changed += inventoryView.Refresh;
+            careerProgress.Changed += inventoryView.Refresh;
+            inventoryView.ShopClicked += () => navigator.Show(ScreenId.Shop);
+            inventoryView.BackClicked += () => navigator.Show(inventoryFrom);
+            root.Q("mainmenu").Q<Button>("btn-inventory").clicked += OpenInventory;
+
             // Online (crear, unirse con codigo y buscar partida)
             onlineMenu = new OnlineMenuView(root.Q("onlinemenu"));
             lobbyView = new LobbyView(root.Q("lobby"));
@@ -112,6 +128,7 @@ namespace Chopsticks.UI
             navigator.Shown += id => { if (id == ScreenId.MainMenu) mainMenuView.Refresh(); };
             settingsView = new SettingsView(root.Q("settings"), shopInventory, profile, soundManager, theme);
             settingsView.ShopClicked += () => navigator.Show(ScreenId.Shop);
+            settingsView.InventoryClicked += OpenInventory;
             navigator.Shown += id => { if (id == ScreenId.Settings) settingsView.Refresh(); };
 
             // Si has iniciado sesion, tu nombre se rellena solo en las pantallas de partida
@@ -122,9 +139,17 @@ namespace Chopsticks.UI
             friendsView = new FriendsView(root.Q("friends"));
             challengePopup = new ChallengePopupView(root.Q("challenge"));
             socialController = new SocialController(navigator, friendsView, challengePopup, onlineController, profile, settingsView, careerProgress, shopInventory);
+            socialController.Settled += loadingScreen.MarkReady;
             socialController.Start();
 
             navigator.Show(ScreenId.MainMenu);
+        }
+
+        /// <summary>Abre el inventario recordando desde donde (Tienda o Ajustes) para que "Volver" regrese ahi.</summary>
+        private void OpenInventory()
+        {
+            if (navigator.Current != ScreenId.Inventory) inventoryFrom = navigator.Current;
+            navigator.Show(ScreenId.Inventory);
         }
 
         private void ApplyProfileName()
