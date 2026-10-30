@@ -105,6 +105,7 @@ namespace Chopsticks.Shop
             Make("queso", "Queso", "Lleno de agujeros", SkinRarity.Comun, false),
             Make("sandia", "Sandía", "Fresca y con pepitas", SkinRarity.Comun, false),
             Make("chocolate", "Chocolate", "Onzas para morder", SkinRarity.Comun, false),
+            Make("tulipanes", "Tulipanes", "Un jardín en cada dedo", SkinRarity.Comun, false),
             // Raras
             Make("anillos", "Anillos de oro", "Oro y gemas", SkinRarity.Rara, true),
             Make("zombi", "Zombi", "Puntos y hueso", SkinRarity.Rara, false),
@@ -116,6 +117,7 @@ namespace Chopsticks.Shop
             Make("futbol", "Balón de fútbol", "Pentágonos de gol", SkinRarity.Rara, false),
             Make("baloncesto", "Baloncesto", "Bote y canasta", SkinRarity.Rara, false),
             Make("boxeo", "Guante de boxeo", "Golpe de campeón", SkinRarity.Rara, false),
+            Make("girasol", "Girasol", "Siempre mirando al sol", SkinRarity.Rara, false),
             // Epicas
             Make("vampiro", "Vampiro", "Uñas afiladas", SkinRarity.Epica, false),
             Make("robot", "Robot", "Metal con LED", SkinRarity.Epica, false),

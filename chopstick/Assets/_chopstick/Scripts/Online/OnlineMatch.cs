@@ -208,6 +208,7 @@ namespace Chopsticks.Online
         public void StartGame()
         {
             if (!isHost || started || names.Count < 2) return;
+            Debug.Log("[Online] Anfitrion: empieza la partida con " + names.Count + " jugadores.");
             engine = new GameEngine(names, splitAllowed);
             started = true;
             BroadcastState();
@@ -242,6 +243,7 @@ namespace Chopsticks.Online
         // ------------------------------------------------------------
         private void OnJoin(ulong sender, string json)
         {
+            Debug.Log("[Online] Anfitrion: llego un 'join' del cliente " + sender + ".");
             if (started || clientIds.Contains(sender) || names.Count >= MaxPlayers) return;
 
             var dto = JsonUtility.FromJson<JoinDto>(json);
@@ -295,6 +297,7 @@ namespace Chopsticks.Online
         // ------------------------------------------------------------
         private void SendJoin()
         {
+            Debug.Log("[Online] Cliente: enviando 'join' al anfitrion.");
             net.SendToHost(MsgJoin, JsonUtility.ToJson(new JoinDto { name = myName, skin = mySkin, tone = myTone, rank = myRank }));
         }
 
@@ -326,6 +329,7 @@ namespace Chopsticks.Online
 
             if (!started)
             {
+                Debug.Log("[Online] Cliente: recibido el primer estado, empieza la partida.");
                 started = true;
                 if (Started != null) Started();
             }

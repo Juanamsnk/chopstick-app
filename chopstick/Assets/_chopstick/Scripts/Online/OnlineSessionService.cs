@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Unity.Netcode;
 using Unity.Services.Multiplayer;
 
 namespace Chopsticks.Online
@@ -18,6 +19,9 @@ namespace Chopsticks.Online
     {
         public NoOpenGameException() : base("No hay partidas abiertas") { }
     }
+
+    /// <summary>Resultado de mirar si hay otra sala mas antigua mientras esperabas como anfitrion.</summary>
+    public enum RescanResult { None, Joined, Recreated }
 
     public class OnlineSessionService
     {
@@ -37,6 +41,7 @@ namespace Chopsticks.Online
         public async Task<string> CreateAsync(int maxPlayers)
         {
             await SignInAsync();
+            await EnsureNetworkStoppedAsync();
             var options = new SessionOptions { MaxPlayers = maxPlayers, IsPrivate = true }.WithRelayNetwork();
             session = await MultiplayerService.Instance.CreateSessionAsync(options);
             return session.Code;
@@ -45,6 +50,7 @@ namespace Chopsticks.Online
         public async Task JoinAsync(string code)
         {
             await SignInAsync();
+            await EnsureNetworkStoppedAsync();
             session = await MultiplayerService.Instance.JoinSessionByCodeAsync(code);
         }
 
@@ -59,6 +65,7 @@ namespace Chopsticks.Online
         public async Task QuickMatchAsync(string regionTag)
         {
             await SignInAsync();
+            await EnsureNetworkStoppedAsync();
 
             // 1) Misma region: si no hay ninguna sala, la busqueda lanza una excepcion y se sigue
             try
@@ -94,6 +101,90 @@ namespace Chopsticks.Online
                 BuildQuickJoin(null, true), BuildSessionOptions(regionTag));
             Debug.Log("[QuickMatch] Paso 2: sala encontrada o creada. Eres anfitrion: " + session.IsHost + ". Codigo: " + session.Code);
 #endif
+        }
+
+        /// <summary>
+        /// Para quien espera como anfitrion en la busqueda rapida: mira si hay otra sala abierta MAS ANTIGUA
+        /// (misma version de la app). Si la hay, cierra la tuya y entra en esa.
+        /// Sirve para cuando dos moviles buscan a la vez: cada uno no encuentra nada y crea su propia sala, y
+        /// sin esto se quedarian los dos esperando para siempre. Siempre se entra en la mas antigua, asi
+        /// nunca se hace un circulo (la mas antigua de todas no se mueve y las demas van a ella).
+        /// </summary>
+        public async Task<RescanResult> TryJoinOlderSessionAsync(string regionTag)
+        {
+            ISession mine = session;
+            if (mine == null || !mine.IsHost || mine.PlayerCount > 1) return RescanResult.None;
+
+            QuerySessionsResults results = await MultiplayerService.Instance.QuerySessionsAsync(new QuerySessionsOptions
+            {
+                Count = 25,
+                FilterOptions = new List<FilterOption>
+                {
+                    new FilterOption(FilterField.AvailableSlots, "1", FilterOperation.GreaterOrEqual)
+                }
+            });
+
+            // Hace falta ver tu propia sala en la lista para comparar fechas con la misma vara de medir
+            ISessionInfo own = null;
+            foreach (ISessionInfo info in results.Sessions)
+            {
+                if (info.Id == mine.Id) { own = info; break; }
+            }
+            if (own == null) return RescanResult.None;
+
+            ISessionInfo best = null;
+            foreach (ISessionInfo info in results.Sessions)
+            {
+                if (info.Id == mine.Id || info.IsLocked || info.AvailableSlots < 1) continue;
+                if (!SameVersion(info, regionTag)) continue;
+                if (!IsOlder(info, own)) continue;
+                if (best == null || IsOlder(info, best)) best = info;
+            }
+            if (best == null) return RescanResult.None;
+
+            // Si mientras tanto alguien entro en tu sala (o la cancelaste), no se mueve nada
+            if (session != mine || mine.PlayerCount > 1) return RescanResult.None;
+
+            Debug.Log("[QuickMatch] Hay otra sala mas antigua (" + best.Id + "). Dejo la mia y entro en esa.");
+            session = null;
+            try { await mine.LeaveAsync(); }
+            catch { /* si ya estaba cerrada no pasa nada */ }
+            await EnsureNetworkStoppedAsync();
+
+            try
+            {
+                session = await MultiplayerService.Instance.JoinSessionByIdAsync(best.Id);
+                Debug.Log("[QuickMatch] Unido a la sala mas antigua. Eres anfitrion: " + session.IsHost);
+                return RescanResult.Joined;
+            }
+            catch (Exception e)
+            {
+                // Se llenó o se cerró justo antes de entrar: se vuelve a crear una sala propia y se sigue esperando
+                Debug.LogWarning("[QuickMatch] No se pudo entrar en la sala mas antigua: " + e.Message);
+                session = await MultiplayerService.Instance.CreateSessionAsync(BuildSessionOptions(regionTag));
+                return RescanResult.Recreated;
+            }
+        }
+
+        private static bool IsOlder(ISessionInfo a, ISessionInfo b)
+        {
+            if (a.Created != b.Created) return a.Created < b.Created;
+            return string.CompareOrdinal(a.Id, b.Id) < 0;
+        }
+
+        // Solo salas de busqueda rapida de la misma version de la app (la etiqueta es "PAIS-version")
+        private static bool SameVersion(ISessionInfo info, string regionTag)
+        {
+            int dash = regionTag.IndexOf('-');
+            if (dash < 0) return true;
+            string version = regionTag.Substring(dash);
+
+            SessionProperty property;
+            if (info.Properties != null && info.Properties.TryGetValue("region", out property) && property != null && property.Value != null)
+            {
+                return property.Value.EndsWith(version);
+            }
+            return false;
         }
 
         private static QuickJoinOptions BuildQuickJoin(string regionTag, bool createIfNone)
@@ -137,6 +228,30 @@ namespace Chopsticks.Online
             session = null;
             try { await old.LeaveAsync(); }
             catch { /* si ya estaba cerrada no pasa nada */ }
+            await EnsureNetworkStoppedAsync();
+        }
+
+        /// <summary>
+        /// Si la red de una partida anterior sigue abierta, la nueva sala no llega a usar su propia conexion
+        /// (el SDK avisa con "NetworkManager is already connected") y nadie puede entrar. Se cierra antes de empezar.
+        /// </summary>
+        private static async Task EnsureNetworkStoppedAsync()
+        {
+            NetworkManager nm = NetworkManager.Singleton;
+            if (nm == null) return;
+
+            if (nm.IsListening || nm.IsConnectedClient)
+            {
+                Debug.LogWarning("[Online] Habia una red de una partida anterior abierta. Se cierra antes de seguir.");
+                nm.Shutdown();
+            }
+
+            // Se espera a que termine de cerrarse (3 segundos como maximo)
+            float until = Time.realtimeSinceStartup + 3f;
+            while ((nm.ShutdownInProgress || nm.IsListening) && Time.realtimeSinceStartup < until)
+            {
+                await Task.Delay(100);
+            }
         }
 
         // Sesion anonima: no hay cuentas ni registro.

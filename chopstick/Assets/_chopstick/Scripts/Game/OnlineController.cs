@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Chopsticks.Online;
 using Chopsticks.Shop;
 using Chopsticks.UI;
@@ -14,6 +15,10 @@ namespace Chopsticks.Game
     public class OnlineController
     {
         private const long ShowMachineAfterMs = 20000;
+        private const int RescanMinMs = 4000;    // cada cuanto se mira si hay otra sala mas antigua
+        private const int RescanMaxMs = 7000;    // (con un poco de azar para que dos moviles no vayan al compas)
+        private const int ConnectTimeoutMs = 15000;   // si entras en una sala y la partida no arranca en este tiempo, se busca otra
+        private const int MaxQuickAttempts = 3;
 
         private readonly ShopInventory shop;
         private readonly ScreenNavigator navigator;
@@ -28,6 +33,8 @@ namespace Chopsticks.Game
         private bool searching;
         private int searchId;       // cada busqueda tiene su numero; si cambia, la busqueda se cancelo
         private int joinId;         // cada intento de unirse tiene el suyo; si cambia, se cancelo
+        private string quickName;   // tu nombre en la busqueda rapida en curso
+        private int quickAttempts;  // intentos seguidos que se quedaron sin conectar
 
         /// <summary>Numero de la sala de espera actual. Cambia con cada sala nueva, para no mezclar avisos de salas viejas.</summary>
         public int LobbyId { get; private set; }
@@ -170,7 +177,13 @@ namespace Chopsticks.Game
         // ------------------------------------------------------------
         // Busqueda rapida
         // ------------------------------------------------------------
-        private async void OnQuickMatch(string playerName)
+        private void OnQuickMatch(string playerName)
+        {
+            quickAttempts = 0;
+            StartQuickMatch(playerName);
+        }
+
+        private async void StartQuickMatch(string playerName)
         {
             if (busy)
             {
@@ -179,6 +192,7 @@ namespace Chopsticks.Game
             }
             busy = true;
             int id = ++searchId;
+            quickName = playerName;
             searching = true;
             menu.ShowMessage("");
             search.Begin();
@@ -196,6 +210,7 @@ namespace Chopsticks.Game
                 }
 
                 bool isHost = service.IsHost;
+                Debug.Log("[Online] Busqueda lista. Anfitrion: " + isHost + ". Codigo: " + service.Code);
                 match = new OnlineMatch(new NetMessenger(), isHost, playerName, true, true, shop.EquippedId, shop.Tone, shop.OnlineRank);
                 Hook(match);
 
@@ -204,10 +219,12 @@ namespace Chopsticks.Game
                     // Se creo una sala: se espera a que llegue alguien
                     search.SetStatus("Esperando a un rival...");
                     search.Schedule(ShowMachineAfterMs, () => OfferMachine(id));
+                    RescanLoop(id);   // por si otro movil buscaba a la vez y creo su propia sala
                 }
                 else
                 {
                     search.SetStatus("Rival encontrado. Conectando...");
+                    ConnectWatchdog(id);   // si la partida no arranca, no te quedas esperando para siempre
                 }
             }
             catch (NoOpenGameException)
@@ -238,6 +255,89 @@ namespace Chopsticks.Game
             {
                 busy = false;
             }
+        }
+
+        /// <summary>
+        /// Entraste en una sala como cliente pero la partida no arranca (anfitrion que ya no esta, red que no conecta...).
+        /// Pasado un tiempo se abandona esa sala y se busca otra, hasta MaxQuickAttempts veces.
+        /// </summary>
+        private async void ConnectWatchdog(int id)
+        {
+            await Task.Delay(ConnectTimeoutMs);
+            if (id != searchId || !searching || match == null || match.IsHost) return;
+
+            quickAttempts++;
+            Debug.LogWarning("[Online] La partida no arranco en " + (ConnectTimeoutMs / 1000) + " s. Intento " + quickAttempts + " de " + MaxQuickAttempts + ".");
+            searchId++;          // esta busqueda ya no vale
+            CleanUp();
+
+            if (quickAttempts >= MaxQuickAttempts)
+            {
+                searching = false;
+                search.End();
+                menu.ShowMessage("No se pudo conectar con ningún rival. Prueba otra vez en un momento.");
+                navigator.Show(ScreenId.OnlineMenu);
+                return;
+            }
+
+            search.SetStatus("No se pudo conectar con ese rival. Buscando otro...");
+            await Task.Delay(2000);
+            if (!searching) return;   // cancelaste mientras tanto
+            StartQuickMatch(quickName);
+        }
+
+        private bool StillWaitingAsHost(int id)
+        {
+            return id == searchId && searching && match != null && match.IsHost && match.Names.Count < 2;
+        }
+
+        /// <summary>
+        /// Mientras esperas rival como anfitrion, cada pocos segundos mira si hay otra sala mas antigua y, si la hay,
+        /// te cambias a ella. Asi dos moviles que buscan a la vez acaban en la misma partida.
+        /// </summary>
+        private async void RescanLoop(int id)
+        {
+            while (true)
+            {
+                await Task.Delay(UnityEngine.Random.Range(RescanMinMs, RescanMaxMs));
+                if (!StillWaitingAsHost(id)) return;
+
+                RescanResult result;
+                try
+                {
+                    result = await service.TryJoinOlderSessionAsync(RegionTag.Get());
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning("[QuickMatch] No se pudo mirar si hay otras salas: " + e.Message);
+                    continue;
+                }
+
+                // Cancelaste (o empezo la partida) mientras se cambiaba de sala
+                if (id != searchId || !searching)
+                {
+                    if (result != RescanResult.None) await service.LeaveAsync();
+                    return;
+                }
+                if (result == RescanResult.None) continue;
+
+                // Cambio de sala: el anfitrion de antes se sustituye por el nuevo (cliente, o anfitrion de la sala recreada)
+                Unhook(match);
+                match.Dispose();
+                bool isHost = service.IsHost;
+                match = new OnlineMatch(new NetMessenger(), isHost, quickName, true, true, shop.EquippedId, shop.Tone, shop.OnlineRank);
+                Hook(match);
+                search.SetStatus(isHost ? "Esperando a un rival..." : "Rival encontrado. Conectando...");
+                if (!isHost) return;
+            }
+        }
+
+        private void Unhook(OnlineMatch m)
+        {
+            m.LobbyChanged -= RefreshLobby;
+            m.Started -= OnStarted;
+            m.Disconnected -= OnDisconnected;
+            m.Closed -= CleanUp;
         }
 
         /// <summary>Pasado un rato sin rival, se ofrece jugar contra la maquina (la sala sigue abierta).</summary>

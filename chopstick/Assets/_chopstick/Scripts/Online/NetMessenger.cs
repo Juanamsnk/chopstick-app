@@ -29,7 +29,8 @@ namespace Chopsticks.Online
         /// <summary>Ejecuta la accion cuando este dispositivo ya esta conectado (o ahora mismo si ya lo esta).</summary>
         public void WhenConnected(Action action)
         {
-            if (IsConnected) { action(); return; }
+            if (IsConnected) { UnityEngine.Debug.Log("[Online] Ya estabas conectado a la red (id " + LocalClientId + ")."); action(); return; }
+            UnityEngine.Debug.Log("[Online] Esperando a conectar con el anfitrion...");
             whenConnected = action;
             Manager.OnClientConnectedCallback += OnConnected;
         }
@@ -81,6 +82,7 @@ namespace Chopsticks.Online
         private void OnConnected(ulong clientId)
         {
             if (clientId != Manager.LocalClientId) return;
+            UnityEngine.Debug.Log("[Online] Conectado a la red (id " + clientId + ").");
             Manager.OnClientConnectedCallback -= OnConnected;
             if (whenConnected != null) whenConnected();
         }

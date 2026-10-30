@@ -18,7 +18,6 @@ namespace Chopsticks.UI
             public HandSkin Skin;
             public VisualElement Root;
             public VisualElement Preview;
-            public VisualElement Lock;      // candado delante de la mano mientras no se desbloquea
             public Image Sprite;
             public VisualElement Fallback;
             public VisualElement FallbackPalm;
@@ -77,7 +76,8 @@ namespace Chopsticks.UI
                 hint.text = "Las monedas se consiguen en el Modo carrera, que también desbloquea estilos: raras en el nivel " +
                             HandSkinCatalog.UnlockLevelOf(SkinRarity.Rara) + ", épicas en el " +
                             HandSkinCatalog.UnlockLevelOf(SkinRarity.Epica) + " y legendarias en el " +
-                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Legendaria) + ".";
+                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Legendaria) + ". Lo que compras va a tu inventario. " +
+                            "Las manos de los rivales no se venden: se ganan venciéndolos.";
             }
 
             BuildLegend();
@@ -151,6 +151,7 @@ namespace Chopsticks.UI
                 {
                     if ((int)skin.Rarity != r) continue;
                     if (skin.Source != HandSkinSource.Shop) continue;   // las de carrera no se venden: se ganan
+                    if (skin.Id == HandSkinCatalog.DefaultId) continue;   // la clasica es gratis y ya la tienes: solo sale en el inventario
                     Card card = BuildCard(skin);
                     grid.Add(card.Root);
                     cards.Add(card);
@@ -190,9 +191,6 @@ namespace Chopsticks.UI
             rarityDot.pickingMode = PickingMode.Ignore;
             card.Preview.Add(rarityDot);
 
-            card.Lock = BuildLock();
-            card.Preview.Add(card.Lock);
-
             var name = new Label(skin.Name);
             name.AddToClassList("skin-card__name");
             name.pickingMode = PickingMode.Ignore;
@@ -215,31 +213,6 @@ namespace Chopsticks.UI
             card.Root.Add(card.Status);
 
             return card;
-        }
-
-        /// <summary>Candado dibujado con elementos (sin imagen): arco arriba, cuerpo dorado y ojo de la cerradura.</summary>
-        private static VisualElement BuildLock()
-        {
-            var holder = new VisualElement();
-            holder.AddToClassList("skin-lock");
-            holder.pickingMode = PickingMode.Ignore;
-
-            var shackle = new VisualElement();
-            shackle.AddToClassList("skin-lock__shackle");
-            shackle.pickingMode = PickingMode.Ignore;
-            holder.Add(shackle);
-
-            var body = new VisualElement();
-            body.AddToClassList("skin-lock__body");
-            body.pickingMode = PickingMode.Ignore;
-            holder.Add(body);
-
-            var hole = new VisualElement();
-            hole.AddToClassList("skin-lock__hole");
-            hole.pickingMode = PickingMode.Ignore;
-            body.Add(hole);
-
-            return holder;
         }
 
         /// <summary>Mano sencilla de cuatro dedos que se ve solo si falta el PNG.</summary>
@@ -407,9 +380,8 @@ namespace Chopsticks.UI
             ApplyPreview(card, skin);
 
             card.Root.EnableInClassList("skin-card--equipped", equipped);
-            card.Root.EnableInClassList("skin-card--locked", !owned && !canBuy && !levelLocked);
-            card.Root.EnableInClassList("skin-card--padlocked", levelLocked);
-            card.Lock.style.display = levelLocked ? DisplayStyle.Flex : DisplayStyle.None;   // se quita al desbloquearse
+            card.Root.EnableInClassList("skin-card--locked", !owned && !canBuy);
+            card.Root.EnableInClassList("skin-card--levellocked", levelLocked);
 
             card.Status.EnableInClassList("skin-card__status--equipped", equipped);
             card.Status.EnableInClassList("skin-card__status--owned", owned && !equipped);
