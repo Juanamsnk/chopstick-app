@@ -24,6 +24,7 @@ namespace Chopsticks.UI
             public List<VisualElement> FallbackFingers = new List<VisualElement>();
             public VisualElement Status;
             public VisualElement StatusCoin;
+            public VisualElement Lock;      // candado delante de la mano hasta que llegas al nivel
             public Label StatusText;
         }
 
@@ -68,17 +69,6 @@ namespace Chopsticks.UI
             // Esta pantalla solo necesita el boton de volver
             Button primary = screen.Q("action-row").Q<Button>("btn-primary");
             if (primary != null) primary.style.display = DisplayStyle.None;
-
-            // El texto de ayuda sale de los niveles reales, asi no hay que cambiarlo a mano
-            Label hint = screen.Q<Label>(className: "shop__hint");
-            if (hint != null)
-            {
-                hint.text = "Las monedas se consiguen en el Modo carrera, que también desbloquea estilos: raras en el nivel " +
-                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Rara) + ", épicas en el " +
-                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Epica) + " y legendarias en el " +
-                            HandSkinCatalog.UnlockLevelOf(SkinRarity.Legendaria) + ". Lo que compras va a tu inventario. " +
-                            "Las manos de los rivales no se venden: se ganan venciéndolos.";
-            }
 
             BuildLegend();
             BuildTones();
@@ -140,23 +130,63 @@ namespace Chopsticks.UI
 
         private void BuildCards()
         {
-            // Una sola cuadricula, ordenada de comun a legendaria (como en el catalogo)
+            // Una sola cuadricula en orden logico: por nivel de desbloqueo (de menor a mayor);
+            // a igual nivel, por rareza y despues por el orden del catalogo.
             var grid = new VisualElement();
             grid.AddToClassList("shop__grid");
             scroll.Add(grid);
 
-            for (int r = 0; r < 4; r++)
+            var list = new List<HandSkin>();
+            var catalogIndex = new Dictionary<string, int>();
+            for (int i = 0; i < HandSkinCatalog.All.Count; i++)
             {
-                foreach (HandSkin skin in HandSkinCatalog.All)
-                {
-                    if ((int)skin.Rarity != r) continue;
-                    if (skin.Source != HandSkinSource.Shop) continue;   // las de carrera no se venden: se ganan
-                    if (skin.Id == HandSkinCatalog.DefaultId) continue;   // la clasica es gratis y ya la tienes: solo sale en el inventario
-                    Card card = BuildCard(skin);
-                    grid.Add(card.Root);
-                    cards.Add(card);
-                }
+                HandSkin skin = HandSkinCatalog.All[i];
+                catalogIndex[skin.Id] = i;
+                if (skin.Source != HandSkinSource.Shop) continue;   // las de carrera no se venden: se ganan
+                if (skin.Id == HandSkinCatalog.DefaultId) continue;   // la clasica es gratis y ya la tienes: solo sale en el inventario
+                list.Add(skin);
             }
+
+            list.Sort((a, b) =>
+            {
+                int result = a.UnlockLevel.CompareTo(b.UnlockLevel);
+                if (result != 0) return result;
+                result = ((int)a.Rarity).CompareTo((int)b.Rarity);
+                if (result != 0) return result;
+                return catalogIndex[a.Id].CompareTo(catalogIndex[b.Id]);
+            });
+
+            foreach (HandSkin skin in list)
+            {
+                Card card = BuildCard(skin);
+                grid.Add(card.Root);
+                cards.Add(card);
+            }
+        }
+
+        /// <summary>Candado dibujado con elementos (el mismo que en el inventario). Los estilos estan en Shop.uss.</summary>
+        private static VisualElement BuildLock()
+        {
+            var holder = new VisualElement();
+            holder.AddToClassList("skin-lock");
+            holder.pickingMode = PickingMode.Ignore;
+
+            var shackle = new VisualElement();
+            shackle.AddToClassList("skin-lock__shackle");
+            shackle.pickingMode = PickingMode.Ignore;
+            holder.Add(shackle);
+
+            var body = new VisualElement();
+            body.AddToClassList("skin-lock__body");
+            body.pickingMode = PickingMode.Ignore;
+            holder.Add(body);
+
+            var hole = new VisualElement();
+            hole.AddToClassList("skin-lock__hole");
+            hole.pickingMode = PickingMode.Ignore;
+            body.Add(hole);
+
+            return holder;
         }
 
         private Card BuildCard(HandSkin skin)
@@ -190,6 +220,9 @@ namespace Chopsticks.UI
             rarityDot.style.backgroundColor = RarityColors[(int)skin.Rarity];
             rarityDot.pickingMode = PickingMode.Ignore;
             card.Preview.Add(rarityDot);
+
+            card.Lock = BuildLock();
+            card.Preview.Add(card.Lock);
 
             var name = new Label(skin.Name);
             name.AddToClassList("skin-card__name");
@@ -381,7 +414,8 @@ namespace Chopsticks.UI
 
             card.Root.EnableInClassList("skin-card--equipped", equipped);
             card.Root.EnableInClassList("skin-card--locked", !owned && !canBuy);
-            card.Root.EnableInClassList("skin-card--levellocked", levelLocked);
+            card.Root.EnableInClassList("skin-card--padlocked", levelLocked);
+            card.Lock.style.display = levelLocked ? DisplayStyle.Flex : DisplayStyle.None;   // se quita al llegar al nivel
 
             card.Status.EnableInClassList("skin-card__status--equipped", equipped);
             card.Status.EnableInClassList("skin-card__status--owned", owned && !equipped);

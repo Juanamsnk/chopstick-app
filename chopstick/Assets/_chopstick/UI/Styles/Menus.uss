@@ -159,3 +159,8 @@
 .loading__track { width: 220px; height: 12px; border-radius: 6px; background-color: #2d2370; }
 .loading__fill { width: 0; height: 12px; border-radius: 6px; background-color: #ffc83d; }
 .loading__text { width: 140px; font-size: 15px; color: #aaa0e6; margin: 14px 0 0 0; -unity-text-align: middle-center; }
+
+/* Cabecera del jugador en la partida: [punto] nombre + nivel a la izquierda, solo el turno a la derecha */
+.player-card__name { flex-grow: 0; flex-shrink: 1; margin-right: 8px; }
+.player-card__spacer { flex-grow: 1; }
+.rank-tag { margin: 0; }

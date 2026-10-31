@@ -18,7 +18,7 @@ namespace Chopsticks.Career
         // Misma posicion que los rangos de CareerLevels: Novato, Aprendiz, Competidor, Veterano...
         private static readonly Look[] Looks =
         {
-            new Look("clasica", 0),     // Novato: la mano normal
+            new Look("calabaza", 0),    // Novato: la primera mano que se gana (nivel 10)
             new Look("golf", 0),        // Aprendiz
             new Look("tatuajes", 2),    // Competidor
             new Look("zombi", 0),       // Veterano

@@ -11,7 +11,6 @@
                 <ui:Label name="shop-coins" text="0" class="shop__coins-text"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:Label text="Las monedas se consiguen en el Modo carrera: ganas monedas al superar cada nivel." class="shop__hint"/>
         <ui:VisualElement name="legend" class="shop__legend"/>
         <ui:VisualElement class="shop__skinrow">
             <ui:Label text="Piel" class="shop__skinrow-label"/>
