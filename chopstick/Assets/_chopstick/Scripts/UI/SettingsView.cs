@@ -9,12 +9,13 @@ namespace Chopsticks.UI
 {
     /// <summary>
     /// Ajustes y perfil: tu usuario y tus monedas, iniciar o cerrar sesion, sonido, musica, tema
-    /// y un acceso a la tienda. Solo dibuja y avisa con eventos; la sesion la gestiona SocialController.
+    /// un acceso a la tienda y el boton de apoyo (Ko-fi). Solo dibuja y avisa con eventos; la sesion la gestiona SocialController.
     /// </summary>
     public class SettingsView
     {
         private const string SoundKey = "chopsticks_sound_on";
         private const string MusicKey = "chopsticks_music_on";
+        private const string KofiUrl = "https://ko-fi.com/juanmasnk";
 
         private readonly ShopInventory inventory;
         private readonly PlayerProfile profile;
@@ -56,6 +57,7 @@ namespace Chopsticks.UI
             signOutButton.clicked += () => { if (SignOutClicked != null) SignOutClicked(); };
             screen.Q<Button>("btn-s-shop").clicked += () => { if (ShopClicked != null) ShopClicked(); };
             screen.Q<Button>("btn-s-inventory").clicked += () => { if (InventoryClicked != null) InventoryClicked(); };
+            screen.Q<Button>("btn-s-kofi").clicked += () => Application.OpenURL(KofiUrl);   // abre el navegador del movil
 
             // Sonido y musica: se recuerdan entre partidas
             var soundOption = new CheckOptionView(screen.Q("opt-sound"), PlayerPrefs.GetInt(SoundKey, 1) == 1);

@@ -78,6 +78,8 @@
 /* Tarjeta de Carrera del menu principal (acceso directo) */
 .btn--orange { background-color: var(--player-0); color: var(--on-color); border-color: #c4561a; }
 .btn--orange:hover, .btn--orange:focus { background-color: var(--player-0); border-color: #c4561a; }
+.btn--kofi { background-color: #ff5e5b; color: #ffffff; border-color: #c93f3c; }
+.btn--kofi:hover, .btn--kofi:focus { background-color: #ff5e5b; border-color: #c93f3c; }
 
 /* Reparto vertical del menu: el espacio libre se reparte 2 : 3 : 4 : 3 entre
    barra-logo, logo-tarjeta, tarjeta-Jugar y el hueco de abajo (el grow de cada hueco es su "peso") */

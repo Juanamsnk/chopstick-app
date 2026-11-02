@@ -42,6 +42,11 @@
                 <ui:Button name="btn-s-inventory" text="Mi inventario" class="btn btn--green"/>
                 <ui:Button name="btn-s-shop" text="Ir a la tienda" class="btn btn--blue"/>
             </ui:VisualElement>
+            <ui:VisualElement class="card">
+                <ui:Label text="Apoya el juego" class="label-bold"/>
+                <ui:Label text="Chopsticks lo hace una sola persona. Si te gusta, puedes invitarme a un café en Ko-fi." class="friends__hint"/>
+                <ui:Button name="btn-s-kofi" text="Apóyame en Ko-fi" class="btn btn--kofi"/>
+            </ui:VisualElement>
         </ui:ScrollView>
         <ui:Button name="btn-back" text="Volver" class="btn btn--ghost"/>
     </ui:VisualElement>
