@@ -61,6 +61,9 @@ namespace Chopsticks.UI
             BackFromActionRow("friends", ScreenId.MainMenu);
             BackFromActionRow("lobby", ScreenId.MainMenu);
 
+            // La clasificacion vuelve a Amigos
+            BackFromActionRow("leaderboard", ScreenId.Friends);
+
             // En la partida el boton se llama btn-exit.
             OnClick(root.Q("game").Q<Button>("btn-exit"), () => navigator.Show(ScreenId.MainMenu));
         }

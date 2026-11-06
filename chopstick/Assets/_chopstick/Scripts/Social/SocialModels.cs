@@ -24,6 +24,24 @@ namespace Chopsticks.Social
         public string JoinCode;
     }
 
+    /// <summary>Victorias y derrotas en partidas online (el modo carrera no cuenta).</summary>
+    public class RecordInfo
+    {
+        public int Wins;
+        public int Losses;
+
+        public int Played { get { return Wins + Losses; } }
+    }
+
+    /// <summary>Una fila de la clasificacion general.</summary>
+    public class LeaderboardEntry
+    {
+        public string Uid;
+        public string Name;
+        public int Wins;
+        public int Losses;
+    }
+
     /// <summary>Error con un mensaje listo para ensenar al jugador.</summary>
     public class SocialException : Exception
     {

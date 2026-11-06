@@ -1,36 +1,57 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
     <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
-    <ui:Template name="LabeledField" src="/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml" />
     <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
     <ui:VisualElement name="screen-friends" class="screen">
         <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
         <ui:Label text="Amigos" class="career__title"/>
         <ui:Label name="friends-msg" text="" class="friends__msg"/>
+
+        <!-- Sin sesion -->
         <ui:VisualElement name="signed-out" class="friends__panel">
             <ui:VisualElement class="card">
                 <ui:Label name="friends-hint" text="Conectando..." class="friends__hint"/>
                 <ui:Button name="btn-google" text="Iniciar sesión con Google" class="btn"/>
             </ui:VisualElement>
         </ui:VisualElement>
+
+        <!-- Con sesion: perfil, clasificacion, anadir amigo, lista y cerrar sesion -->
         <ui:VisualElement name="signed-in" class="friends__signed" style="display:none;">
-            <ui:VisualElement class="card">
-                <ui:Label name="me-name" text="" class="label-bold"/>
-                <ui:Label text="Tu código de amigo" class="friends__hint"/>
-                <ui:Label name="my-code" text="------" class="code"/>
-                <ui:Button name="btn-copy" text="Copiar código" class="btn btn--ghost"/>
+            <ui:VisualElement class="card profile">
+                <ui:VisualElement class="profile__top">
+                    <ui:VisualElement name="me-avatar" class="avatar avatar--lg">
+                        <ui:Label name="me-initial" text="?" class="avatar__initial"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="profile__info">
+                        <ui:Label text="Hola," class="profile__hello"/>
+                        <ui:Label name="me-name" text="" class="profile__name"/>
+                        <ui:VisualElement name="me-chips" class="chips"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="codebox">
+                    <ui:VisualElement class="codebox__col">
+                        <ui:Label text="TU CÓDIGO DE AMIGO" class="codebox__title"/>
+                        <ui:Label name="my-code" text="------" class="codebox__code"/>
+                    </ui:VisualElement>
+                    <ui:Button name="btn-copy" text="Copiar" class="btn btn--ghost btn--sm"/>
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="card">
-                <ui:Instance template="LabeledField" name="friend-code">
-                    <AttributeOverrides element-name="label" text="Código de tu amigo"/>
-                    <AttributeOverrides element-name="input" value="" max-length="6"/>
-                </ui:Instance>
-                <ui:Button name="btn-add" text="Añadir amigo" class="btn"/>
+
+            <ui:Button name="btn-leaderboard" text="Clasificación" class="btn btn--green btn--md"/>
+
+            <ui:VisualElement class="card addcard">
+                <ui:Label text="AÑADIR AMIGO" class="section-title"/>
+                <ui:VisualElement class="addrow">
+                    <ui:TextField name="friend-code" max-length="6" class="field__input addrow__input"/>
+                    <ui:Button name="btn-add" text="Añadir" class="btn btn--sm"/>
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:ScrollView name="friends-list" horizontal-scroller-visibility="Hidden" class="career__levels"/>
+
+            <ui:ScrollView name="friends-list" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="social-list"/>
+
         </ui:VisualElement>
+
         <ui:Instance template="ActionRow" name="action-row">
-            <AttributeOverrides element-name="btn-primary" text="Cerrar sesión"/>
             <AttributeOverrides element-name="btn-secondary" text="Volver"/>
         </ui:Instance>
     </ui:VisualElement>

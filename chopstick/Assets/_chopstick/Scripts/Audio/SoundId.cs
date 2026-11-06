@@ -9,6 +9,7 @@ namespace Chopsticks.Audio
         Split,    // repartir dedos
         Win,      // ganas la partida
         Lose,     // pierdes la partida
-        HandLost  // te eliminan una mano
+        HandLost,     // te eliminan una mano
+        Notification  // sale un aviso online (por ejemplo, te reta un amigo)
     }
 }

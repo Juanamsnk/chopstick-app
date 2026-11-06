@@ -22,9 +22,11 @@ namespace Chopsticks.Social
     ///   friendRequests/{para}/{de}       { name }             peticiones pendientes
     ///   challenges/{para}/{de}           { name, code }       retos pendientes (code = codigo de la sala online)
     ///   saves/{uid}                      { completed, coins, owned, equipped, tone, updated }   progreso de la cuenta
+    ///   leaderboard/{uid}                { name, wins, losses }   victorias y derrotas ONLINE (clasificacion general; lectura publica)
+    ///   vs/{uid}/{rival}                 { name, wins, losses }   tu marcador contra cada rival (solo lo lees tu)
     /// Las reglas de seguridad estan en Firebase/database.rules.json.
     /// </summary>
-    public class SocialBackend
+    public partial class SocialBackend
     {
         public const bool IsSupported = true;
 
@@ -39,20 +41,46 @@ namespace Chopsticks.Social
         private DatabaseReference requestsRef;
         private DatabaseReference challengesRef;
         private DatabaseReference saveRef;
+        private DatabaseReference statsRef;
+        private DatabaseReference versusRef;
         private int friendsVersion;
 
         /// <summary>Firebase esta listo (dependencias comprobadas).</summary>
         public bool Ready { get; private set; }
-        public bool IsSignedIn { get { return auth != null && auth.CurrentUser != null; } }
-        public string Uid { get { return IsSignedIn ? auth.CurrentUser.UserId : null; } }
+        public bool IsSignedIn
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if (mockSignedIn) return true;   // datos de prueba del editor
+#endif
+                return auth != null && auth.CurrentUser != null;
+            }
+        }
+
+        public string Uid
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if (mockSignedIn) return "mock-me";
+#endif
+                return IsSignedIn ? auth.CurrentUser.UserId : null;
+            }
+        }
         public string MyName { get; private set; }
         public string MyCode { get; private set; }
+
+        /// <summary>Tus victorias y derrotas online (se actualiza sola mientras hay sesion).</summary>
+        public RecordInfo MyRecord { get; private set; } = new RecordInfo();
 
         public event Action SignInChanged;
         public event Action<List<FriendInfo>> FriendsChanged;
         public event Action<List<FriendRequestInfo>> RequestsChanged;
         public event Action<ChallengeInfo> ChallengeReceived;
         public event Action<SaveData> SaveChanged;
+        public event Action<RecordInfo> RecordChanged;                         // tus victorias y derrotas online
+        public event Action<Dictionary<string, RecordInfo>> VersusChanged;     // tu marcador contra cada rival (clave = uid)
 
         // ------------------------------------------------------------
         // Inicio y sesion
@@ -60,6 +88,16 @@ namespace Chopsticks.Social
         /// <summary>Arranca Firebase. Si ya habia una sesion guardada en el dispositivo, la recupera.</summary>
         public async Task InitAsync()
         {
+#if UNITY_EDITOR
+            // En el editor, por defecto: amigos de prueba, sin Firebase (menu Chopsticks > Amigos de prueba en el editor)
+            mockActive = MockEnabled;
+            if (mockActive)
+            {
+                Ready = true;
+                MockSignIn();
+                return;
+            }
+#endif
             DependencyStatus status = await FirebaseApp.CheckAndFixDependenciesAsync();
             if (status != DependencyStatus.Available)
                 throw new SocialException("Firebase no está disponible en este dispositivo (" + status + ").");
@@ -75,6 +113,13 @@ namespace Chopsticks.Social
         public async Task SignInWithGoogleAsync()
         {
             if (!Ready) throw new SocialException("Todavía se está conectando. Espera un momento.");
+#if UNITY_EDITOR
+            if (mockActive)
+            {
+                MockSignIn();
+                return;
+            }
+#endif
             try
             {
 #if UNITY_EDITOR
@@ -100,10 +145,16 @@ namespace Chopsticks.Social
 
         public void SignOut()
         {
+#if UNITY_EDITOR
+            mockSignedIn = false;
+#endif
             StopListening();
             if (auth != null) auth.SignOut();
             MyName = null;
             MyCode = null;
+            MyRecord = new RecordInfo();
+            if (RecordChanged != null) RecordChanged(MyRecord);
+            if (VersusChanged != null) VersusChanged(new Dictionary<string, RecordInfo>());
             if (SignInChanged != null) SignInChanged();
         }
 
@@ -165,6 +216,9 @@ namespace Chopsticks.Social
         /// <summary>Envia una peticion de amistad al dueno de ese codigo. Devuelve su nombre.</summary>
         public async Task<string> SendFriendRequestAsync(string code)
         {
+#if UNITY_EDITOR
+            if (mockActive) return await MockSendFriendRequestAsync(code);
+#endif
             code = (code ?? "").Trim().ToUpperInvariant();
             if (code.Length != CodeLength) throw new SocialException("El código tiene " + CodeLength + " caracteres.");
             if (code == MyCode) throw new SocialException("Ese es tu propio código.");
@@ -197,6 +251,9 @@ namespace Chopsticks.Social
         /// <summary>Acepta una peticion: los dos quedan como amigos y la peticion se borra (todo a la vez).</summary>
         public Task AcceptRequestAsync(string fromUid)
         {
+#if UNITY_EDITOR
+            if (mockActive) return MockAcceptRequestAsync(fromUid);
+#endif
             var updates = new Dictionary<string, object>
             {
                 { "friends/" + Uid + "/" + fromUid, true },
@@ -208,11 +265,17 @@ namespace Chopsticks.Social
 
         public Task DeclineRequestAsync(string fromUid)
         {
+#if UNITY_EDITOR
+            if (mockActive) return MockDeclineRequestAsync(fromUid);
+#endif
             return WithTimeout(root.Child("friendRequests").Child(Uid).Child(fromUid).RemoveValueAsync());
         }
 
         public Task RemoveFriendAsync(string friendUid)
         {
+#if UNITY_EDITOR
+            if (mockActive) return MockRemoveFriendAsync(friendUid);
+#endif
             var updates = new Dictionary<string, object>
             {
                 { "friends/" + Uid + "/" + friendUid, null },
@@ -227,6 +290,9 @@ namespace Chopsticks.Social
         /// <summary>Envia un reto a un amigo con el codigo de la sala. Si el emisor se desconecta, el reto desaparece solo.</summary>
         public async Task SendChallengeAsync(string toUid, string joinCode)
         {
+#if UNITY_EDITOR
+            if (mockActive) { await MockSendChallengeAsync(toUid, joinCode); return; }
+#endif
             DatabaseReference challenge = root.Child("challenges").Child(toUid).Child(Uid);
             var data = new Dictionary<string, object> { { "name", MyName }, { "code", joinCode } };
             await WithTimeout(challenge.SetValueAsync(data));
@@ -236,6 +302,9 @@ namespace Chopsticks.Social
         /// <summary>Retira un reto que yo envie a ese amigo.</summary>
         public async Task CancelChallengeAsync(string toUid)
         {
+#if UNITY_EDITOR
+            if (mockActive) return;
+#endif
             DatabaseReference challenge = root.Child("challenges").Child(toUid).Child(Uid);
             await WithTimeout(challenge.RemoveValueAsync());
             await challenge.OnDisconnect().Cancel();
@@ -244,7 +313,122 @@ namespace Chopsticks.Social
         /// <summary>Borra un reto que yo recibi (al aceptarlo o rechazarlo).</summary>
         public Task DismissChallengeAsync(string fromUid)
         {
+#if UNITY_EDITOR
+            if (mockActive) return Task.CompletedTask;
+#endif
             return WithTimeout(root.Child("challenges").Child(Uid).Child(fromUid).RemoveValueAsync());
+        }
+
+        // ------------------------------------------------------------
+        // Victorias y clasificacion (solo partidas online)
+        // ------------------------------------------------------------
+        /// <summary>
+        /// Suma una victoria o derrota a tu marcador general (el de la clasificacion).
+        /// Cada jugador apunta SOLO lo suyo en su propia cuenta.
+        /// </summary>
+        public Task RecordGeneralAsync(bool won)
+        {
+#if UNITY_EDITOR
+            if (mockActive) return MockRecordGeneralAsync(won);
+#endif
+            if (Uid == null) return Task.CompletedTask;
+            return WithTimeout(Increment(root.Child("leaderboard").Child(Uid), won ? "wins" : "losses", MyName));
+        }
+
+        /// <summary>Suma una victoria o derrota a tu marcador contra ese rival (si tenia cuenta).</summary>
+        public Task RecordVersusAsync(bool won, string opponentUid, string opponentName)
+        {
+#if UNITY_EDITOR
+            if (mockActive) return MockRecordVersusAsync(won, opponentUid);
+#endif
+            if (Uid == null || string.IsNullOrEmpty(opponentUid) || opponentUid == Uid) return Task.CompletedTask;
+            string name = string.IsNullOrWhiteSpace(opponentName) ? "Jugador" : opponentName.Trim();
+            if (name.Length > 20) name = name.Substring(0, 20);
+            return WithTimeout(Increment(root.Child("vs").Child(Uid).Child(opponentUid), won ? "wins" : "losses", name));
+        }
+
+        /// <summary>Suma 1 a "wins" o "losses" con una transaccion (nunca se pisan dos partidas seguidas).</summary>
+        private static Task Increment(DatabaseReference target, string field, string name)
+        {
+            string other = field == "wins" ? "losses" : "wins";
+            return target.RunTransaction(data =>
+            {
+                var map = data.Value as Dictionary<string, object> ?? new Dictionary<string, object>();
+                object current;
+                map.TryGetValue(field, out current);
+                map[field] = ToLong(current) + 1;
+                if (!map.ContainsKey(other)) map[other] = 0L;
+                map["name"] = name ?? "Jugador";
+                data.Value = map;
+                return TransactionResult.Success(data);
+            });
+        }
+
+        /// <summary>Los jugadores con mas victorias online (de mas a menos). Los empates se deciden por menos derrotas.</summary>
+        public async Task<List<LeaderboardEntry>> LoadLeaderboardAsync(int limit)
+        {
+#if UNITY_EDITOR
+            if (mockActive) return await MockLoadLeaderboardAsync(limit);
+#endif
+            DataSnapshot snap = await WithTimeout(root.Child("leaderboard").OrderByChild("wins").LimitToLast(limit).GetValueAsync());
+            var list = new List<LeaderboardEntry>();
+            foreach (DataSnapshot child in snap.Children)
+            {
+                var entry = ParseEntry(child.Key, child);
+                if (entry.Wins > 0) list.Add(entry);
+            }
+            list.Sort((a, b) =>
+            {
+                int result = b.Wins.CompareTo(a.Wins);
+                if (result != 0) return result;
+                result = a.Losses.CompareTo(b.Losses);
+                if (result != 0) return result;
+                return string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);
+            });
+            return list;
+        }
+
+        private static LeaderboardEntry ParseEntry(string uid, DataSnapshot s)
+        {
+            return new LeaderboardEntry
+            {
+                Uid = uid,
+                Name = s.Child("name").Value != null ? s.Child("name").Value.ToString() : "Jugador",
+                Wins = (int)ToLong(s.Child("wins").Value),
+                Losses = (int)ToLong(s.Child("losses").Value)
+            };
+        }
+
+        private void OnStatsValue(object sender, ValueChangedEventArgs args)
+        {
+            if (args.DatabaseError != null)
+            {
+                Debug.LogWarning("[Social] Marcador: " + args.DatabaseError.Message);
+                return;
+            }
+            MyRecord = args.Snapshot.Exists
+                ? new RecordInfo { Wins = (int)ToLong(args.Snapshot.Child("wins").Value), Losses = (int)ToLong(args.Snapshot.Child("losses").Value) }
+                : new RecordInfo();
+            if (RecordChanged != null) RecordChanged(MyRecord);
+        }
+
+        private void OnVersusValue(object sender, ValueChangedEventArgs args)
+        {
+            if (args.DatabaseError != null)
+            {
+                Debug.LogWarning("[Social] Marcador contra amigos: " + args.DatabaseError.Message);
+                return;
+            }
+            var map = new Dictionary<string, RecordInfo>();
+            foreach (DataSnapshot child in args.Snapshot.Children)
+            {
+                map[child.Key] = new RecordInfo
+                {
+                    Wins = (int)ToLong(child.Child("wins").Value),
+                    Losses = (int)ToLong(child.Child("losses").Value)
+                };
+            }
+            if (VersusChanged != null) VersusChanged(map);
         }
 
         // ------------------------------------------------------------
@@ -253,6 +437,9 @@ namespace Chopsticks.Social
         /// <summary>Lee el progreso guardado en la cuenta. Devuelve null si todavia no hay nada.</summary>
         public async Task<SaveData> LoadSaveAsync()
         {
+#if UNITY_EDITOR
+            if (mockActive) return null;   // el progreso de prueba no se guarda en ningun sitio
+#endif
             DataSnapshot snap = await WithTimeout(root.Child("saves").Child(Uid).GetValueAsync());
             return snap.Exists ? ParseSave(snap) : null;
         }
@@ -260,6 +447,9 @@ namespace Chopsticks.Social
         /// <summary>Guarda el progreso completo en la cuenta.</summary>
         public Task WriteSaveAsync(SaveData data)
         {
+#if UNITY_EDITOR
+            if (mockActive) return Task.CompletedTask;
+#endif
             var map = new Dictionary<string, object>
             {
                 { "completed", (long)data.Completed },
@@ -275,6 +465,9 @@ namespace Chopsticks.Social
         /// <summary>Avisa (SaveChanged) cada vez que el progreso de la cuenta cambia, tambien desde otro movil.</summary>
         public void ListenSave()
         {
+#if UNITY_EDITOR
+            if (mockActive) return;
+#endif
             StopListenSave();
             saveRef = root.Child("saves").Child(Uid);
             saveRef.ValueChanged += OnSaveValue;
@@ -330,11 +523,19 @@ namespace Chopsticks.Social
             friendsRef.ValueChanged += OnFriendsValue;
             requestsRef.ValueChanged += OnRequestsValue;
             challengesRef.ChildAdded += OnChallengeAdded;
+            statsRef = root.Child("leaderboard").Child(uid);
+            versusRef = root.Child("vs").Child(uid);
+            statsRef.ValueChanged += OnStatsValue;
+            versusRef.ValueChanged += OnVersusValue;
         }
 
         public void StopListening()
         {
             StopListenSave();
+            if (statsRef != null) statsRef.ValueChanged -= OnStatsValue;
+            if (versusRef != null) versusRef.ValueChanged -= OnVersusValue;
+            statsRef = null;
+            versusRef = null;
             if (friendsRef != null) friendsRef.ValueChanged -= OnFriendsValue;
             if (requestsRef != null) requestsRef.ValueChanged -= OnRequestsValue;
             if (challengesRef != null) challengesRef.ChildAdded -= OnChallengeAdded;
@@ -440,6 +641,8 @@ namespace Chopsticks.Social
         public event Action<List<FriendRequestInfo>> RequestsChanged;
         public event Action<ChallengeInfo> ChallengeReceived;
         public event Action<SaveData> SaveChanged;
+        public event Action<RecordInfo> RecordChanged;
+        public event Action<Dictionary<string, RecordInfo>> VersusChanged;
 #pragma warning restore 0067
 
         public bool Ready { get { return false; } }
@@ -447,6 +650,7 @@ namespace Chopsticks.Social
         public string Uid { get { return null; } }
         public string MyName { get { return null; } }
         public string MyCode { get { return null; } }
+        public RecordInfo MyRecord { get { return new RecordInfo(); } }
 
         public Task InitAsync() { return Task.FromException(new SocialException(Unsupported)); }
         public Task SignInWithGoogleAsync() { return Task.FromException(new SocialException(Unsupported)); }
@@ -462,6 +666,9 @@ namespace Chopsticks.Social
         public Task<SaveData> LoadSaveAsync() { return Task.FromException<SaveData>(new SocialException(Unsupported)); }
         public Task WriteSaveAsync(SaveData data) { return Task.FromException(new SocialException(Unsupported)); }
         public void ListenSave() { }
+        public Task RecordGeneralAsync(bool won) { return Task.FromException(new SocialException(Unsupported)); }
+        public Task RecordVersusAsync(bool won, string opponentUid, string opponentName) { return Task.FromException(new SocialException(Unsupported)); }
+        public Task<List<LeaderboardEntry>> LoadLeaderboardAsync(int limit) { return Task.FromException<List<LeaderboardEntry>>(new SocialException(Unsupported)); }
     }
 #endif
 }

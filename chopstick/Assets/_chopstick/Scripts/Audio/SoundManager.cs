@@ -39,6 +39,10 @@ namespace Chopsticks.Audio
         [SerializeField] private AudioClip loseClip;
         [Range(0f, 1f)] [SerializeField] private float loseVolume = 1f;
 
+        [Header("Notificacion: cuando sale un aviso online (por ejemplo, te reta un amigo)")]
+        [SerializeField] private AudioClip notificationClip;
+        [Range(0f, 1f)] [SerializeField] private float notificationVolume = 1f;
+
         [Header("Musica de fondo (se repite en bucle)")]
         [SerializeField] private AudioClip musicClip;
         [Range(0f, 1f)] [SerializeField] private float musicVolume = 0.5f;
@@ -156,6 +160,7 @@ namespace Chopsticks.Audio
                 case SoundId.Split: return splitClip;
                 case SoundId.Win: return winClip;
                 case SoundId.Lose: return loseClip;
+                case SoundId.Notification: return notificationClip;
                 default: return null;
             }
         }
@@ -171,6 +176,7 @@ namespace Chopsticks.Audio
                 case SoundId.Split: return splitVolume;
                 case SoundId.Win: return winVolume;
                 case SoundId.Lose: return loseVolume;
+                case SoundId.Notification: return notificationVolume;
                 default: return 1f;
             }
         }

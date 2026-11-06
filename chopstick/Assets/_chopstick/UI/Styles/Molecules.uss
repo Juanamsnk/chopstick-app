@@ -51,8 +51,8 @@
     flex-direction: row; align-items: center; padding: 12px; margin-bottom: 8px;
     background-color: var(--field); border-width: 2px; border-color: var(--line); border-radius: 16px;
 }
-.player-row .dot { width: 38px; height: 38px; border-radius: 19px; margin-right: 12px; }
-.player-row__name { font-size: 17px; -unity-font-style: bold; color: var(--ink); }
+.player-row .dot { width: 38px; height: 38px; min-width: 38px; min-height: 38px; flex-shrink: 0; flex-grow: 0; border-radius: 19px; margin-right: 12px; }
+.player-row__name { flex-grow: 1; flex-shrink: 1; min-width: 0; white-space: normal; font-size: 17px; -unity-font-style: bold; color: var(--ink); }
 
 .hand {
     height: 134px; margin: 0 5px; padding: 8px 0;

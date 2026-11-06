@@ -1,0 +1,154 @@
+/* Amigos y Clasificacion. Usa las variables de Theme.uss, asi que sirve igual en tema claro y oscuro. */
+
+/* En Amigos, el boton de la izquierda del ActionRow sobra (Cerrar sesion esta dentro de la pantalla) */
+#screen-friends #btn-primary { display: none; }
+
+/* ---------- Avatar: circulo con la inicial (nunca se encoge ni se estira) ---------- */
+.avatar {
+    width: 40px; height: 40px; min-width: 40px; min-height: 40px; flex-shrink: 0; flex-grow: 0;
+    border-radius: 50%; align-items: center; justify-content: center; background-color: var(--player-0);
+}
+.avatar--sm { width: 34px; height: 34px; min-width: 34px; min-height: 34px; }
+.avatar--lg { width: 54px; height: 54px; min-width: 54px; min-height: 54px; }
+.avatar--xl { width: 68px; height: 68px; min-width: 68px; min-height: 68px; }
+.avatar--0 { background-color: var(--player-0); }
+.avatar--1 { background-color: var(--player-1); }
+.avatar--2 { background-color: var(--player-2); }
+.avatar--3 { background-color: var(--player-3); }
+.avatar--gold { border-width: 3px; border-color: #ffc83d; }
+.avatar--silver { border-width: 3px; border-color: #cfd6e4; }
+.avatar--bronze { border-width: 3px; border-color: #d98a4e; }
+.avatar__initial { font-size: 18px; -unity-font-style: bold; color: #ffffff; -unity-text-align: middle-center; margin: 0; padding: 0; }
+.avatar--sm .avatar__initial { font-size: 15px; }
+.avatar--lg .avatar__initial { font-size: 23px; }
+.avatar--xl .avatar__initial { font-size: 30px; }
+
+/* ---------- Botones: tamanos ---------- */
+.btn--md { min-height: 52px; padding: 8px 14px; font-size: 18px; margin: 0 0 10px 0; border-bottom-width: 5px; }
+.btn--sm { min-height: 46px; padding: 6px 18px; font-size: 16px; margin: 0; border-bottom-width: 5px; border-radius: 15px; }
+.btn--xs { min-height: 40px; padding: 4px 16px; font-size: 15px; margin: 0; border-bottom-width: 4px; border-radius: 13px; }
+
+/* Boton solo de texto (Quitar, Rechazar, Cerrar sesion) */
+.btn-link {
+    background-color: transparent; border-width: 0; border-radius: 10px; color: var(--mute);
+    font-size: 13px; -unity-font-style: normal; min-height: 0; margin: 2px 0 0 0; padding: 6px 10px;
+    -unity-text-align: middle-center;
+}
+.btn-link:hover, .btn-link:focus, .btn-link:active { background-color: transparent; border-width: 0; }
+.btn-link--danger { color: var(--danger); }
+.btn-link--armed { color: var(--danger); -unity-font-style: bold; }
+
+/* ---------- Chips (ganadas / perdidas) ---------- */
+.chips { flex-direction: row; flex-wrap: wrap; margin-top: 4px; }
+.chip {
+    /* Pildora exacta: altura fija y esquinas = la mitad de la altura */
+    height: 24px; min-height: 24px; border-radius: 12px; padding: 0 12px; margin: 2px 6px 2px 0; flex-shrink: 0;
+    font-size: 12px; -unity-font-style: bold; -unity-text-align: middle-center; white-space: nowrap;
+    color: var(--mute); background-color: var(--card-2);
+}
+.chip--win { background-color: var(--green); color: var(--on-green); }
+.chip--lose { background-color: var(--danger); color: var(--on-color); }
+
+/* ---------- Titulos de seccion ---------- */
+.section-title { font-size: 12px; -unity-font-style: bold; color: var(--mute); letter-spacing: 1px; margin: 0 0 6px 0; padding: 0; }
+.section-row { flex-direction: row; align-items: center; margin: 8px 0 6px 2px; }
+.section-row .section-title { margin: 0; }
+.section-row__badge {
+    height: 22px; min-height: 22px; min-width: 22px; border-radius: 11px; padding: 0 8px; margin-left: 8px; flex-shrink: 0;
+    font-size: 12px; -unity-font-style: bold; -unity-text-align: middle-center;
+    color: var(--on-accent); background-color: var(--accent);
+}
+.section-row__badge--plain { background-color: var(--card-2); color: var(--ink); }
+
+/* ---------- Amigos: perfil ---------- */
+.profile { padding: 14px; margin-bottom: 10px; }
+.profile__top { flex-direction: row; align-items: center; }
+.profile__info { flex-grow: 1; flex-shrink: 1; min-width: 0; margin-left: 12px; }
+.profile__hello { font-size: 13px; color: var(--mute); margin: 0; padding: 0; }
+.profile__name {
+    font-size: 21px; -unity-font-style: bold; color: var(--ink); margin: 0; padding: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.codebox {
+    flex-direction: row; align-items: center; margin-top: 12px; padding: 8px 8px 8px 14px;
+    background-color: var(--field); border-radius: 16px;
+}
+.codebox__col { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.codebox__title { font-size: 11px; -unity-font-style: bold; color: var(--mute); letter-spacing: 1px; margin: 0; padding: 0; }
+.codebox__code { font-size: 30px; -unity-font-style: bold; color: var(--ink); letter-spacing: 6px; -unity-text-align: middle-left; margin: 0; padding: 0; }
+
+/* ---------- Amigos: anadir ---------- */
+.addcard { padding: 12px; margin-bottom: 8px; }
+.addrow { flex-direction: row; align-items: center; }
+.addrow__input { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; margin: 0 8px 0 0; }
+.addrow__input .unity-base-text-field__input,
+.addrow__input .unity-text-field__input {
+    min-height: 46px; padding: 8px 12px; font-size: 18px; letter-spacing: 4px; -unity-text-align: middle-left;
+}
+
+/* ---------- Listas con scroll (amigos y clasificacion) ---------- */
+.social-list { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 120px; margin-bottom: 4px; }
+.social-list .unity-scroll-view__content-container { padding: 2px 0 8px 0; }
+
+/* Fila (amigo, peticion, jugador de la clasificacion) */
+.row-card {
+    flex-direction: row; align-items: center; background-color: var(--card);
+    border-width: 2px; border-color: var(--line); border-radius: 18px; padding: 10px 12px; margin-bottom: 8px;
+}
+.row-card--accent { border-color: var(--accent); }
+.row-card__info { flex-grow: 1; flex-shrink: 1; min-width: 0; margin-left: 10px; }
+.row-card__name {
+    font-size: 16px; -unity-font-style: bold; color: var(--ink); margin: 0; padding: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.row-card__sub {
+    font-size: 12px; color: var(--mute); margin: 1px 0 0 0; padding: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.row-card__sub--ahead { color: var(--green); }
+.row-card__sub--behind { color: var(--danger); }
+.row-card__actions { align-items: center; flex-shrink: 0; margin-left: 8px; }
+
+/* ---------- Clasificacion: tu posicion ---------- */
+.mycard { flex-direction: row; align-items: center; border-color: var(--accent); padding: 12px; margin-bottom: 8px; }
+.mycard__badge {
+    width: 56px; height: 56px; min-width: 56px; min-height: 56px; flex-shrink: 0; border-radius: 28px;
+    background-color: var(--accent); align-items: center; justify-content: center;
+}
+.mycard__place { font-size: 20px; -unity-font-style: bold; color: var(--on-accent); -unity-text-align: middle-center; margin: 0; padding: 0; }
+.mycard__info { flex-grow: 1; flex-shrink: 1; min-width: 0; margin-left: 12px; }
+.mycard__title { font-size: 13px; -unity-font-style: bold; color: var(--mute); margin: 0; padding: 0; }
+.mycard__empty { flex-grow: 1; font-size: 14px; color: var(--mute); white-space: normal; margin: 0; padding: 0; }
+
+/* ---------- Clasificacion: podio ---------- */
+.podium { flex-direction: row; align-items: flex-end; margin: 4px 0 14px 0; }
+.podium__col { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; align-items: center; margin: 0 3px; }
+.podium__name {
+    font-size: 13px; -unity-font-style: bold; color: var(--ink); -unity-text-align: middle-center;
+    margin: 6px 0 0 0; padding: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.podium__name--me { color: var(--accent); }
+.podium__wins { font-size: 21px; -unity-font-style: bold; color: var(--ink); -unity-text-align: middle-center; margin: 0; padding: 0; }
+.podium__label { font-size: 11px; color: var(--mute); -unity-text-align: middle-center; margin: 0 0 6px 0; padding: 0; }
+.podium__step {
+    align-self: stretch; align-items: center; justify-content: center; background-color: var(--card-2);
+    border-width: 2px; border-bottom-width: 0; border-top-left-radius: 14px; border-top-right-radius: 14px;
+}
+.podium__step--1 { height: 66px; border-color: #ffc83d; }
+.podium__step--2 { height: 50px; border-color: #cfd6e4; }
+.podium__step--3 { height: 38px; border-color: #d98a4e; }
+.podium__num { font-size: 24px; -unity-font-style: bold; -unity-text-align: middle-center; margin: 0; padding: 0; }
+.podium__num--1 { color: #ffc83d; }
+.podium__num--2 { color: #cfd6e4; }
+.podium__num--3 { color: #d98a4e; }
+
+/* ---------- Clasificacion: resto de jugadores ---------- */
+.lb-pos {
+    width: 30px; height: 30px; min-width: 30px; min-height: 30px; flex-shrink: 0; border-radius: 15px;
+    background-color: var(--field); color: var(--mute); font-size: 13px; -unity-font-style: bold;
+    -unity-text-align: middle-center; margin: 0; padding: 0;
+}
+.lb-row .avatar { margin-left: 10px; }
+.lb-wins { align-items: flex-end; flex-shrink: 0; margin-left: 8px; }
+.lb-wins__n { font-size: 21px; -unity-font-style: bold; color: var(--ok); margin: 0; padding: 0; }
+.lb-wins__t { font-size: 11px; color: var(--mute); margin: 0; padding: 0; }

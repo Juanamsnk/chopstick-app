@@ -8,6 +8,14 @@ using UnityEngine;
 
 namespace Chopsticks.Online
 {
+    /// <summary>Como acabo una partida online para ESTE dispositivo.</summary>
+    public class OnlineResult
+    {
+        public bool Won;
+        public string OpponentUid;    // "" si el rival era invitado
+        public string OpponentName;
+    }
+
     /// <summary>
     /// Una partida online. El anfitrion lleva las reglas (GameEngine) y es quien manda:
     ///  - los demas le envian la jugada que quieren hacer ("move");
@@ -30,6 +38,7 @@ namespace Chopsticks.Online
         private readonly string mySkin;
         private readonly int myTone;
         private readonly int myRank;
+        private readonly string myUid;
 
         // Sala
         private readonly List<string> names = new List<string>();
@@ -37,6 +46,7 @@ namespace Chopsticks.Online
         private readonly List<string> skinIds = new List<string>();   // mano de cada jugador (mismo orden que names)
         private readonly List<int> tones = new List<int>();
         private readonly List<int> ranks = new List<int>();   // rango de la carrera + 1 de cada jugador (0 = no se sabe)
+        private readonly List<string> uids = new List<string>();   // cuenta de cada jugador ("" = invitado)
         private int localSeat;
 
         // Partida
@@ -45,7 +55,10 @@ namespace Chopsticks.Online
         private bool started;
         private bool awaiting;          // ya enviaste tu jugada y esperas la respuesta
         private bool closed;
+        private bool resultReported;    // el final de esta partida ya se aviso (se vuelve a armar al jugar otra vez)
 
+        /// <summary>La partida termino (gane o pierda este dispositivo). Salta una vez por partida.</summary>
+        public event Action<OnlineResult> GameFinished;
         public event Action LobbyChanged;
         public event Action Started;
         public event Action Changed;
@@ -53,9 +66,10 @@ namespace Chopsticks.Online
         public event Action<string> Disconnected;
 
         public OnlineMatch(NetMessenger net, bool isHost, string playerName, bool splitAllowed, bool autoStart = false,
-                           string skinId = null, int tone = 0, int rank = 0)
+                           string skinId = null, int tone = 0, int rank = 0, string uid = null)
         {
             this.myRank = rank;
+            this.myUid = uid ?? "";
             this.autoStart = autoStart;
             this.mySkin = string.IsNullOrEmpty(skinId) ? HandSkinCatalog.DefaultId : skinId;
             this.myTone = tone;
@@ -72,6 +86,7 @@ namespace Chopsticks.Online
                 skinIds.Add(mySkin);
                 tones.Add(myTone);
                 ranks.Add(myRank);
+                uids.Add(myUid);
                 clientIds.Add(net.LocalClientId);
                 localSeat = 0;
                 net.Register(MsgJoin, OnJoin);
@@ -252,6 +267,7 @@ namespace Chopsticks.Online
             skinIds.Add(string.IsNullOrEmpty(dto.skin) ? HandSkinCatalog.DefaultId : dto.skin);
             tones.Add(dto.tone);
             ranks.Add(dto.rank);
+            uids.Add(dto.uid ?? "");
             clientIds.Add(sender);
 
             BroadcastLobby();
@@ -282,7 +298,7 @@ namespace Chopsticks.Online
             // Cada jugador recibe la lista y su propio puesto (seat)
             for (int i = 1; i < clientIds.Count; i++)
             {
-                var dto = new LobbyDto { names = names.ToArray(), skins = skinIds.ToArray(), tones = tones.ToArray(), ranks = ranks.ToArray(), seat = i };
+                var dto = new LobbyDto { names = names.ToArray(), skins = skinIds.ToArray(), tones = tones.ToArray(), ranks = ranks.ToArray(), uids = uids.ToArray(), seat = i };
                 net.Send(MsgLobby, clientIds[i], JsonUtility.ToJson(dto));
             }
         }
@@ -298,7 +314,7 @@ namespace Chopsticks.Online
         private void SendJoin()
         {
             Debug.Log("[Online] Cliente: enviando 'join' al anfitrion.");
-            net.SendToHost(MsgJoin, JsonUtility.ToJson(new JoinDto { name = myName, skin = mySkin, tone = myTone, rank = myRank }));
+            net.SendToHost(MsgJoin, JsonUtility.ToJson(new JoinDto { name = myName, skin = mySkin, tone = myTone, rank = myRank, uid = myUid }));
         }
 
         private void OnLobby(ulong sender, string json)
@@ -312,8 +328,10 @@ namespace Chopsticks.Online
             skinIds.Clear();
             tones.Clear();
             ranks.Clear();
+            uids.Clear();
             for (int i = 0; i < names.Count; i++)
             {
+                uids.Add(dto.uids != null && i < dto.uids.Length && dto.uids[i] != null ? dto.uids[i] : "");
                 ranks.Add(dto.ranks != null && i < dto.ranks.Length ? dto.ranks[i] : 0);
                 bool hasSkin = dto.skins != null && i < dto.skins.Length && !string.IsNullOrEmpty(dto.skins[i]);
                 skinIds.Add(hasSkin ? dto.skins[i] : HandSkinCatalog.DefaultId);
@@ -359,6 +377,7 @@ namespace Chopsticks.Online
                 skinIds.RemoveAt(seat);
                 tones.RemoveAt(seat);
                 if (seat < ranks.Count) ranks.RemoveAt(seat);
+                if (seat < uids.Count) uids.RemoveAt(seat);
                 clientIds.RemoveAt(seat);
                 BroadcastLobby();
                 if (LobbyChanged != null) LobbyChanged();
@@ -371,7 +390,34 @@ namespace Chopsticks.Online
 
         private void Raise()
         {
+            CheckFinished();
             if (Changed != null) Changed();
+        }
+
+        /// <summary>
+        /// Avisa UNA vez cuando la partida termina. Si se juega otra vez (Restart), el estado vuelve a "jugando"
+        /// y se arma de nuevo. Lo usan los dos lados: el anfitrion y los clientes pasan por Raise tras cada estado.
+        /// </summary>
+        private void CheckFinished()
+        {
+            GameState s = State;
+            if (s == null) return;
+            if (s.Status != GameStatus.Over)
+            {
+                resultReported = false;
+                return;
+            }
+            if (resultReported || s.Winner < 0) return;
+            resultReported = true;
+
+            int other = OtherSeat();
+            var result = new OnlineResult
+            {
+                Won = s.Winner == localSeat,
+                OpponentUid = other >= 0 && other < uids.Count ? uids[other] : "",
+                OpponentName = other >= 0 && other < names.Count ? names[other] : "Jugador"
+            };
+            if (GameFinished != null) GameFinished(result);
         }
     }
 }

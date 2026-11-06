@@ -15,6 +15,7 @@ namespace Chopsticks.UI
         Shop,
         Inventory,
         Friends,
+        Leaderboard,
         OnlineMenu,
         Lobby,
         Game,

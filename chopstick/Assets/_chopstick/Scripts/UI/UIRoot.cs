@@ -37,6 +37,7 @@ namespace Chopsticks.UI
         private SearchView searchView;
         private OnlineController onlineController;
         private FriendsView friendsView;
+        private LeaderboardView leaderboardView;
         private ChallengePopupView challengePopup;
         private SocialController socialController;
         private PlayerProfile profile;
@@ -73,6 +74,7 @@ namespace Chopsticks.UI
             navigator.Register(ScreenId.Shop, root.Q("shop"));
             navigator.Register(ScreenId.Inventory, root.Q("inventory"));
             navigator.Register(ScreenId.Friends, root.Q("friends"));
+            navigator.Register(ScreenId.Leaderboard, root.Q("leaderboard"));
             navigator.Register(ScreenId.OnlineMenu, root.Q("onlinemenu"));
             navigator.Register(ScreenId.Lobby, root.Q("lobby"));
             navigator.Register(ScreenId.Game, root.Q("game"));
@@ -137,8 +139,9 @@ namespace Chopsticks.UI
 
             // Amigos (Firebase): iniciar sesion con Google, anadir amigos y retarlos
             friendsView = new FriendsView(root.Q("friends"));
-            challengePopup = new ChallengePopupView(root.Q("challenge"));
-            socialController = new SocialController(navigator, friendsView, challengePopup, onlineController, profile, settingsView, careerProgress, shopInventory);
+            challengePopup = new ChallengePopupView(root.Q("challenge"), soundManager);
+            leaderboardView = new LeaderboardView(root.Q("leaderboard"));   // clasificacion de victorias online
+            socialController = new SocialController(navigator, friendsView, challengePopup, onlineController, profile, settingsView, careerProgress, shopInventory, leaderboardView);
             socialController.Settled += loadingScreen.MarkReady;
             socialController.Start();
 

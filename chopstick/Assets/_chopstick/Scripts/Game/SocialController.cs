@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chopsticks.Career;
+using Chopsticks.Online;
 using Chopsticks.Shop;
 using Chopsticks.Social;
 using Chopsticks.UI;
@@ -24,11 +25,13 @@ namespace Chopsticks.Game
         private readonly OnlineController online;
         private readonly PlayerProfile profile;
         private readonly SettingsView settings;
+        private readonly LeaderboardView leaderboard;
         private readonly SocialBackend backend = new SocialBackend();
         private readonly ProgressSync progressSync;   // guarda el progreso en la cuenta (o en el dispositivo si eres invitado)
 
         private ChallengeInfo pending;   // reto recibido que se esta mostrando
         private bool joining;            // se esta entrando en la partida de un reto aceptado
+        private bool sending;            // la ventana de "preparando tu reto" (o su error) esta abierta
         private string initError;
         private bool busy;
         private bool settled;
@@ -37,8 +40,10 @@ namespace Chopsticks.Game
         public event Action Settled;
 
         public SocialController(ScreenNavigator navigator, FriendsView view, ChallengePopupView popup, OnlineController online,
-            PlayerProfile profile, SettingsView settings, CareerProgress career, ShopInventory shop)
+            PlayerProfile profile, SettingsView settings, CareerProgress career, ShopInventory shop,
+            LeaderboardView leaderboard)
         {
+            this.leaderboard = leaderboard;
             this.profile = profile;
             this.settings = settings;
             this.navigator = navigator;
@@ -47,10 +52,21 @@ namespace Chopsticks.Game
             this.online = online;
             progressSync = new ProgressSync(backend, career, shop);
 
-            navigator.Shown += id => { if (id == ScreenId.Friends) Refresh(); };
+            navigator.Shown += id =>
+            {
+                if (id == ScreenId.Friends) Refresh();
+                if (id == ScreenId.Leaderboard) LoadLeaderboard();
+            };
+
+            // Victorias y derrotas ONLINE: se apuntan al terminar cada partida (el modo carrera no pasa por aqui)
+            online.UidProvider = () => backend.Uid;
+            online.ResultReady += OnOnlineResult;
+            view.LeaderboardClicked += () => navigator.Show(ScreenId.Leaderboard);
+            leaderboard.RefreshClicked += LoadLeaderboard;
+            backend.RecordChanged += r => view.SetMyRecord(r);
+            backend.VersusChanged += map => view.SetRecords(map);
 
             view.GoogleClicked += OnGoogle;
-            view.SignOutClicked += OnSignOut;
             settings.GoogleClicked += OnGoogle;      // los mismos botones, desde Ajustes
             settings.SignOutClicked += OnSignOut;
             view.AddClicked += OnAdd;
@@ -216,21 +232,79 @@ namespace Chopsticks.Game
         }
 
         // ------------------------------------------------------------
+        // Victorias, derrotas y clasificacion
+        // ------------------------------------------------------------
+        /// <summary>Termino una partida online: se apunta al marcador general y al marcador contra ese rival.</summary>
+        private async void OnOnlineResult(OnlineResult result)
+        {
+            if (!backend.IsSignedIn) return;   // los invitados no puntuan
+            await RecordWithRetry(() => backend.RecordGeneralAsync(result.Won));
+            await RecordWithRetry(() => backend.RecordVersusAsync(result.Won, result.OpponentUid, result.OpponentName));
+        }
+
+        /// <summary>
+        /// Reintenta una vez si falla por la red. Si fue por tiempo agotado NO se reintenta:
+        /// la escritura podria haber llegado igualmente y la partida se contaria dos veces.
+        /// </summary>
+        private static async Task RecordWithRetry(Func<Task> action)
+        {
+            for (int attempt = 0; attempt < 2; attempt++)
+            {
+                try
+                {
+                    await action();
+                    return;
+                }
+                catch (SocialException e)
+                {
+                    Debug.LogWarning("[Social] Resultado sin confirmar: " + e.Message);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning("[Social] No se pudo apuntar el resultado (intento " + (attempt + 1) + "): " + e.Message);
+                    if (attempt == 0) await Task.Delay(4000);
+                }
+            }
+        }
+
+        private async void LoadLeaderboard()
+        {
+            if (!backend.IsSignedIn)
+            {
+                leaderboard.ShowError("Inicia sesión para ver la clasificación.");
+                return;
+            }
+            leaderboard.ShowLoading();
+            try
+            {
+                List<LeaderboardEntry> entries = await backend.LoadLeaderboardAsync(50);
+                leaderboard.ShowEntries(entries, backend.Uid, backend.MyRecord);
+            }
+            catch (Exception e)
+            {
+                leaderboard.ShowError(MessageOf(e));
+            }
+        }
+
+        // ------------------------------------------------------------
         // Retos
         // ------------------------------------------------------------
         /// <summary>Retar: se crea una sala online (como "Crear partida") y se le manda el codigo al amigo.</summary>
         private void OnChallenge(FriendInfo friend)
         {
-            view.ShowMessage("Preparando la partida para retar a " + friend.Name + "...", false);
+            sending = true;
+            popup.ShowPreparing(friend.Name);
             online.CreateRoom(backend.MyName, true,
                 code => SendChallenge(friend, code),
-                message => view.ShowMessage(message, true),
+                message => popup.ShowError(message),   // la ventana se queda con el error hasta que la cierres
                 friend.Name);
         }
 
         private async void SendChallenge(FriendInfo friend, string joinCode)
         {
-            view.ShowMessage("", false);
+            sending = false;
+            popup.Hide();   // la sala ya esta lista: se acabo el "preparando"
             int lobbyId = online.LobbyId;   // los avisos solo valen para esta sala
             try
             {
@@ -251,7 +325,7 @@ namespace Chopsticks.Game
         {
             // En plena partida, sala o busqueda no se molesta: el reto se descarta
             ScreenId now = navigator.Current;
-            if (joining || now == ScreenId.Game || now == ScreenId.Lobby || now == ScreenId.Search)
+            if (joining || sending || now == ScreenId.Game || now == ScreenId.Lobby || now == ScreenId.Search)
             {
                 Run(() => backend.DismissChallengeAsync(challenge.FromUid), "");
                 return;
@@ -294,6 +368,14 @@ namespace Chopsticks.Game
 
         private void OnDeclineChallenge()
         {
+            // Si la ventana muestra el error de tu reto, este boton es "Cerrar"
+            if (sending)
+            {
+                sending = false;
+                popup.Hide();
+                return;
+            }
+
             // Mientras se entra en la partida, este boton es "Cancelar"
             if (joining)
             {

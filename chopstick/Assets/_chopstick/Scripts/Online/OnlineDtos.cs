@@ -12,6 +12,7 @@ namespace Chopsticks.Online
         public string skin;   // estilo de mano que lleva puesto
         public int tone;      // tono de piel de ese estilo
         public int rank;      // rango de la carrera + 1 (0 = no se sabe)
+        public string uid;    // id de su cuenta ("" = invitado); sirve para apuntar el marcador contra amigos
     }
 
     /// <summary>La lista de jugadores de la sala. "seat" es el puesto de quien lo recibe.</summary>
@@ -22,6 +23,7 @@ namespace Chopsticks.Online
         public string[] skins;   // estilo de mano de cada jugador (mismo orden que names)
         public int[] tones;
         public int[] ranks;      // rango de cada jugador + 1 (mismo orden que names)
+        public string[] uids;    // cuenta de cada jugador ("" = invitado; mismo orden que names)
         public int seat;
     }
 

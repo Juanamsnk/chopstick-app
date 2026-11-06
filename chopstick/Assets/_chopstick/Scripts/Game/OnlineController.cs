@@ -36,6 +36,12 @@ namespace Chopsticks.Game
         private string quickName;   // tu nombre en la busqueda rapida en curso
         private int quickAttempts;  // intentos seguidos que se quedaron sin conectar
 
+        /// <summary>Id de tu cuenta (null o "" si eres invitado). Lo pone SocialController; viaja a tu rival para apuntar el marcador.</summary>
+        public Func<string> UidProvider;
+
+        /// <summary>Una partida online termino (para guardar victorias y derrotas). Solo online: el modo carrera no pasa por aqui.</summary>
+        public event Action<OnlineResult> ResultReady;
+
         /// <summary>Numero de la sala de espera actual. Cambia con cada sala nueva, para no mezclar avisos de salas viejas.</summary>
         public int LobbyId { get; private set; }
 
@@ -82,7 +88,7 @@ namespace Chopsticks.Game
             try
             {
                 string code = await service.CreateAsync(2);
-                match = new OnlineMatch(new NetMessenger(), true, playerName, splitAllowed, false, shop.EquippedId, shop.Tone, shop.OnlineRank);
+                match = new OnlineMatch(new NetMessenger(), true, playerName, splitAllowed, false, shop.EquippedId, shop.Tone, shop.OnlineRank, MyUid());
                 Hook(match);
                 LobbyId++;
                 lobby.SetCode(code);
@@ -137,7 +143,7 @@ namespace Chopsticks.Game
                     return;
                 }
 
-                match = new OnlineMatch(new NetMessenger(), false, playerName, true, false, shop.EquippedId, shop.Tone, shop.OnlineRank);
+                match = new OnlineMatch(new NetMessenger(), false, playerName, true, false, shop.EquippedId, shop.Tone, shop.OnlineRank, MyUid());
                 Hook(match);
                 LobbyId++;
                 lobby.SetCode(code);
@@ -211,7 +217,7 @@ namespace Chopsticks.Game
 
                 bool isHost = service.IsHost;
                 Debug.Log("[Online] Busqueda lista. Anfitrion: " + isHost + ". Codigo: " + service.Code);
-                match = new OnlineMatch(new NetMessenger(), isHost, playerName, true, true, shop.EquippedId, shop.Tone, shop.OnlineRank);
+                match = new OnlineMatch(new NetMessenger(), isHost, playerName, true, true, shop.EquippedId, shop.Tone, shop.OnlineRank, MyUid());
                 Hook(match);
 
                 if (isHost)
@@ -325,15 +331,26 @@ namespace Chopsticks.Game
                 Unhook(match);
                 match.Dispose();
                 bool isHost = service.IsHost;
-                match = new OnlineMatch(new NetMessenger(), isHost, quickName, true, true, shop.EquippedId, shop.Tone, shop.OnlineRank);
+                match = new OnlineMatch(new NetMessenger(), isHost, quickName, true, true, shop.EquippedId, shop.Tone, shop.OnlineRank, MyUid());
                 Hook(match);
                 search.SetStatus(isHost ? "Esperando a un rival..." : "Rival encontrado. Conectando...");
                 if (!isHost) return;
             }
         }
 
+        private string MyUid()
+        {
+            return UidProvider != null ? (UidProvider() ?? "") : "";
+        }
+
+        private void OnGameFinished(OnlineResult result)
+        {
+            if (ResultReady != null) ResultReady(result);
+        }
+
         private void Unhook(OnlineMatch m)
         {
+            m.GameFinished -= OnGameFinished;
             m.LobbyChanged -= RefreshLobby;
             m.Started -= OnStarted;
             m.Disconnected -= OnDisconnected;
@@ -368,6 +385,7 @@ namespace Chopsticks.Game
         // ------------------------------------------------------------
         private void Hook(OnlineMatch m)
         {
+            m.GameFinished += OnGameFinished;
             m.LobbyChanged += RefreshLobby;
             m.Started += OnStarted;
             m.Disconnected += OnDisconnected;
@@ -408,6 +426,7 @@ namespace Chopsticks.Game
         {
             if (match != null)
             {
+                match.GameFinished -= OnGameFinished;
                 match.LobbyChanged -= RefreshLobby;
                 match.Started -= OnStarted;
                 match.Disconnected -= OnDisconnected;

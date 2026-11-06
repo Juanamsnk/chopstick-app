@@ -1,0 +1,35 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="ActionRow" src="/Assets/_chopstick/UI/UXML/Organisms/ActionRow.uxml" />
+    <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
+    <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
+    <ui:VisualElement name="screen-leaderboard" class="screen">
+        <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
+        <ui:Label text="Clasificación" class="career__title"/>
+        <ui:Label text="Victorias en partidas online. El modo carrera no cuenta." class="career__hint"/>
+
+        <!-- Tu posicion -->
+        <ui:VisualElement name="lb-me" class="card mycard" style="display:none;">
+            <ui:VisualElement name="lb-me-badge" class="mycard__badge">
+                <ui:Label name="lb-me-place" text="#1" class="mycard__place"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="lb-me-info" class="mycard__info">
+                <ui:Label name="lb-me-title" text="Tu posición" class="mycard__title"/>
+                <ui:VisualElement name="lb-me-chips" class="chips"/>
+            </ui:VisualElement>
+            <ui:Label name="lb-me-empty" text="" class="mycard__empty"/>
+        </ui:VisualElement>
+
+        <ui:Label name="lb-msg" text="" class="friends__msg"/>
+
+        <!-- Podio (los 3 primeros) y, debajo, el resto de la lista -->
+        <ui:ScrollView name="lb-list" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="social-list">
+            <ui:VisualElement name="podium" class="podium" style="display:none;"/>
+            <ui:VisualElement name="lb-rows"/>
+        </ui:ScrollView>
+
+        <ui:Instance template="ActionRow" name="action-row">
+            <AttributeOverrides element-name="btn-primary" text="Actualizar"/>
+            <AttributeOverrides element-name="btn-secondary" text="Volver"/>
+        </ui:Instance>
+    </ui:VisualElement>
+</ui:UXML>
