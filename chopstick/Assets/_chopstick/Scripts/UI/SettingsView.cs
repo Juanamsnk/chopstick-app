@@ -29,12 +29,19 @@ namespace Chopsticks.UI
         private readonly Label handLabel;
         private readonly Button googleButton;
         private readonly Button signOutButton;
+        private readonly VisualElement nameCard;
+        private readonly TextField nameField;
+        private readonly Button nameSaveButton;
+        private readonly Label nameMessageLabel;
+        private readonly Label versionLabel;
 
         private bool firebaseReady;
         private string signedOutHint = "";
+        private string lastShownName;   // nombre que se puso por ultima vez en el campo (para no pisar lo que escribes)
 
         public event Action GoogleClicked;
         public event Action SignOutClicked;
+        public event Action<string> NameSaveClicked;
         public event Action ShopClicked;
         public event Action InventoryClicked;
 
@@ -52,9 +59,19 @@ namespace Chopsticks.UI
             handLabel = screen.Q<Label>("s-hand");
             googleButton = screen.Q<Button>("btn-s-google");
             signOutButton = screen.Q<Button>("btn-s-signout");
+            nameCard = screen.Q("s-name-card");
+            nameField = screen.Q("s-name-edit").Q<TextField>("input");
+            nameField.maxLength = PlayerProfile.MaxNameLength;
+            nameSaveButton = screen.Q<Button>("btn-s-name-save");
+            nameMessageLabel = screen.Q<Label>("s-name-msg");
+            versionLabel = screen.Q<Label>("s-version");
+
+            // La version sale directa de Project Settings > Player > Version
+            versionLabel.text = "Versión " + Application.version;
 
             googleButton.clicked += () => { if (GoogleClicked != null) GoogleClicked(); };
             signOutButton.clicked += () => { if (SignOutClicked != null) SignOutClicked(); };
+            nameSaveButton.clicked += OnNameSave;
             screen.Q<Button>("btn-s-shop").clicked += () => { if (ShopClicked != null) ShopClicked(); };
             screen.Q<Button>("btn-s-inventory").clicked += () => { if (InventoryClicked != null) InventoryClicked(); };
             screen.Q<Button>("btn-s-kofi").clicked += () => Application.OpenURL(KofiUrl);   // abre el navegador del movil
@@ -112,9 +129,34 @@ namespace Chopsticks.UI
             messageLabel.EnableInClassList("friends__msg--error", isError);
         }
 
+        /// <summary>Aviso debajo del campo del nombre (vacio = nada).</summary>
+        public void ShowNameMessage(string text, bool isError)
+        {
+            nameMessageLabel.text = text;
+            nameMessageLabel.EnableInClassList("friends__msg--error", isError);
+        }
+
         public void SetBusy(bool busy)
         {
             googleButton.SetEnabled(!busy && firebaseReady);
+            nameSaveButton.SetEnabled(!busy);
+        }
+
+        private void OnNameSave()
+        {
+            string typed = (nameField.value ?? "").Trim();
+            if (typed.Length == 0)
+            {
+                ShowNameMessage("Escribe un nombre.", true);
+                return;
+            }
+            if (typed == profile.Name)
+            {
+                ShowNameMessage("Ese ya es tu nombre.", false);
+                return;
+            }
+            ShowNameMessage("", false);
+            if (NameSaveClicked != null) NameSaveClicked(typed);
         }
 
         // ------------------------------------------------------------
@@ -129,6 +171,22 @@ namespace Chopsticks.UI
 
             bool signedIn = profile.IsSignedIn;
             statusLabel.text = signedIn ? "Sesión iniciada" : "Sin sesión iniciada";
+
+            // Editar el nombre solo tiene sentido con cuenta: se guarda ahi
+            nameCard.style.display = signedIn ? DisplayStyle.Flex : DisplayStyle.None;
+            if (signedIn)
+            {
+                if (profile.Name != lastShownName)
+                {
+                    nameField.value = profile.Name;
+                    lastShownName = profile.Name;
+                }
+            }
+            else if (lastShownName != null)
+            {
+                lastShownName = null;
+                ShowNameMessage("", false);
+            }
 
             googleButton.style.display = signedIn ? DisplayStyle.None : DisplayStyle.Flex;
             signOutButton.style.display = signedIn ? DisplayStyle.Flex : DisplayStyle.None;

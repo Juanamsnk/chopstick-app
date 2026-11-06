@@ -10,6 +10,9 @@ namespace Chopsticks.Social
     {
         public const string GuestName = "Invitado";
 
+        /// <summary>Maximo de letras del nombre (el mismo limite que los campos de nombre de las partidas).</summary>
+        public const int MaxNameLength = 14;
+
         /// <summary>Nombre de la cuenta; vacio si no hay sesion.</summary>
         public string Name { get; private set; }
 
@@ -27,7 +30,7 @@ namespace Chopsticks.Social
             get
             {
                 if (!IsSignedIn) return "Jugador";
-                return Name.Length > 14 ? Name.Substring(0, 14) : Name;
+                return Name.Length > MaxNameLength ? Name.Substring(0, MaxNameLength) : Name;
             }
         }
 

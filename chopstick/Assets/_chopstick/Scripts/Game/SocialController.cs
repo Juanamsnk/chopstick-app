@@ -69,6 +69,7 @@ namespace Chopsticks.Game
             view.GoogleClicked += OnGoogle;
             settings.GoogleClicked += OnGoogle;      // los mismos botones, desde Ajustes
             settings.SignOutClicked += OnSignOut;
+            settings.NameSaveClicked += OnRename;
             view.AddClicked += OnAdd;
             view.AcceptClicked += r => Run(() => backend.AcceptRequestAsync(r.Uid), r.Name + " ahora es tu amigo.");
             view.DeclineClicked += r => Run(() => backend.DeclineRequestAsync(r.Uid), "");
@@ -180,6 +181,26 @@ namespace Chopsticks.Game
             catch (Exception e)
             {
                 Say(MessageOf(e), true);
+            }
+            SetBusyAll(false);
+            busy = false;
+            Refresh();
+        }
+
+        /// <summary>Guarda el nombre que escribiste en Ajustes. Al terminar, Refresh lo reparte por toda la app.</summary>
+        private async void OnRename(string newName)
+        {
+            if (busy) return;
+            busy = true;
+            SetBusyAll(true);
+            try
+            {
+                await backend.UpdateNameAsync(newName);
+                settings.ShowNameMessage("Nombre guardado.", false);
+            }
+            catch (Exception e)
+            {
+                settings.ShowNameMessage(MessageOf(e), true);
             }
             SetBusyAll(false);
             busy = false;

@@ -180,7 +180,13 @@ namespace Chopsticks.Social
             if (snap.Exists && snap.Child("code").Exists)
             {
                 MyCode = snap.Child("code").Value.ToString();
-                await WithTimeout(userRef.Child("name").SetValueAsync(MyName));
+
+                // El nombre guardado en la cuenta manda (puede ser el que elegiste en Ajustes).
+                // El de Google solo se usa la primera vez o si la cuenta no tiene ninguno.
+                object saved = snap.Child("name").Value;
+                string savedName = saved != null ? saved.ToString().Trim() : "";
+                if (savedName.Length > 0) MyName = savedName;
+                else await WithTimeout(userRef.Child("name").SetValueAsync(MyName));
                 return;
             }
 
@@ -201,6 +207,37 @@ namespace Chopsticks.Social
                 return;
             }
             throw new SocialException("No se pudo crear tu código de amigo. Inténtalo de nuevo.");
+        }
+
+        /// <summary>Cambia tu nombre en la cuenta: lo ven tus amigos y sale en tus partidas.</summary>
+        public async Task UpdateNameAsync(string name)
+        {
+            name = (name ?? "").Trim();
+            if (name.Length == 0) throw new SocialException("Escribe un nombre.");
+            if (name.Length > PlayerProfile.MaxNameLength) name = name.Substring(0, PlayerProfile.MaxNameLength);
+            if (!IsSignedIn) throw new SocialException("Inicia sesión para cambiar tu nombre.");
+#if UNITY_EDITOR
+            if (mockActive)
+            {
+                await Task.Delay(MockDelayMs);
+                MyName = name;
+                return;
+            }
+#endif
+            await WithTimeout(root.Child("users").Child(Uid).Child("name").SetValueAsync(name));
+            MyName = name;
+
+            // Si ya tienes marcador en la clasificacion, se cambia el nombre ahi tambien (si no se puede, no pasa nada)
+            try
+            {
+                DatabaseReference board = root.Child("leaderboard").Child(Uid);
+                DataSnapshot entry = await WithTimeout(board.GetValueAsync());
+                if (entry.Exists) await WithTimeout(board.Child("name").SetValueAsync(name));
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[Social] No se pudo actualizar el nombre en la clasificacion: " + e.Message);
+            }
         }
 
         private string RandomCode()
@@ -654,6 +691,7 @@ namespace Chopsticks.Social
 
         public Task InitAsync() { return Task.FromException(new SocialException(Unsupported)); }
         public Task SignInWithGoogleAsync() { return Task.FromException(new SocialException(Unsupported)); }
+        public Task UpdateNameAsync(string name) { return Task.FromException(new SocialException(Unsupported)); }
         public void SignOut() { }
         public void StopListening() { }
         public Task<string> SendFriendRequestAsync(string code) { return Task.FromException<string>(new SocialException(Unsupported)); }

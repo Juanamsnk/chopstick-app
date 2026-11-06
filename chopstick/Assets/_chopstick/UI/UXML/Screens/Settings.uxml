@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <ui:Template name="BgDecor" src="/Assets/_chopstick/UI/UXML/Molecules/BgDecor.uxml" />
     <ui:Template name="CheckOption" src="/Assets/_chopstick/UI/UXML/Molecules/CheckOption.uxml" />
+    <ui:Template name="LabeledField" src="/Assets/_chopstick/UI/UXML/Molecules/LabeledField.uxml" />
     <Style src="/Assets/_chopstick/UI/Styles/Main.uss" />
     <ui:VisualElement name="screen-settings" class="screen">
         <ui:Instance template="BgDecor" name="decor" picking-mode="Ignore"/>
@@ -16,6 +17,15 @@
                         <ui:Label name="s-coins" text="0" class="shop__coins-text"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="s-name-card" class="card" style="display:none;">
+                <ui:Label text="Tu nombre" class="label-bold"/>
+                <ui:Label text="Es el nombre que verán tus amigos y el que saldrá en tus partidas." class="friends__hint"/>
+                <ui:Instance template="LabeledField" name="s-name-edit">
+                    <AttributeOverrides element-name="label" text="Nombre (máx. 14 letras)"/>
+                </ui:Instance>
+                <ui:Label name="s-name-msg" text="" class="friends__msg"/>
+                <ui:Button name="btn-s-name-save" text="Guardar nombre" class="btn btn--green"/>
             </ui:VisualElement>
             <ui:VisualElement class="card">
                 <ui:Label text="Cuenta" class="label-bold"/>
@@ -47,6 +57,7 @@
                 <ui:Label text="Chopsticks lo hace una sola persona. Si te gusta, puedes invitarme a un café en Ko-fi." class="friends__hint"/>
                 <ui:Button name="btn-s-kofi" text="Apóyame en Ko-fi" class="btn btn--kofi"/>
             </ui:VisualElement>
+            <ui:Label name="s-version" text="" class="settings__version"/>
         </ui:ScrollView>
         <ui:Button name="btn-back" text="Volver" class="btn btn--ghost"/>
     </ui:VisualElement>
